@@ -523,4 +523,10 @@ export { saveProjectAnalysis } from './projects/analyzer';
 
 export { updateProjectMemory } from './projects/memory';
 
-console.log('✅ F0 Functions loaded (Phase 75: Project Memory | Phase 74: Project Analysis)');
+// ============================================================
+// PHASE 82: PATCH APPLICATION WITH VFS
+// ============================================================
+
+export { applyPatch } from './projects/applyPatch';
+
+console.log('✅ F0 Functions loaded (Phase 82: Patch VFS | Phase 75: Project Memory | Phase 74: Project Analysis)');
