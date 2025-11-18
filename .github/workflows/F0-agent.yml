@@ -2,13 +2,20 @@ name: F0 Agent Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment (dev / staging / prod)'
+        required: false
+        default: 'development'
+      projectId:
+        description: 'F0 project id'
+        required: false
   repository_dispatch:
     types: [f0-deploy]
-
   push:
     branches:
       - main
-      - "f0/**"
+      - 'f0/**'
 
 jobs:
   build:
