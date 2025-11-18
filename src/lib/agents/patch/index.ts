@@ -6,3 +6,5 @@ export * from './parsePatch';
 export * from './applyPatch';
 export * from './applyBundle';
 export * from './usePatchMode';
+export * from './detectPatch';
+export * from './orchestrator';

@@ -4,6 +4,8 @@ import { classifyIntent, getSmallTalkResponse, getNeedBriefResponse, generateAut
 import { classifyUserMessage } from '@/lib/agents/taskClassifier';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { runPatchApply, previewPatch } from '@/lib/agents/patch/orchestrator';
+import { shouldUsePatchMode } from '@/lib/agents/patch/usePatchMode';
 
 export async function POST(req: NextRequest) {
   try {
@@ -92,6 +94,43 @@ export async function POST(req: NextRequest) {
     // Step 5: Call agent with brief, tech stack, memory context, task classification, and language preference
     const reply = await askAgent(text, { projectId, brief, techStack, memory, lang, taskClassification });
 
+    // Step 6: Check if we should use patch mode and detect patches in response
+    let patchResult = null;
+    if (shouldUsePatchMode(taskClassification.taskKind)) {
+      console.log(`[Chat API] Patch mode enabled for task kind: ${taskClassification.taskKind}`);
+
+      try {
+        // Preview patch to check if valid
+        const preview = await previewPatch({
+          projectId,
+          modelOutput: reply.raw || reply.visible,
+          originalRequest: text,
+          locale: lang,
+          taskKind: taskClassification.taskKind,
+        });
+
+        if (preview.success && preview.patches) {
+          console.log(`[Chat API] Detected ${preview.patches.length} patch(es) in response`);
+
+          // For now, we just track the patches - actual application will come later
+          // when we have file system integration
+          patchResult = {
+            success: true,
+            patchCount: preview.patches.length,
+            patches: preview.patches.map(p => ({
+              filePath: p.filePath,
+              hunksCount: p.hunks.length,
+              isNew: p.isNew ?? false,
+              isDeleted: p.isDeleted ?? false,
+            })),
+          };
+        }
+      } catch (error: any) {
+        console.error('[Chat API] Patch detection failed:', error);
+        // Don't fail the entire request if patch detection fails
+      }
+    }
+
     // Only include phases in plan if ready=true
     const responsePlan = reply.ready && reply.plan?.phases
       ? reply.plan
@@ -113,7 +152,9 @@ export async function POST(req: NextRequest) {
         // Phase 76: Include task classification in response
         taskKind: taskClassification.taskKind,
         taskConfidence: taskClassification.confidence,
-        taskReasoning: taskClassification.reasoning
+        taskReasoning: taskClassification.reasoning,
+        // Phase 81: Include patch result if detected
+        patchResult,
       },
       plan: responsePlan
     });
