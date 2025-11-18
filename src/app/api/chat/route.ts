@@ -69,24 +69,23 @@ export async function POST(req: NextRequest) {
       hasBackendApi: !!techStack?.features?.hasBackendApi,
     });
 
-      // Step 4: If no brief, generate intelligent brief from user text
-      if (!brief || brief.length < 15) {
-        brief = generateAutoBrief(text, lang);
+    // Step 4: If no brief, generate intelligent brief from user text
+    if (!brief || brief.length < 15) {
+      brief = generateAutoBrief(text, lang);
 
-        // Save auto-generated brief to Firestore
-        try {
-          await setDoc(
-            doc(db, `projects/${projectId}`),
-            {
-              context: { brief, lang, origin: 'auto-generated' },
-              updatedAt: Date.now()
-            },
-            { merge: true }
-          );
-          console.log(`✅ Auto-generated brief for project ${projectId}: ${brief}`);
-        } catch (e) {
-          console.warn('Failed to save auto-generated brief:', e);
-        }
+      // Save auto-generated brief to Firestore
+      try {
+        await setDoc(
+          doc(db, `projects/${projectId}`),
+          {
+            context: { brief, lang, origin: 'auto-generated' },
+            updatedAt: Date.now()
+          },
+          { merge: true }
+        );
+        console.log(`✅ Auto-generated brief for project ${projectId}: ${brief}`);
+      } catch (e) {
+        console.warn('Failed to save auto-generated brief:', e);
       }
     }
 

@@ -203,11 +203,13 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
           `- السبب: ${ctx.taskClassification.reasoning}\n\n` +
           `**بناءً على هذا التصنيف، يجب عليك:**\n` +
           (ctx.taskClassification.taskKind === 'bug_fix'
-            ? `- التركيز على إصلاح الكود الموجود، وليس إضافة ميزات جديدة\n- استخدام تعديلات دقيقة (patch-based editing)\n- عدم إعادة هيكلة أجزاء غير متعلقة بالمشكلة\n`
+            ? `- التركيز على إصلاح الكود الموجود، وليس إضافة ميزات جديدة\n- استخدام تعديلات دقيقة (patch-based editing)\n- عدم إعادة هيكلة أجزاء غير متعلقة بالمشكلة\n\n**🔧 وضع الباتش (Patch Mode) - استخدم هذا للتعديلات الدقيقة:**\nبدلاً من إعادة كتابة الملف بالكامل، استخدم صيغة unified diff:\n\`\`\`diff\ndiff --git a/path/to/file.ts b/path/to/file.ts\n--- a/path/to/file.ts\n+++ b/path/to/file.ts\n@@ -10,7 +10,7 @@ function example() {\n   const x = 1;\n   const y = 2;\n-  const result = x + y; // خطأ\n+  const result = x * y; // تصحيح\n   return result;\n }\n\`\`\`\n- استخدم السطور بـ " " (مسافة) للسياق المحيط\n- استخدم "-" للسطور المحذوفة\n- استخدم "+" للسطور الجديدة\n- أضف 3 سطور سياق على الأقل قبل وبعد التغيير\n`
             : ctx.taskClassification.taskKind === 'code_gen' || ctx.taskClassification.taskKind === 'ui_gen'
             ? `- إنشاء كود جديد من الصفر\n- اتباع أفضل الممارسات والمعايير المذكورة في الذاكرة\n- إنشاء ملفات ومكونات جديدة حسب الحاجة\n`
             : ctx.taskClassification.taskKind === 'code_edit'
-            ? `- تعديل الكود الموجود بعناية\n- الحفاظ على البنية والأنماط الحالية\n- عدم إضافة ميزات غير مطلوبة\n`
+            ? `- تعديل الكود الموجود بعناية\n- الحفاظ على البنية والأنماط الحالية\n- عدم إضافة ميزات غير مطلوبة\n\n**🔧 وضع الباتش (Patch Mode) - استخدم هذا للتعديلات:**\nبدلاً من إعادة كتابة الملف بالكامل، استخدم صيغة unified diff:\n\`\`\`diff\ndiff --git a/path/to/file.ts b/path/to/file.ts\n--- a/path/to/file.ts\n+++ b/path/to/file.ts\n@@ -15,5 +15,8 @@ export function updateUser() {\n   const user = getUser();\n   user.name = newName;\n+  user.updatedAt = Date.now();\n+  saveUser(user);\n   return user;\n }\n\`\`\`\n`
+            : ctx.taskClassification.taskKind === 'refactor'
+            ? `- إعادة هيكلة الكود بعناية\n- الحفاظ على السلوك الأصلي\n- تحسين القراءة والصيانة\n\n**🔧 وضع الباتش (Patch Mode) - مفضل للريفاكتورنج:**\nاستخدم unified diff format لإظهار التغييرات بوضوح\n`
             : ctx.taskClassification.taskKind === 'doc_explain'
             ? `- تقديم شرح واضح ومفصل\n- استخدام أمثلة عملية\n- عدم تعديل الكود إلا إذا طُلب منك ذلك\n`
             : `- فهم طلب المستخدم بدقة\n- تقديم رد مناسب لنوع المهمة\n`)
@@ -217,11 +219,13 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
           `- Reasoning: ${ctx.taskClassification.reasoning}\n\n` +
           `**Based on this classification, you MUST:**\n` +
           (ctx.taskClassification.taskKind === 'bug_fix'
-            ? `- Focus on fixing existing code, NOT generating new features\n- Prefer minimal, patch-based editing\n- Do NOT refactor unrelated parts\n`
+            ? `- Focus on fixing existing code, NOT generating new features\n- Prefer minimal, patch-based editing\n- Do NOT refactor unrelated parts\n\n**🔧 Patch Mode - Use this for surgical edits:**\nInstead of rewriting entire files, use unified diff format:\n\`\`\`diff\ndiff --git a/path/to/file.ts b/path/to/file.ts\n--- a/path/to/file.ts\n+++ b/path/to/file.ts\n@@ -10,7 +10,7 @@ function example() {\n   const x = 1;\n   const y = 2;\n-  const result = x + y; // bug\n+  const result = x * y; // fixed\n   return result;\n }\n\`\`\`\n- Use " " (space) for surrounding context lines\n- Use "-" for removed lines\n- Use "+" for added lines\n- Include at least 3 context lines before and after changes\n`
             : ctx.taskClassification.taskKind === 'code_gen' || ctx.taskClassification.taskKind === 'ui_gen'
             ? `- Generate brand new code from scratch\n- Follow best practices and standards mentioned in memory\n- Create new files and components as needed\n`
             : ctx.taskClassification.taskKind === 'code_edit'
-            ? `- Edit existing code carefully\n- Maintain current structure and patterns\n- Do NOT add unrequested features\n`
+            ? `- Edit existing code carefully\n- Maintain current structure and patterns\n- Do NOT add unrequested features\n\n**🔧 Patch Mode - Use this for code edits:**\nInstead of rewriting entire files, use unified diff format:\n\`\`\`diff\ndiff --git a/path/to/file.ts b/path/to/file.ts\n--- a/path/to/file.ts\n+++ b/path/to/file.ts\n@@ -15,5 +15,8 @@ export function updateUser() {\n   const user = getUser();\n   user.name = newName;\n+  user.updatedAt = Date.now();\n+  saveUser(user);\n   return user;\n }\n\`\`\`\n`
+            : ctx.taskClassification.taskKind === 'refactor'
+            ? `- Refactor code carefully\n- Maintain original behavior\n- Improve readability and maintainability\n\n**🔧 Patch Mode - Preferred for refactoring:**\nUse unified diff format to show changes clearly\n`
             : ctx.taskClassification.taskKind === 'doc_explain'
             ? `- Provide clear and detailed explanation\n- Use practical examples\n- Do NOT modify code unless explicitly asked\n`
             : `- Understand user request accurately\n- Provide appropriate response for task type\n`))
