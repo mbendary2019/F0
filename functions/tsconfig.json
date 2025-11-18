@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "target": "es2017",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": false,
+    "types": []
+  },
+  "compileOnSave": true,
+  "include": [
+    "index.ts",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "../node_modules",
+    "../apps/**",
+    "../packages/**",
+    "../src/**",
+    "lib",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/__tests__/**",
+    "src/agents/**",
+    "src/aiGovernance/**",
+    "src/anomaly/**",
+    "src/auto/**",
+    "src/cognitive/**",
+    "src/metrics/**",
+    "src/predict/**",
+    "src/realtime/**",
+    "src/sync/**",
+    "src/audit/**",
+    "src/observability/**"
+  ]
+}

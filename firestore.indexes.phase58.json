@@ -1,0 +1,59 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "ops_rag_cache",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "workspaceId", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "ops_rag_cache",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "workspaceId", "order": "ASCENDING" },
+        { "fieldPath": "expire_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "ops_rag_queries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "workspaceId", "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "ops_rag_queries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "workspaceId", "order": "ASCENDING" },
+        { "fieldPath": "strategy", "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "ops_rag_queries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "strategy", "order": "ASCENDING" },
+        { "fieldPath": "tookMs", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "ops_rag_cache",
+      "fieldPath": "value",
+      "indexes": [],
+      "ttl": false
+    },
+    {
+      "collectionGroup": "ops_rag_cache",
+      "fieldPath": "expire_at",
+      "indexes": [],
+      "ttl": true
+    }
+  ]
+}

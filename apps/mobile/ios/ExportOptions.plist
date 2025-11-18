@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Distribution method: app-store for TestFlight/App Store -->
+  <key>method</key>
+  <string>app-store</string>
+  
+  <!-- Disable bitcode (deprecated in Xcode 14+) -->
+  <key>compileBitcode</key>
+  <false/>
+  
+  <!-- Use automatic signing (managed by Xcode/App Store Connect) -->
+  <key>signingStyle</key>
+  <string>automatic</string>
+  
+  <!-- Upload symbols for crash reporting -->
+  <key>uploadSymbols</key>
+  <true/>
+  
+  <!-- Team ID (filled from environment or manually) -->
+  <key>teamID</key>
+  <string>$(APPLE_TEAM_ID)</string>
+  
+  <!-- Bundle ID must match App Store Connect -->
+  <key>bundleIdentifier</key>
+  <string>com.f0.app</string>
+  
+  <!-- Provisioning profile specifier (optional with automatic signing) -->
+  <!-- <key>provisioningProfiles</key>
+  <dict>
+    <key>com.f0.app</key>
+    <string>F0 App Store Profile</string>
+  </dict> -->
+  
+  <!-- Disable on-demand resources -->
+  <key>embedOnDemandResourcesAssetPacksInBundle</key>
+  <false/>
+  
+  <!-- Enable app thinning -->
+  <key>thinning</key>
+  <string>&lt;none&gt;</string>
+</dict>
+</plist>
+
+

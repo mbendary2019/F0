@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Phase 58: RAG cache and metrics
+
+    // RAG query cache - read-only for authenticated users
+    match /ops_rag_cache/{cacheId} {
+      // Only authenticated users can read cache entries for their workspace
+      allow read: if request.auth != null
+        && request.auth.token.workspaceIds != null
+        && request.auth.token.workspaceIds.hasAny([resource.data.workspaceId]);
+
+      // Only server/Cloud Functions can write cache entries
+      allow write: if false;
+    }
+
+    // RAG query metrics - read-only for authenticated users, write from server
+    match /ops_rag_queries/{queryId} {
+      // Only authenticated users can read metrics for their workspace
+      allow read: if request.auth != null
+        && request.auth.token.workspaceIds != null
+        && request.auth.token.workspaceIds.hasAny([resource.data.workspaceId]);
+
+      // Only server/Cloud Functions can write metrics
+      allow write: if false;
+    }
+
+    // Memory snippets - needed for RAG retrieval (from Phase 57)
+    match /{path=**}/ops_memory_snippets/{snippetId} {
+      // Read access for authenticated users in the same workspace
+      allow read: if request.auth != null
+        && request.auth.token.workspaceIds != null
+        && request.auth.token.workspaceIds.hasAny([resource.data.workspaceId]);
+
+      // Write from server only
+      allow write: if false;
+    }
+  }
+}

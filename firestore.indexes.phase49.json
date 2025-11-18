@@ -1,0 +1,68 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "ops_incidents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "status", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_incidents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "severity", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_incidents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "service", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "service", "order": "ASCENDING"},
+        {"fieldPath": "ts", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "fingerprint", "order": "ASCENDING"},
+        {"fieldPath": "ts", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "level", "order": "ASCENDING"},
+        {"fieldPath": "ts", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "ops_incident_updates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "incidentId", "order": "ASCENDING"},
+        {"fieldPath": "createdAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "_alerts_queue",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "createdAt", "order": "ASCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

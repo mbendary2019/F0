@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://f0.ai/schemas/f0.project.schema.json",
+  "title": "F0 Project Configuration",
+  "type": "object",
+  "required": ["name", "framework"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Project name"
+    },
+    "framework": {
+      "type": "string",
+      "enum": ["nextjs", "react", "vue", "flutter", "electron", "custom"],
+      "description": "Project framework"
+    },
+    "hosting": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["firebase", "vercel", "netlify", "custom"]
+        },
+        "project": {
+          "type": "string"
+        }
+      }
+    },
+    "functions": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["firebase", "vercel", "aws-lambda"]
+        },
+        "region": {
+          "type": "string"
+        }
+      }
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Environment variables"
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Installed extensions"
+    },
+    "deploy": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["use"],
+            "properties": {
+              "use": {
+                "type": "string",
+                "description": "Extension name"
+              },
+              "with": {
+                "type": "object",
+                "description": "Extension inputs"
+              },
+              "secrets": {
+                "type": "object",
+                "description": "Secret references"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+

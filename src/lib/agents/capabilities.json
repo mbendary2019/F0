@@ -1,0 +1,98 @@
+{
+  "providers": {
+    "gpt": {
+      "model": "gpt-4o-mini",
+      "strength": ["planning", "typescript", "nextjs", "react", "api-design", "data-modeling"],
+      "cost": "low",
+      "speed": "fast",
+      "context_window": 128000
+    },
+    "claude": {
+      "model": "claude-3-5-sonnet-20241022",
+      "strength": ["refactor", "long-context", "code-review", "documentation", "debugging", "architecture"],
+      "cost": "medium",
+      "speed": "medium",
+      "context_window": 200000
+    },
+    "gemini": {
+      "model": "gemini-1.5-pro",
+      "strength": ["vision", "android", "ui-text", "translation", "multimodal", "flutter"],
+      "cost": "low",
+      "speed": "fast",
+      "context_window": 2000000
+    }
+  },
+  "tools": {
+    "vscode": {
+      "ops": ["edit", "create", "search", "navigate", "refactor"],
+      "bridge": "vscode-extension-api",
+      "available": false
+    },
+    "cursor": {
+      "ops": ["generate", "apply", "commit", "chat"],
+      "api": "cursor-composer-api",
+      "available": false
+    },
+    "xcode": {
+      "ops": ["build", "test", "debug", "profile"],
+      "bridge": "xcode-build-server",
+      "available": false
+    }
+  },
+  "routing": [
+    {
+      "tags": ["planning", "architecture", "design"],
+      "provider": "gpt",
+      "reason": "Fast planning and design decisions"
+    },
+    {
+      "tags": ["refactor", "cleanup", "review"],
+      "provider": "claude",
+      "reason": "Superior code analysis and refactoring"
+    },
+    {
+      "tags": ["typescript", "react", "nextjs", "api"],
+      "provider": "gpt",
+      "reason": "Excellent TypeScript and Next.js knowledge"
+    },
+    {
+      "tags": ["firebase", "firestore", "backend"],
+      "provider": "gpt",
+      "reason": "Strong backend and Firebase expertise"
+    },
+    {
+      "tags": ["ui", "design", "translation", "i18n"],
+      "provider": "gemini",
+      "reason": "Best for UI text and translation"
+    },
+    {
+      "tags": ["mobile", "flutter", "android", "ios"],
+      "provider": "gemini",
+      "reason": "Mobile development specialist"
+    },
+    {
+      "tags": ["debug", "error", "fix"],
+      "provider": "claude",
+      "reason": "Excellent debugging and problem solving"
+    },
+    {
+      "tags": ["docs", "readme", "guide"],
+      "provider": "claude",
+      "reason": "Superior documentation writing"
+    },
+    {
+      "tags": ["test", "unit-test", "e2e"],
+      "provider": "gpt",
+      "reason": "Good test coverage and patterns"
+    }
+  ],
+  "fallback": {
+    "provider": "gpt",
+    "reason": "Default provider when no tags match"
+  },
+  "retry": {
+    "max_attempts": 3,
+    "backoff_ms": 1000,
+    "backoff_multiplier": 2
+  }
+}

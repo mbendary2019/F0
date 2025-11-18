@@ -1,0 +1,8 @@
+# F0 Monorepo Workspace
+# Multi-platform: Web (Next.js) + Desktop (Electron) + Mobile (Flutter)
+
+packages:
+  - "apps/*"
+  - "packages/*"
+
+

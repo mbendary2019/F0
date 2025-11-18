@@ -1,0 +1,47 @@
+{
+  "name": "firebase-deploy",
+  "displayName": "Firebase Hosting & Functions Deploy",
+  "version": "1.0.0",
+  "provider": "firebase",
+  "description": "Deploy Hosting + Functions using Firebase CLI with safe flags.",
+  "homepage": "https://firebase.google.com",
+  "capabilities": ["deploy"],
+  "inputs": {
+    "projectId": {
+      "type": "string",
+      "required": true,
+      "description": "Firebase project ID"
+    },
+    "token": {
+      "type": "secret",
+      "required": true,
+      "description": "FIREBASE_TOKEN for CI/CD authentication"
+    },
+    "only": {
+      "type": "enum",
+      "enum": ["hosting", "functions", "firestore", "storage", "all"],
+      "default": "all",
+      "description": "What to deploy"
+    }
+  },
+  "runner": {
+    "type": "cli",
+    "command": "firebase",
+    "args": [
+      "deploy",
+      "--project",
+      "${inputs.projectId}",
+      "--token",
+      "${secrets.token}",
+      "--only",
+      "${inputs.only}"
+    ]
+  },
+  "security": {
+    "scopes": ["deploy"],
+    "whitelist": ["firebase"],
+    "dangerous": false
+  }
+}
+
+

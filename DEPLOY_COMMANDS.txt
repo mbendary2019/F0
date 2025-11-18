@@ -1,0 +1,62 @@
+# PHASE 58 - DEPLOYMENT COMMANDS
+
+## ONE-LINE DEPLOY (Copy & Paste)
+./deploy-phase58.sh
+
+## OR MANUAL STEPS
+
+### 1. Build
+pnpm run build && cd functions && pnpm run build && cd ..
+
+### 2. Deploy
+firebase deploy --only firestore:indexes,firestore:rules,functions:aggregateDailyMetrics,functions:exportDeployLogs,functions:exportDeployLogsCallable,functions:pollDeployStatus,functions:getDeployHistory,functions:weeklyCompactSnippets,hosting
+
+### 3. Enable TTL (Firebase Console)
+- Firestore → Indexes → TTL Policies
+- Collection: ops_rag_cache
+- Field: expire_at
+
+## TEST COMMANDS
+
+### Test RAG API
+curl -X POST http://localhost:3000/api/rag/query -H "Content-Type: application/json" -d '{"q":"test","workspaceId":"test","topK":8}'
+
+### Test Function
+firebase functions:call aggregateDailyMetrics_manual --data='{"date":"2025-11-05"}'
+
+### Run Benchmark
+TEST_WORKSPACE_ID=test pnpm tsx scripts/benchmark-rag.ts
+
+### Monitor Logs
+firebase functions:log --follow
+
+## INCREMENTAL DEPLOY (If Needed)
+
+### Deploy indexes only
+firebase deploy --only firestore:indexes
+
+### Deploy rules only
+firebase deploy --only firestore:rules
+
+### Deploy one function
+firebase deploy --only functions:aggregateDailyMetrics
+
+### Deploy hosting only
+firebase deploy --only hosting
+
+## TROUBLESHOOTING
+
+### Check builds
+pnpm run build
+cd functions && pnpm run build
+
+### Check Firebase
+firebase login
+firebase projects:list
+firebase use your-project-id
+
+### View logs
+firebase functions:log
+firebase functions:log --only aggregateDailyMetrics
+
+## DONE! ✅

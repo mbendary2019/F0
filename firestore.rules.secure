@@ -1,0 +1,127 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default: Deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Users collection - only authenticated users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Balances sub-collection
+      match /balances/{balanceId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Admin collections - only for admin users (check custom claims)
+    match /admin_audit/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /api_metrics_daily/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /alert_rules/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /anomaly_events/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /predictions_daily/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /remediation_rules/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /root_cause_graph/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /feature_flags/{doc} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /ops_commands/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow create: if request.auth != null;
+      allow update, delete: if false; // Only via Functions
+    }
+    
+    match /agent_jobs/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /runbooks/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /ops_policies/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /admins/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /rl_policy/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /rl_decisions/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /rl_outcomes/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /rl_guardrails/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    match /rl_policy_versions/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    match /auto_docs/{doc} {
+      allow read: if request.auth != null && request.auth.token.admin == true;
+      allow write: if false; // Only via Functions
+    }
+    
+    // Public read-only collections (optional)
+    match /public_announcements/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}
+
+

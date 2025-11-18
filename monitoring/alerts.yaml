@@ -1,0 +1,211 @@
+# Google Cloud Monitoring Alert Policies
+# Import via: gcloud alpha monitoring policies create --policy-from-file=alerts.yaml
+
+policies:
+  - displayName: "F0 Error Rate High"
+    documentation:
+      content: |
+        Error rate has exceeded 1% threshold for 5 minutes.
+        This indicates a significant number of failed requests.
+
+        **Immediate Actions:**
+        1. Check Ops Dashboard for cognitive recommendations
+        2. Review function logs for error patterns
+        3. Verify recent deployments
+        4. Consider rollback if error rate continues climbing
+
+        **Escalation:**
+        - P1 if error rate > 2%
+        - P0 if error rate > 5% or complete outage
+
+        Dashboard: https://console.firebase.google.com/project/from-zero-84253/functions
+      mimeType: text/markdown
+    combiner: "OR"
+    conditions:
+      - displayName: "ErrorRate > 1%"
+        conditionThreshold:
+          filter: |
+            resource.type="cloud_function"
+            metric.type="custom.googleapis.com/f0/error_rate"
+          comparison: COMPARISON_GT
+          thresholdValue: 0.01
+          duration: 300s
+          aggregations:
+            - alignmentPeriod: 60s
+              perSeriesAligner: ALIGN_MEAN
+    enabled: true
+    alertStrategy:
+      autoClose: 1800s # 30 minutes
+    notificationChannels:
+      - "projects/from-zero-84253/notificationChannels/ops-email"
+
+  - displayName: "F0 p95 Latency High"
+    documentation:
+      content: |
+        p95 latency has exceeded 900ms threshold for 5 minutes.
+        This indicates performance degradation affecting user experience.
+
+        **Immediate Actions:**
+        1. Check AutoScaler decisions in config/runtime
+        2. Review slow query patterns
+        3. Check for database index issues
+        4. Verify external API dependencies
+
+        **Auto-Remediation:**
+        - AutoScaler will increase concurrency
+        - Cache TTL will be reduced
+        - Watchdog monitors for continued degradation
+
+        Dashboard: https://dashboard.fz-labs.io/ops
+      mimeType: text/markdown
+    combiner: "OR"
+    conditions:
+      - displayName: "p95 > 900ms"
+        conditionThreshold:
+          filter: |
+            resource.type="cloud_function"
+            metric.type="custom.googleapis.com/f0/p95_latency_ms"
+          comparison: COMPARISON_GT
+          thresholdValue: 900
+          duration: 300s
+          aggregations:
+            - alignmentPeriod: 60s
+              perSeriesAligner: ALIGN_PERCENTILE_95
+    enabled: true
+    alertStrategy:
+      autoClose: 1800s
+    notificationChannels:
+      - "projects/from-zero-84253/notificationChannels/ops-email"
+
+  - displayName: "F0 Health Check Failed"
+    documentation:
+      content: |
+        Health check endpoint has failed.
+        System may be degraded or unavailable.
+
+        **Auto-Remediation:**
+        - After 3 consecutive failures, Watchdog triggers rollback
+        - Cache invalidation signal sent
+        - CanaryManager rolls back to 0%
+
+        **Manual Actions:**
+        1. Verify service availability
+        2. Check function logs for errors
+        3. Review database connectivity
+        4. Confirm external dependencies
+
+        **Critical:** If auto-rollback fails, manual intervention required immediately.
+      mimeType: text/markdown
+    combiner: "OR"
+    conditions:
+      - displayName: "Health check down"
+        conditionThreshold:
+          filter: |
+            resource.type="cloud_function"
+            metric.type="custom.googleapis.com/f0/health_ok"
+          comparison: COMPARISON_LT
+          thresholdValue: 1
+          duration: 180s # 3 minutes
+          aggregations:
+            - alignmentPeriod: 60s
+              perSeriesAligner: ALIGN_MIN
+    enabled: true
+    alertStrategy:
+      autoClose: 600s # 10 minutes
+    notificationChannels:
+      - "projects/from-zero-84253/notificationChannels/ops-pager"
+      - "projects/from-zero-84253/notificationChannels/ops-email"
+
+  - displayName: "F0 Canary Rollback Triggered"
+    documentation:
+      content: |
+        Automated canary rollback has been triggered due to SLO breach.
+
+        **What Happened:**
+        - SLO breach detected (error rate or latency)
+        - CanaryManager automatically rolled back to 0%
+        - Incident document created in Firestore
+
+        **Next Steps:**
+        1. Review incident document: Firestore > incidents collection
+        2. Check cognitive report for root cause
+        3. Analyze deployment diff
+        4. Fix issue and prepare new deployment
+
+        **No immediate user action required** - previous stable version is serving traffic.
+      mimeType: text/markdown
+    combiner: "OR"
+    conditions:
+      - displayName: "Rollback requested"
+        conditionThreshold:
+          filter: |
+            resource.type="global"
+            metric.type="custom.googleapis.com/f0/canary_rollback"
+          comparison: COMPARISON_GT
+          thresholdValue: 0
+          duration: 60s
+          aggregations:
+            - alignmentPeriod: 60s
+              perSeriesAligner: ALIGN_MAX
+    enabled: true
+    alertStrategy:
+      autoClose: 3600s # 1 hour
+    notificationChannels:
+      - "projects/from-zero-84253/notificationChannels/ops-slack"
+      - "projects/from-zero-84253/notificationChannels/ops-email"
+
+  - displayName: "F0 High Traffic Volume"
+    documentation:
+      content: |
+        Traffic has exceeded 150 RPS threshold.
+        This is informational - system should auto-scale.
+
+        **Expected Behavior:**
+        - AutoScaler increases concurrency
+        - Cache TTL adjusted for load
+        - FeedbackLoop monitors capacity
+
+        **Monitor for:**
+        - Sustained high traffic (> 30 minutes)
+        - Capacity approaching limits
+        - Cost implications
+
+        No immediate action required unless performance degrades.
+      mimeType: text/markdown
+    combiner: "OR"
+    conditions:
+      - displayName: "RPS > 150"
+        conditionThreshold:
+          filter: |
+            resource.type="cloud_function"
+            metric.type="custom.googleapis.com/f0/requests_per_second"
+          comparison: COMPARISON_GT
+          thresholdValue: 150
+          duration: 300s
+          aggregations:
+            - alignmentPeriod: 60s
+              perSeriesAligner: ALIGN_RATE
+    enabled: true
+    alertStrategy:
+      autoClose: 1800s
+    notificationChannels:
+      - "projects/from-zero-84253/notificationChannels/ops-email"
+
+# Notification Channels (create these in GCP Console first)
+# Then reference them by ID above
+#
+# Example commands:
+# gcloud alpha monitoring channels create \
+#   --display-name="Ops Email" \
+#   --type=email \
+#   --channel-labels=email_address=ops@fz-labs.io
+#
+# gcloud alpha monitoring channels create \
+#   --display-name="Ops Slack" \
+#   --type=slack \
+#   --channel-labels=url=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+#
+# gcloud alpha monitoring channels create \
+#   --display-name="Ops PagerDuty" \
+#   --type=pagerduty \
+#   --channel-labels=service_key=YOUR_PAGERDUTY_KEY

@@ -1,0 +1,133 @@
+{
+  "service": "f0-public-api",
+  "displayName": "F0 Public API SLO",
+  "description": "Service Level Objectives for F0 public-facing APIs",
+  "objective": 0.99,
+  "rollingPeriodDays": 30,
+  "slis": [
+    {
+      "name": "availability",
+      "displayName": "API Availability",
+      "description": "Percentage of successful requests (non-5xx responses)",
+      "target": 0.999,
+      "errorBudget": 0.001,
+      "windowDays": 30,
+      "metric": {
+        "type": "custom.googleapis.com/f0/error_rate",
+        "threshold": 0.01,
+        "comparison": "LESS_THAN"
+      }
+    },
+    {
+      "name": "latency",
+      "displayName": "Response Latency",
+      "description": "95th percentile latency under 600ms",
+      "target": 0.95,
+      "errorBudget": 0.05,
+      "windowDays": 30,
+      "metric": {
+        "type": "custom.googleapis.com/f0/p95_latency_ms",
+        "threshold": 600,
+        "comparison": "LESS_THAN"
+      }
+    },
+    {
+      "name": "throughput",
+      "displayName": "Throughput Capacity",
+      "description": "System handles expected load without degradation",
+      "target": 0.99,
+      "errorBudget": 0.01,
+      "windowDays": 7,
+      "metric": {
+        "type": "custom.googleapis.com/f0/throttle_rate",
+        "threshold": 0.9,
+        "comparison": "GREATER_THAN"
+      }
+    }
+  ],
+  "errorBudgetPolicy": {
+    "exhaustionThreshold": 0.1,
+    "actions": [
+      {
+        "threshold": 0.5,
+        "action": "alert",
+        "description": "50% error budget consumed - review recent changes"
+      },
+      {
+        "threshold": 0.8,
+        "action": "freeze_deployments",
+        "description": "80% error budget consumed - freeze non-critical deployments"
+      },
+      {
+        "threshold": 1.0,
+        "action": "incident",
+        "description": "Error budget exhausted - create incident and investigate"
+      }
+    ]
+  },
+  "alerting": {
+    "burnRateThresholds": [
+      {
+        "window": "1h",
+        "burnRate": 14.4,
+        "severity": "critical",
+        "description": "Consuming 30-day error budget in 1 hour"
+      },
+      {
+        "window": "6h",
+        "burnRate": 6,
+        "severity": "high",
+        "description": "Consuming 30-day error budget in 6 hours"
+      },
+      {
+        "window": "3d",
+        "burnRate": 1,
+        "severity": "medium",
+        "description": "Consuming 30-day error budget in 3 days"
+      }
+    ]
+  },
+  "monitoring": {
+    "dashboardUrl": "https://dashboard.fz-labs.io/ops",
+    "metricsSource": "google-cloud-monitoring",
+    "updateFrequency": "5m",
+    "reportingFrequency": "daily"
+  },
+  "stakeholders": {
+    "owner": "DevOps Team",
+    "oncall": "ops@fz-labs.io",
+    "escalation": [
+      {
+        "level": "L1",
+        "contact": "ops@fz-labs.io",
+        "response_time": "15m"
+      },
+      {
+        "level": "L2",
+        "contact": "engineering-leads@fz-labs.io",
+        "response_time": "30m"
+      },
+      {
+        "level": "L3",
+        "contact": "cto@fz-labs.io",
+        "response_time": "1h"
+      }
+    ]
+  },
+  "review": {
+    "frequency": "quarterly",
+    "lastReview": "2025-10-12",
+    "nextReview": "2026-01-12",
+    "adjustmentCriteria": [
+      "User feedback trends",
+      "Business requirements changes",
+      "Infrastructure improvements",
+      "Competitive analysis"
+    ]
+  },
+  "compliance": {
+    "standards": ["SOC2", "ISO27001"],
+    "auditFrequency": "annual",
+    "evidenceRetention": "7 years"
+  }
+}

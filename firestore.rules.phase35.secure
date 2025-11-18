@@ -1,0 +1,276 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // HELPER FUNCTIONS
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+    
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    function isProjectOwner(projectId) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/projects/$(projectId)).data.owner == request.auth.uid;
+    }
+    
+    // Default: Deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PHASE 35: CROSS-DEVICE SYNC & PRESENCE
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    // User devices
+    match /users/{uid}/devices/{deviceId} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) && (
+        // Only allow updating these fields
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['fcmToken', 'appVersion', 'capabilities', 'status', 'updatedAt'])
+      );
+      allow delete: if isOwner(uid);
+    }
+    
+    // Device queues
+    match /users/{uid}/queues/{deviceId} {
+      allow read: if isOwner(uid);
+      allow write: if isOwner(uid) || isAdmin();
+    }
+    
+    // User presence (read-only for others, write for self)
+    match /users/{uid} {
+      allow read: if isAuthenticated(); // Everyone can see basic presence
+      allow update: if isOwner(uid) && (
+        // Only allow updating lastSeen and devices count
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['lastSeen', 'devices'])
+      );
+    }
+    
+    // Projects (with conflict tracking)
+    match /projects/{projectId} {
+      allow read: if isAuthenticated() && resource.data.owner == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.owner == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.owner == request.auth.uid;
+      
+      // Project states (per-user cursors)
+      match /states/{uid} {
+        allow read: if isOwner(uid) || isProjectOwner(projectId);
+        allow write: if isOwner(uid);
+      }
+    }
+    
+    // Sessions (deploy/job status)
+    match /sessions/{jobId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Only via Cloud Functions
+    }
+    
+    // Handoffs (device-to-device transfers)
+    match /handshake/{handoffId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid &&
+        // Only allow marking as consumed
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['consumed', 'consumedAt'])
+      );
+      allow delete: if isAdmin(); // Cleanup by system
+    }
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // PREVIOUS PHASES (Phase 33.3/34)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    // Users & Credits
+    match /users/{uid}/balances/{balanceId} {
+      allow read: if isOwner(uid);
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    // Usage Tracking
+    match /usage/{uid}/daily/{date} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    // Billing
+    match /billing/plans/{planId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /billing/processed/events/{eventId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /billing/invoices/{type}/{invoiceId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /billing/bonuses/entries/{entryId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    // Licenses
+    match /licenses/{key} {
+      allow read: if isAuthenticated() && (
+        resource.data.issuedTo == request.auth.uid || isAdmin()
+      );
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (
+        isAuthenticated() &&
+        resource.data.issuedTo == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['activations', 'updatedAt'])
+      );
+      allow delete: if false; // Licenses are never deleted, only revoked
+    }
+    
+    // Extensions
+    match /extensions_registry/{id} {
+      allow read: if true; // Public registry
+      allow write: if isAdmin();
+    }
+    
+    match /user_extensions/{uid}/installs/{name} {
+      allow read, write: if isOwner(uid);
+    }
+    
+    // Deploy Jobs
+    match /deploy_jobs/{jobId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Only via Cloud Functions
+    }
+    
+    // Admin Collections
+    match /admin_audit/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /api_metrics_daily/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /alert_rules/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /anomaly_events/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /predictions_daily/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /remediation_rules/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /root_cause_graph/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /feature_flags/{doc} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /ops_commands/{doc} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Only via Cloud Functions
+    }
+    
+    match /agent_jobs/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /runbooks/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /ops_policies/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /admins/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /rl_policy/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /rl_decisions/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /rl_outcomes/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /rl_guardrails/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /rl_policy_versions/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    match /auto_docs/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // Only via Cloud Functions
+    }
+    
+    // Public Collections
+    match /public_announcements/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+
+

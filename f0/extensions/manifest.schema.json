@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://f0.ai/schemas/extension-manifest.json",
+  "title": "F0 Extension Manifest",
+  "type": "object",
+  "required": ["name", "version", "provider", "capabilities"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-_.]{3,64}$",
+      "description": "Unique extension identifier"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable extension name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-z0-9.]+)?$",
+      "description": "Semantic version (e.g., 1.0.0)"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["firebase", "vercel", "stripe", "generic-http", "custom"],
+      "description": "Extension provider type"
+    },
+    "description": {
+      "type": "string",
+      "description": "Extension description"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "description": "Extension homepage URL"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "deploy",
+          "provision",
+          "billing",
+          "storage",
+          "secrets",
+          "webhook-consumer",
+          "webhook-producer"
+        ]
+      },
+      "description": "Extension capabilities"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean", "enum", "secret", "file", "json"]
+          },
+          "enum": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "default": {},
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Extension input parameters"
+    },
+    "runner": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["http", "cli"]
+        },
+        "command": {
+          "type": "string",
+          "description": "CLI command to execute (for cli runner)"
+        },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "CLI arguments (for cli runner)"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "HTTP endpoint URL (for http runner)"
+        },
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+          "description": "HTTP method (for http runner)"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "HTTP headers (for http runner)"
+        }
+      },
+      "description": "Extension runner configuration"
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "scopes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required permission scopes"
+        },
+        "whitelist": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Whitelisted commands/domains"
+        },
+        "dangerous": {
+          "type": "boolean",
+          "default": false,
+          "description": "Requires explicit user approval"
+        }
+      },
+      "description": "Security configuration"
+    }
+  },
+  "additionalProperties": false
+}
+
+

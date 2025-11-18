@@ -1,0 +1,72 @@
+/**
+ * Phase 49: Cloud Functions Entry Point
+ * Error Tracking & Incident Center
+ */
+
+import * as admin from 'firebase-admin';
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+// Export Phase 49 functions
+export { log } from './src/http/log';
+export { onEventWrite } from './src/incidents/onEventWrite';
+export { processAlerts } from './src/alerts/notify';
+
+// ============================================================
+// PHASE 48: ANALYTICS & AUDIT TRAIL
+// ============================================================
+export { recordEvent } from './src/analytics/recordEvent';
+export { aggregateKpisOnEvent } from './src/analytics/aggregateKpis';
+export { getAnalytics } from './src/analytics/getAnalytics';
+
+// ============================================================
+// PHASE 64: AGENT-DRIVEN DEVELOPMENT - PREFLIGHT CHECKS
+// ============================================================
+
+// Preflight environment checks before task execution
+export { onPreflightCheck } from './src/agents/preflight';
+export { onRunPlan } from './src/agents/runPlan';
+
+// ============================================================
+// PHASE 71: INTEGRATIONS HUB & FIREBASE AUTO-SETUP
+// ============================================================
+
+// Integration Vault
+export {
+  saveIntegrationToken,
+  getIntegrationStatus,
+  disconnectIntegration,
+} from './src/integrations/vault';
+
+// Firebase Auto-Setup
+export {
+  createFirebaseWebApp,
+  enableAuthProviders,
+  setFirestoreRules,
+  listFirebaseProjects,
+  testFirebaseAdmin,
+  autoSetupFirebase,
+} from './src/integrations/firebase-setup';
+
+// ============================================================
+// PHASE 72: VERCEL INTEGRATION
+// ============================================================
+
+export {
+  testVercelToken,
+  listVercelProjects,
+} from './src/integrations/vercel-setup';
+
+// ============================================================
+// PHASE 72: GODADDY DNS MANAGEMENT
+// ============================================================
+
+export {
+  getGoDaddyDomains,
+  getDNSRecords,
+  createDNSRecord,
+  deleteDNSRecord,
+} from './src/integrations/godaddy';

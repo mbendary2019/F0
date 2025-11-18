@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Current User ID</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    .user-id {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      margin: 20px 0;
+      word-break: break-all;
+    }
+    button {
+      background: #0070f3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #0051cc;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .success {
+      color: #22c55e;
+      margin-top: 10px;
+    }
+    .loading {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔍 Get Current User ID</h1>
+    <p>This page will help you find your current Firebase Auth user ID for the emulator.</p>
+
+    <div id="status" class="loading">Loading Firebase...</div>
+    <div id="user-info" style="display: none;">
+      <p><strong>Your User ID:</strong></p>
+      <div class="user-id" id="user-id"></div>
+      <button id="copy-btn">📋 Copy User ID</button>
+      <button id="seed-btn">🌱 Seed Integrations</button>
+      <div id="copy-status"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // Initialize Firebase with emulator
+    const app = initializeApp({
+      apiKey: "test-api-key",
+      authDomain: "localhost",
+      projectId: "from-zero-84253"
+    });
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Connect to emulators
+    connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+    connectFirestoreEmulator(db, '127.0.0.1', 8080);
+
+    const statusEl = document.getElementById('status');
+    const userInfoEl = document.getElementById('user-info');
+    const userIdEl = document.getElementById('user-id');
+    const copyBtn = document.getElementById('copy-btn');
+    const seedBtn = document.getElementById('seed-btn');
+    const copyStatusEl = document.getElementById('copy-status');
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        statusEl.textContent = '✅ Signed in!';
+        userIdEl.textContent = user.uid;
+        userInfoEl.style.display = 'block';
+
+        // Copy button
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(user.uid);
+          copyStatusEl.innerHTML = '<div class="success">✅ Copied to clipboard!</div>';
+          setTimeout(() => {
+            copyStatusEl.innerHTML = '';
+          }, 2000);
+        };
+
+        // Seed button
+        seedBtn.onclick = async () => {
+          seedBtn.disabled = true;
+          seedBtn.textContent = '🌱 Seeding...';
+          copyStatusEl.innerHTML = '<div class="loading">Adding integrations...</div>';
+
+          try {
+            // Add Firebase integration
+            await setDoc(doc(db, 'vault', 'integrations', user.uid, 'firebase'), {
+              provider: 'firebase',
+              tokens: {
+                accessToken: 'test-firebase-token',
+                refreshToken: 'test-firebase-refresh-token',
+                expiresAt: Date.now() + 3600000
+              },
+              credentials: null,
+              updatedAt: serverTimestamp(),
+              createdAt: serverTimestamp()
+            });
+
+            // Add Vercel integration
+            await setDoc(doc(db, 'vault', 'integrations', user.uid, 'vercel'), {
+              provider: 'vercel',
+              tokens: {
+                accessToken: 'test-vercel-token'
+              },
+              credentials: null,
+              updatedAt: serverTimestamp(),
+              createdAt: serverTimestamp()
+            });
+
+            // Add GitHub integration
+            await setDoc(doc(db, 'vault', 'integrations', user.uid, 'github'), {
+              provider: 'github',
+              tokens: {
+                accessToken: 'test-github-token'
+              },
+              credentials: null,
+              updatedAt: serverTimestamp(),
+              createdAt: serverTimestamp()
+            });
+
+            copyStatusEl.innerHTML = '<div class="success">✅ Integrations seeded! Refresh your app to see them.</div>';
+            seedBtn.textContent = '✅ Done!';
+          } catch (error) {
+            console.error('Error seeding:', error);
+            copyStatusEl.innerHTML = '<div style="color: red;">❌ Error: ' + error.message + '</div>';
+            seedBtn.disabled = false;
+            seedBtn.textContent = '🌱 Seed Integrations';
+          }
+        };
+      } else {
+        // User is signed out, sign in anonymously
+        statusEl.textContent = '🔄 Signing in...';
+        try {
+          await signInAnonymously(auth);
+        } catch (error) {
+          statusEl.textContent = '❌ Error: ' + error.message;
+          console.error('Sign in error:', error);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

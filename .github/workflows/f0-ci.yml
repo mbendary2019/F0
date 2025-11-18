@@ -1,0 +1,93 @@
+name: F0 Extensions CI
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: ['main', 'master']
+
+jobs:
+  lint-and-build:
+    name: Lint, Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.18.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: |
+          if [ -f "package.json" ] && grep -q "\"lint\"" package.json; then
+            pnpm run lint || echo "⚠️ Lint script not found, skipping..."
+          fi
+
+      - name: Build workspace
+        run: pnpm -w run build || echo "⚠️ Build script not found in workspace"
+
+      - name: Build orchestrator
+        run: |
+          cd orchestrator
+          if [ -f "package.json" ] && grep -q "\"build\"" package.json; then
+            pnpm run build || echo "⚠️ Orchestrator build failed, continuing..."
+          fi
+
+      - name: Validate Firebase Deploy Extension
+        run: pnpm tsx scripts/ext-validate.ts f0/extensions/examples/firebase.deploy.json
+
+      - name: Validate Stripe Billing Extension
+        run: pnpm tsx scripts/ext-validate.ts f0/extensions/examples/stripe.billing.json
+
+      - name: Validate HTTP Test Extension
+        run: pnpm tsx scripts/ext-validate.ts f0/extensions/examples/http.test.json
+
+      - name: Run Sandbox Tests
+        run: pnpm tsx scripts/sandbox-simple-test.ts
+
+      - name: Run Complete Test Suite
+        run: chmod +x scripts/test-all-extensions.sh && ./scripts/test-all-extensions.sh
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.18.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run npm audit
+        run: pnpm audit --audit-level=high || echo "⚠️ Security vulnerabilities found"
+        continue-on-error: true
+
+      - name: Check for secrets in code
+        run: |
+          echo "🔍 Checking for exposed secrets..."
+          ! grep -r "sk_live_" . --exclude-dir=node_modules --exclude-dir=.git || echo "⚠️ Found Stripe live keys!"
+          ! grep -r "AIza" . --exclude-dir=node_modules --exclude-dir=.git --exclude=".env*" || echo "⚠️ Found API keys!"

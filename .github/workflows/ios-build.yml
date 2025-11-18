@@ -1,0 +1,215 @@
+name: iOS • Build & TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Release channel'
+        required: true
+        type: choice
+        options: [alpha, beta, stable]
+        default: 'beta'
+      submit_for_review:
+        description: 'Submit to TestFlight review'
+        required: false
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'v*-ios'
+
+env:
+  FLUTTER_VERSION: '3.24.0'
+
+jobs:
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Phase 33.3 Guardian Check (iOS Requirements)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  guardian_ios_check:
+    name: Guardian • iOS Requirements
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate iOS Secrets
+        run: |
+          echo "🛡️  Guardian: Validating iOS secrets..."
+          
+          MISSING=0
+          
+          if [ -z "${{ secrets.APP_STORE_CONNECT_API_KEY }}" ]; then
+            echo "❌ Missing: APP_STORE_CONNECT_API_KEY"
+            ((MISSING++))
+          fi
+          
+          if [ -z "${{ secrets.APPLE_TEAM_ID }}" ]; then
+            echo "❌ Missing: APPLE_TEAM_ID"
+            ((MISSING++))
+          fi
+          
+          if [ $MISSING -gt 0 ]; then
+            echo ""
+            echo "❌ Guardian BLOCKED: $MISSING iOS secret(s) missing"
+            exit 1
+          fi
+          
+          echo "✅ Guardian: All iOS secrets validated"
+
+      - name: Check Privacy Policy URL
+        run: |
+          echo "🛡️  Guardian: Checking privacy policy..."
+          
+          if [ ! -f "docs/PRIVACY_POLICY.md" ]; then
+            echo "❌ Missing: docs/PRIVACY_POLICY.md"
+            exit 1
+          fi
+          
+          echo "✅ Guardian: Privacy policy exists"
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Build iOS IPA
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  build_ios:
+    name: Build iOS IPA
+    needs: [guardian_ios_check]
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Setup Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Get Flutter dependencies
+        working-directory: apps/mobile
+        run: flutter pub get
+
+      - name: Run Flutter tests
+        working-directory: apps/mobile
+        run: flutter test
+
+      - name: Configure Firebase
+        working-directory: apps/mobile/ios/Runner
+        run: |
+          echo "Configuring Firebase for iOS..."
+          # GoogleService-Info.plist should be in repo or fetched from secrets
+          if [ ! -f "GoogleService-Info.plist" ]; then
+            echo "⚠️  GoogleService-Info.plist not found - using placeholder"
+            # In production, fetch from secrets or fail
+          fi
+
+      - name: Build iOS IPA (Release)
+        working-directory: apps/mobile
+        run: |
+          echo "🔨 Building iOS IPA..."
+          flutter clean
+          flutter build ipa --release \
+            --export-options-plist=ios/ExportOptions.plist \
+            --build-number=${{ github.run_number }}
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: apps/mobile/build/ios/ipa/*.ipa
+          retention-days: 30
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Upload to TestFlight
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  testflight_upload:
+    name: Upload to TestFlight
+    needs: [build_ios]
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download IPA
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa
+          path: ./
+
+      - name: Install App Store Connect API Key
+        env:
+          API_KEY_JSON: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        run: |
+          echo "🔑 Installing App Store Connect API Key..."
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$API_KEY_JSON" | jq -r '.privateKey' > ~/.appstoreconnect/private_keys/AuthKey_$(echo "$API_KEY_JSON" | jq -r '.keyId').p8
+
+      - name: Upload to TestFlight
+        env:
+          API_KEY_JSON: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        run: |
+          echo "🚀 Uploading to TestFlight..."
+          
+          KEY_ID=$(echo "$API_KEY_JSON" | jq -r '.keyId')
+          ISSUER_ID=$(echo "$API_KEY_JSON" | jq -r '.issuerId')
+          
+          xcrun altool --upload-app \
+            --type ios \
+            --file *.ipa \
+            --apiKey $KEY_ID \
+            --apiIssuer $ISSUER_ID
+
+      - name: Notify TestFlight Upload
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ iOS Upload to TestFlight Complete!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Channel: ${{ inputs.channel }}"
+          echo "Build Number: ${{ github.run_number }}"
+          echo ""
+          echo "Next steps:"
+          echo "1. Check App Store Connect for processing status"
+          echo "2. Add external testers in TestFlight"
+          echo "3. Submit for review if needed"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Sentry Release
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  sentry_release:
+    name: Sentry • iOS Release
+    needs: [testflight_upload]
+    runs-on: ubuntu-latest
+    if: secrets.SENTRY_AUTH_TOKEN != ''
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Sentry Release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_MOBILE }}
+        run: |
+          VERSION=${{ github.ref_name }}
+          CHANNEL=${{ inputs.channel || 'stable' }}
+          
+          echo "Creating Sentry release: $VERSION (iOS, channel: $CHANNEL)"
+          
+          curl -sL https://sentry.io/get-cli/ | bash
+          
+          sentry-cli releases new "$VERSION-ios"
+          sentry-cli releases set-commits "$VERSION-ios" --auto
+          sentry-cli releases finalize "$VERSION-ios"
+          
+          echo "✅ Sentry release created for iOS"
+
+

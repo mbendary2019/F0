@@ -1,0 +1,116 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function: check if user is authenticated and owns the resource
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Helper function: check if user is admin
+    function isAdmin() {
+      return request.auth != null &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // === Memory Clusters (Phase 56 Day 4 & 5, extended Phase 57) ===
+    match /ops_memory_clusters/{clusterId} {
+      // Read: user must own the cluster
+      allow read: if isOwner(resource.data.user_id);
+
+      // Create: user must be creating for themselves
+      allow create: if isOwner(request.resource.data.user_id) &&
+                      request.resource.data.cluster_id is string &&
+                      request.resource.data.title is string &&
+                      request.resource.data.summary is string &&
+                      request.resource.data.tags is list &&
+                      request.resource.data.item_ids is list &&
+                      request.resource.data.centroid is list &&
+                      request.resource.data.confidence is number &&
+                      request.resource.data.confidence >= 0 &&
+                      request.resource.data.confidence <= 1;
+
+      // Update: user must own the cluster
+      // Phase 57: Allow weight and feedback fields
+      allow update: if isOwner(resource.data.user_id) &&
+                      isOwner(request.resource.data.user_id) &&
+                      // Validate weight if present
+                      (request.resource.data.weight == null ||
+                       (request.resource.data.weight is number &&
+                        request.resource.data.weight >= -1 &&
+                        request.resource.data.weight <= 1));
+
+      // Delete: user must own the cluster or be admin
+      allow delete: if isOwner(resource.data.user_id) || isAdmin();
+    }
+
+    // === Memory Links (Phase 56 Day 5) ===
+    match /ops_memory_links/{linkId} {
+      // Read: user must own the link
+      allow read: if isOwner(resource.data.user_id);
+
+      // Create: user must be creating for themselves
+      // Links are immutable after creation
+      allow create: if isOwner(request.resource.data.user_id) &&
+                      request.resource.data.link_id is string &&
+                      request.resource.data.source_memory_id is string &&
+                      request.resource.data.target_cluster_id is string &&
+                      request.resource.data.similarity is number &&
+                      request.resource.data.similarity >= 0 &&
+                      request.resource.data.similarity <= 1;
+
+      // Update: not allowed (links are immutable)
+      allow update: if false;
+
+      // Delete: user must own the link or be admin
+      allow delete: if isOwner(resource.data.user_id) || isAdmin();
+    }
+
+    // === Feedback Events (Phase 57) ===
+    match /ops_memory_feedback/{feedbackId} {
+      // Read: user must own the feedback
+      allow read: if isOwner(resource.data.user_id);
+
+      // Create: user must be creating for themselves
+      // Feedback events are immutable after creation
+      allow create: if isOwner(request.resource.data.user_id) &&
+                      request.resource.data.fb_id is string &&
+                      request.resource.data.cluster_id is string &&
+                      request.resource.data.reward is number &&
+                      request.resource.data.confidence is number &&
+                      request.resource.data.reward >= -1 &&
+                      request.resource.data.reward <= 1 &&
+                      request.resource.data.confidence >= 0 &&
+                      request.resource.data.confidence <= 1 &&
+                      // Validate thumb if present
+                      (request.resource.data.thumb == null ||
+                       request.resource.data.thumb in ["up", "down"]) &&
+                      // Validate stars if present
+                      (request.resource.data.stars == null ||
+                       (request.resource.data.stars is number &&
+                        request.resource.data.stars >= 1 &&
+                        request.resource.data.stars <= 5));
+
+      // Update: not allowed (feedback events are immutable)
+      allow update: if false;
+
+      // Delete: user must own the feedback or be admin
+      allow delete: if isOwner(resource.data.user_id) || isAdmin();
+    }
+
+    // === Existing Collections (unchanged) ===
+
+    // Memory items (read-only from clustering perspective)
+    match /ops_collab_memory/{memoryId} {
+      allow read: if isOwner(resource.data.userId);
+      allow write: if isOwner(request.resource.data.userId);
+    }
+
+    // Memory embeddings (for semantic search)
+    match /ops_collab_embeddings/{embeddingId} {
+      allow read: if isOwner(resource.data.memoryId.split('_')[0]); // Assuming memoryId format userId_...
+      allow write: if isAdmin(); // Only admin/functions can write embeddings
+    }
+  }
+}

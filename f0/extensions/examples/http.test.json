@@ -1,0 +1,17 @@
+{
+  "name": "http-test",
+  "displayName": "HTTP Test Extension",
+  "version": "1.0.0",
+  "provider": "generic-http",
+  "description": "Simple HTTP GET test using httpbin.org",
+  "capabilities": ["deploy"],
+  "runner": {
+    "type": "http",
+    "url": "https://httpbin.org/get",
+    "method": "GET"
+  },
+  "security": {
+    "scopes": ["network:read"],
+    "dangerous": false
+  }
+}

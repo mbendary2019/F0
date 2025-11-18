@@ -1,0 +1,28 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.com.f0.app",
+        "paths": [
+          "/verify",
+          "/verify/*",
+          "/auth/callback",
+          "/auth/callback/*",
+          "/invite/*",
+          "/share/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAM_ID.com.f0.app"
+    ]
+  },
+  "appclips": {
+    "apps": []
+  }
+}
+
+

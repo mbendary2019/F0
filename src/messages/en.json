@@ -1,0 +1,309 @@
+{
+  "home": {
+    "title": "From Zero — F0",
+    "subtitle": "Welcome! Choose where to go:",
+    "loginCta": "Sign in"
+  },
+  "nav": {
+    "developers": "Developers",
+    "billing": "Billing",
+    "opsAnalytics": "Ops Analytics",
+    "audit": "Audit Trail",
+    "developers_desc": "Developer Portal and APIs",
+    "billing_desc": "Subscription and Payment",
+    "opsAnalytics_desc": "Operations KPIs Dashboard",
+    "audit_desc": "Event Logs"
+  },
+  "f0": {
+    "title": "F0 — Orchestrator Control",
+    "subtitle": "Quick start point — Server status and operation links for developers and Ops.",
+    "orchestrator": "Orchestrator",
+    "health": {
+      "healthy": "Healthy",
+      "unreachable": "Unreachable",
+      "failed": "Health check failed"
+    },
+    "openHealth": "Open /health",
+    "openVersion": "Open /version",
+    "checkClaims": "Check Claims"
+  },
+  "auth": {
+    "authenticated": "✓ Authenticated",
+    "notAuthenticated": "⚠️ Not authenticated",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "checkClaims": "Check Claims",
+    "customClaims": "Custom Claims:",
+    "loading": "Loading auth status...",
+    "noClaims": "No custom claims"
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Sign in to access admin features",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "backToHome": "← Back to home"
+  },
+  "seed": {
+    "title": "🌱 Data Seeder",
+    "subtitle": "Generate test data for Ops Analytics",
+    "configure": "Configure",
+    "hide": "Hide",
+    "records": "Records:",
+    "daysBack": "Days back:",
+    "seedButton": "Seed {count} rows",
+    "seeding": "Seeding...",
+    "adminOnly": "⚠️ Admin only • Development mode only",
+    "success": "Seed completed successfully!",
+    "error": "Seeding failed"
+  },
+  "ops": {
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Key performance indicators and metrics",
+      "apiRequests": "API Requests",
+      "tokens": "Tokens",
+      "combined": "Combined Metrics",
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days",
+      "refresh": "Refresh"
+    },
+    "audit": {
+      "title": "Audit Trail",
+      "subtitle": "Track all events and operations",
+      "exportCsv": "Export CSV",
+      "search": "Search (email or orgId)",
+      "timestamp": "Timestamp",
+      "user": "User",
+      "action": "Action",
+      "details": "Details",
+      "noResults": "No results"
+    },
+    "incidents": {
+      "title": "Incident Center",
+      "subtitle": "Track and manage system errors and incidents",
+      "status": {
+        "open": "Open",
+        "ack": "Acknowledged",
+        "resolved": "Resolved"
+      },
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "source": {
+        "client": "Client",
+        "functions": "Functions",
+        "manual": "Manual"
+      },
+      "level": {
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      },
+      "filters": {
+        "dateFrom": "From Date",
+        "dateTo": "To Date",
+        "level": "Level",
+        "status": "Status",
+        "apply": "Apply Filters",
+        "clear": "Clear Filters",
+        "reset": "Reset"
+      },
+      "table": {
+        "id": "ID",
+        "timestamp": "Timestamp",
+        "level": "Level",
+        "source": "Source",
+        "message": "Message",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View Details",
+        "acknowledge": "Acknowledge",
+        "resolve": "Resolve",
+        "export": "Export to CSV",
+        "refresh": "Refresh"
+      },
+      "export": {
+        "title": "Export Incidents",
+        "format": "Format",
+        "csv": "CSV",
+        "download": "Download",
+        "downloading": "Downloading...",
+        "success": "Export successful",
+        "error": "Export failed"
+      },
+      "detail": {
+        "title": "Incident Details",
+        "stack": "Stack Trace",
+        "context": "Context",
+        "createdAt": "Created",
+        "updatedAt": "Updated"
+      },
+      "empty": "No incidents found",
+      "loading": "Loading incidents...",
+      "error": "Failed to load incidents"
+    }
+  },
+  "developers": {
+    "billing": {
+      "title": "Billing & Subscriptions",
+      "subtitle": "Manage your subscriptions and payments",
+      "currentPlan": "Current Plan",
+      "usage": "Usage",
+      "invoices": "Invoices",
+      "paymentMethod": "Payment Method"
+    }
+  },
+  "studio": {
+    "assets": {
+      "title": "AI Studio — Assets",
+      "subtitle": "Manage your media files and AI-generated content",
+      "loading": "Loading assets...",
+      "error": "Failed to load assets",
+      "empty": {
+        "title": "No assets yet",
+        "subtitle": "Upload your first media file to get started"
+      },
+      "status": {
+        "queued": "Queued",
+        "processing": "Processing",
+        "done": "Done",
+        "failed": "Failed"
+      },
+      "duration": "Duration",
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "download": "Download"
+      },
+      "upload": {
+        "button": "Upload Assets",
+        "title": "Upload Media Files",
+        "dragDrop": "Drag and drop files here",
+        "or": "or",
+        "browse": "Browse Files",
+        "supportedFormats": "Supported: Images, Videos, Audio (Max 100MB)",
+        "uploading": "Uploading Files",
+        "error": {
+          "notAuthenticated": "Please sign in to upload files",
+          "fileTooLarge": "File is too large. Max size is 100MB",
+          "invalidFormat": "Invalid file format"
+        }
+      },
+      "filters": {
+        "search": "Search by filename or tags...",
+        "fileType": "File Type",
+        "status": "Status",
+        "dateFrom": "From",
+        "dateTo": "To",
+        "all": "All",
+        "image": "Images",
+        "video": "Videos",
+        "audio": "Audio",
+        "queued": "Queued",
+        "processing": "Processing",
+        "done": "Done",
+        "failed": "Failed",
+        "clear": "Clear Filters"
+      }
+    },
+    "jobs": {
+      "title": "AI Jobs",
+      "subtitle": "Track your AI generation tasks",
+      "create": "Create Job",
+      "status": {
+        "queued": "Queued",
+        "processing": "Processing",
+        "done": "Done",
+        "failed": "Failed"
+      },
+      "type": {
+        "generate": "Generate",
+        "transform": "Transform",
+        "enhance": "Enhance"
+      },
+      "provider": {
+        "runway": "Runway",
+        "veo": "Veo",
+        "local": "Local"
+      }
+    },
+    "scenes": {
+      "title": "Scenes",
+      "subtitle": "Create and manage your video projects",
+      "create": "New Scene",
+      "empty": "No scenes created yet"
+    }
+  },
+  "ops": {
+    "deploy": {
+      "title": "One-Click Deploy",
+      "subtitle": "Deploy your project to any platform with a single click",
+      "deployNow": "Deploy Now",
+      "deploying": "Deploying...",
+      "environment": "Environment",
+      "env": {
+        "production": "Production",
+        "staging": "Staging",
+        "preview": "Preview",
+        "custom": "Custom",
+        "productionDesc": "Live deployment",
+        "stagingDesc": "Pre-production testing",
+        "previewDesc": "Temporary preview",
+        "customDesc": "Custom configuration"
+      },
+      "info": {
+        "target": "Target",
+        "environment": "Environment"
+      },
+      "status": {
+        "title": "Deployment Status",
+        "queued": "Queued",
+        "deploying": "Deploying",
+        "success": "Success",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "progress": "Progress",
+        "duration": "Duration",
+        "jobId": "Job ID",
+        "viewDeployment": "View Deployment"
+      },
+      "logs": {
+        "title": "Deployment Logs",
+        "entries": "entries",
+        "noLogs": "No logs available yet...",
+        "exportLogs": "Export Logs"
+      },
+      "history": {
+        "title": "Recent Deployments",
+        "refresh": "Refresh",
+        "noDeployments": "No deployments yet",
+        "status": {
+          "queued": "Queued",
+          "deploying": "Deploying",
+          "success": "Success",
+          "failed": "Failed",
+          "cancelled": "Cancelled"
+        }
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "backToHome": "← Back to home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "open": "Open"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "./f0.project.schema.json",
+  "name": "my-f0-app",
+  "framework": "nextjs",
+  "hosting": {
+    "provider": "firebase",
+    "project": "from-zero-84253"
+  },
+  "functions": {
+    "provider": "firebase",
+    "region": "europe-west1"
+  },
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://api.example.com",
+    "FIREBASE_PROJECT_ID": "from-zero-84253",
+    "NODE_ENV": "production"
+  },
+  "extensions": ["firebase-deploy"],
+  "deploy": {
+    "steps": [
+      {
+        "use": "firebase-deploy",
+        "with": {
+          "projectId": "from-zero-84253",
+          "only": "all"
+        },
+        "secrets": {
+          "token": "${env.FIREBASE_TOKEN}"
+        }
+      }
+    ]
+  }
+}
+
+

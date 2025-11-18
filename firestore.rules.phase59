@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: Check if user is admin
+    function isAdmin() {
+      return isAuth() && request.auth.token.admin == true;
+    }
+
+    // Helper: Check workspace ownership
+    function isWorkspaceOwner(workspaceId) {
+      return isAuth() && exists(/databases/$(database)/documents/workspaces/$(workspaceId)/members/$(request.auth.uid));
+    }
+
+    // Helper: Check workspace read access
+    function canReadWorkspace(workspaceId) {
+      return isAdmin() || isWorkspaceOwner(workspaceId);
+    }
+
+    // Helper: Check workspace write access
+    function canWriteWorkspace(workspaceId) {
+      return isAdmin() || isWorkspaceOwner(workspaceId);
+    }
+
+    // Memory Edges Collection (Phase 59)
+    match /ops_memory_edges/{edgeId} {
+      // Read: Admins or workspace owners
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Create: Admins or workspace owners
+      allow create: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(request.resource.data.workspaceId));
+
+      // Update: Admins or workspace owners (can't change workspaceId)
+      allow update: if (isAdmin() ||
+                        (isAuth() && canWriteWorkspace(resource.data.workspaceId))) &&
+                       resource.data.workspaceId == request.resource.data.workspaceId;
+
+      // Delete: Admins or workspace owners
+      allow delete: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(resource.data.workspaceId));
+    }
+
+    // Memory Snippets Collection (existing, extended rules)
+    match /ops_memory_snippets/{snippetId} {
+      // Read: Admins or workspace owners
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Create: Admins or workspace owners
+      allow create: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(request.resource.data.workspaceId));
+
+      // Update: Admins or workspace owners (can't change workspaceId)
+      allow update: if (isAdmin() ||
+                        (isAuth() && canWriteWorkspace(resource.data.workspaceId))) &&
+                       resource.data.workspaceId == request.resource.data.workspaceId;
+
+      // Delete: Admins or workspace owners
+      allow delete: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(resource.data.workspaceId));
+    }
+
+    // Snippet Feedback Collection
+    match /ops_memory_snippet_feedback/{feedbackId} {
+      // Read: Admins or workspace owners
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Create: Admins or workspace owners
+      allow create: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(request.resource.data.workspaceId));
+
+      // Update: Admins or workspace owners
+      allow update: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(resource.data.workspaceId));
+
+      // Delete: Admins only
+      allow delete: if isAdmin();
+    }
+
+    // Memory Graph Stats Collection (read-only for users)
+    match /ops_memory_graph_stats/{statId} {
+      // Read: Admins or workspace owners
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Write: Admins only (written by Cloud Functions)
+      allow write: if isAdmin();
+    }
+
+    // Memory Graph Jobs Collection (admin monitoring)
+    match /ops_memory_graph_jobs/{jobId} {
+      // Read: Admins or workspace owners
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Write: Admins only (written by Cloud Functions)
+      allow write: if isAdmin();
+    }
+
+    // Memory Jobs Collection (Phase 59 - Enhanced)
+    match /ops_memory_jobs/{jobId} {
+      // Read: Authenticated users can see jobs for their workspaces
+      allow read: if isAdmin() ||
+                     (isAuth() && canReadWorkspace(resource.data.workspaceId));
+
+      // Create: Authenticated users can create jobs for their workspaces
+      allow create: if isAdmin() ||
+                       (isAuth() && canWriteWorkspace(request.resource.data.workspaceId));
+
+      // Update: Users can only cancel jobs (status -> cancelled)
+      // Cloud Functions/Admin can update any field
+      allow update: if isAdmin() ||
+                       (isAuth() &&
+                        canWriteWorkspace(resource.data.workspaceId) &&
+                        request.resource.data.status == 'cancelled' &&
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt', 'finishedAt']));
+
+      // Delete: Admins only (TTL handles cleanup)
+      allow delete: if isAdmin();
+    }
+
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

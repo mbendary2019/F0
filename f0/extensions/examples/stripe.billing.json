@@ -1,0 +1,41 @@
+{
+  "name": "stripe-billing",
+  "displayName": "Stripe Billing Operations",
+  "version": "1.0.0",
+  "provider": "stripe",
+  "description": "Create customers, attach payment methods, and manage subscriptions.",
+  "homepage": "https://stripe.com",
+  "capabilities": ["billing"],
+  "inputs": {
+    "apiKey": {
+      "type": "secret",
+      "required": true,
+      "description": "Stripe API key (sk_...)"
+    },
+    "operation": {
+      "type": "enum",
+      "enum": ["create-customer", "create-subscription", "fetch-invoices"],
+      "required": true,
+      "description": "Billing operation to perform"
+    },
+    "payload": {
+      "type": "json",
+      "description": "Operation-specific payload"
+    }
+  },
+  "runner": {
+    "type": "http",
+    "url": "https://api.stripe.com/v1/customers",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer ${secrets.apiKey}",
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  },
+  "security": {
+    "scopes": ["billing"],
+    "dangerous": false
+  }
+}
+
+

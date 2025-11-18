@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "generatedAt": 1760220454132,
+  "extensions": [
+    {
+      "name": "firebase-deploy",
+      "version": "1.0.0",
+      "provider": "firebase",
+      "checksum": "a0cc8b7038019d52f7a77307da327823e14fe1a05f5996bd49eca82a3c0ce29c",
+      "path": "f0/extensions/examples/firebase.deploy.json",
+      "verifiedAt": 1760220454130
+    },
+    {
+      "name": "http-test",
+      "version": "1.0.0",
+      "provider": "generic-http",
+      "checksum": "13e4740a93fa97fa6acb7a7f91707da227a78386a3ce1894cd5a9737c9f69c31",
+      "path": "f0/extensions/examples/http.test.json",
+      "verifiedAt": 1760220454131
+    },
+    {
+      "name": "stripe-billing",
+      "version": "1.0.0",
+      "provider": "stripe",
+      "checksum": "04257ebc8dd336fc5ddd6f50211853a16ae5de6d90f81a1c4c0cdb752d1f62c1",
+      "path": "f0/extensions/examples/stripe.billing.json",
+      "verifiedAt": 1760220454132
+    }
+  ]
+}

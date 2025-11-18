@@ -1,0 +1,16 @@
+{
+  "name": "webrtc-worker",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": { "node": ">=20 <21" },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "firebase-admin": "^12.5.0",
+    "wrtc": "^0.4.7",
+    "@mapbox/node-pre-gyp": "^1.0.11"
+  }
+}

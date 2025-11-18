@@ -1,0 +1,64 @@
+
+=== Deploying to 'from-zero-84253'...
+
+i  deploying functions
+✔  functions: Finished running predeploy script.
+i  functions: preparing codebase default for deployment
+i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+i  functions: ensuring required API cloudbuild.googleapis.com is enabled...
+i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled...
+⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory.
+i  functions: Loading and analyzing source code for codebase default to determine what to deploy
+Serving at port 8026
+
+✅ F0 Minimal Functions loaded (health check + audit test only)
+
+i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled...
+i  functions: Loaded environment variables from .env.
+i  functions: preparing functions directory for uploading...
+i  functions: packaged /Users/abdo/Downloads/from-zero-starter/functions (875.82 KB) for uploading
+i  functions: ensuring required API run.googleapis.com is enabled...
+i  functions: ensuring required API eventarc.googleapis.com is enabled...
+i  functions: ensuring required API pubsub.googleapis.com is enabled...
+i  functions: ensuring required API storage.googleapis.com is enabled...
+i  functions: generating the service identity for pubsub.googleapis.com...
+i  functions: generating the service identity for eventarc.googleapis.com...
+✔  functions: functions folder uploaded successfully
+
+Error: The following functions are found in your project but do not exist in your local source code:
+	closeBillingPeriod(us-central1)
+	createApiKey(us-central1)
+	createBillingPortalLink(us-central1)
+	debugClosePeriod(us-central1)
+	debugPushUsage(us-central1)
+	debugQuotaWarn(us-central1)
+	debugRollup(us-central1)
+	debugStatus(us-central1)
+	gateCheck(us-central1)
+	getSubscription(us-central1)
+	getUsageMonth(us-central1)
+	listApiKeys(us-central1)
+	pushUsageToStripe(us-central1)
+	quotaWarning(us-central1)
+	revokeApiKey(us-central1)
+	rollupDailyToMonthly(us-central1)
+	sendTestWebhook(us-central1)
+
+Aborting because deletion cannot proceed in non-interactive mode. To fix, manually delete the functions by running:
+	firebase functions:delete closeBillingPeriod --region us-central1
+	firebase functions:delete createApiKey --region us-central1
+	firebase functions:delete createBillingPortalLink --region us-central1
+	firebase functions:delete debugClosePeriod --region us-central1
+	firebase functions:delete debugPushUsage --region us-central1
+	firebase functions:delete debugQuotaWarn --region us-central1
+	firebase functions:delete debugRollup --region us-central1
+	firebase functions:delete debugStatus --region us-central1
+	firebase functions:delete gateCheck --region us-central1
+	firebase functions:delete getSubscription --region us-central1
+	firebase functions:delete getUsageMonth --region us-central1
+	firebase functions:delete listApiKeys --region us-central1
+	firebase functions:delete pushUsageToStripe --region us-central1
+	firebase functions:delete quotaWarning --region us-central1
+	firebase functions:delete revokeApiKey --region us-central1
+	firebase functions:delete rollupDailyToMonthly --region us-central1
+	firebase functions:delete sendTestWebhook --region us-central1

@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ======================================
+    // Helper Functions
+    // ======================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ======================================
+    // Phase 49: Error Tracking & Incidents
+    // ======================================
+
+    // Raw event stream: NO direct client writes
+    // Only Cloud Functions (Admin SDK) can write
+    match /ops_events/{id} {
+      allow read: if isAdmin();
+      allow write: if false; // Functions bypass rules with Admin SDK
+    }
+
+    // Incidents: admins can read/write
+    match /ops_incidents/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Incident updates/timeline
+    match /ops_incident_updates/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // immutable timeline
+    }
+
+    // Alerts queue (internal, functions only)
+    match /_alerts_queue/{id} {
+      allow read, write: if false; // Functions only
+    }
+
+    // ======================================
+    // Phase 48: Existing collections
+    // ======================================
+
+    match /ops_branding/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /ops_billing_plans/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /ops_marketplace_items/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /ops_marketplace_paid/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /ops_system_settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /ops_metrics/{id} {
+      allow read: if isAdmin();
+      allow write: if false; // Functions only
+    }
+
+    match /ops_audit/{id} {
+      allow read: if isAdmin();
+      allow write: if false; // Functions only
+    }
+
+    // ======================================
+    // User data
+    // ======================================
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isOwner(uid) || isAdmin();
+    }
+
+    match /user_subscriptions/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isAdmin(); // Only functions can update subscriptions
+    }
+
+    // Catch-all: deny by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

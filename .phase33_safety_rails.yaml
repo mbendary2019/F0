@@ -1,0 +1,183 @@
+# Phase 33.3 Safety Rails Configuration for CI/CD and Deployments
+# Updated for Phase 30 - Security & Code Signing Hardening
+
+# Protected Paths: Changes to these paths require specific PR labels (e.g., security-approved)
+protected_paths:
+  - path: "src/app/(auth)/**"
+    required_label: "security-approved"
+    description: "Authentication and user management logic"
+  - path: "src/middleware.ts"
+    required_label: "security-approved"
+    description: "Global middleware, high impact"
+  - path: "functions/src/auth/**"
+    required_label: "security-approved"
+    description: "Firebase Auth related Cloud Functions"
+  - path: "turbo.json"
+    required_canary: true
+    description: "Build pipeline configuration, requires canary deployment"
+  - path: "scripts/**"
+    required_canary: true
+    description: "Deployment and utility scripts, high risk"
+  # Phase 30 additions
+  - path: "next.config.js"
+    required_label: "security-approved"
+    required_canary: true
+    description: "CSP and security headers configuration"
+  - path: "firebase.json"
+    required_label: "security-approved"
+    description: "Firebase hosting headers and routing"
+  - path: "apps/desktop/build/**"
+    required_label: "security-approved"
+    description: "Code signing and notarization configuration"
+  - path: "ops/waf/**"
+    required_label: "security-approved"
+    required_canary: true
+    description: "WAF rules automation"
+
+# Pull Request Limits: Enforce code review and quality standards
+pr_limits:
+  max_bot_prs_per_day: 3
+  max_bot_prs_per_week: 15
+  max_files_changed_per_pr: 50
+  max_lines_changed_per_pr: 1000
+  large_pr_min_lines: 500
+  large_pr_min_reviewers: 2
+
+# Canary Deployment Rules: For high-impact changes
+canary_rules:
+  enabled: true
+  traffic_percentage: 10 # % of traffic to route to canary
+  duration_hours: 24     # Duration for canary deployment
+  auto_rollback_thresholds:
+    error_rate_increase_percent: 5   # If error rate increases by 5%
+    latency_p95_increase_percent: 20 # If P95 latency increases by 20%
+
+# Auto-Rollback Triggers: System-wide thresholds for automatic rollback
+auto_rollback_triggers:
+  error_rate_threshold: 0.10 # >10% error rate in a 15-min window
+  error_rate_window_minutes: 15
+  latency_p95_threshold_percent: 30 # >30% increase in P95 latency in a 10-min window
+  latency_p95_window_minutes: 10
+  deployment_failure_rate_threshold: 0.50 # >50% deployment failures in a 5-min window
+  deployment_failure_window_minutes: 5
+
+# Reinforcement Learning (RL) Integration:
+rl_integration:
+  ci_throttling_enabled: true # Use RL policy to adjust CI concurrency/throttling
+  guardian_pre_deployment_checks_enabled: true # Guardian agent performs checks before deployment
+  auto_tune_on_deployment_outcomes: true # RL policy tunes based on deployment success/failure
+
+# Phase 30 - Security & Code Signing Hardening
+security_hardening:
+  # Signing Requirements
+  signing_required:
+    macos_notarization: true  # Require macOS notarization for beta/stable
+    windows_authenticode: true  # Require Windows Authenticode signing for beta/stable
+    android_release_signing: true  # Require Android release signing
+    
+  # CSP Guardian Rules
+  csp_monitoring:
+    enabled: true
+    block_on_loosening: true  # Block if CSP becomes less restrictive
+    require_canary_on_change: true  # Require canary deployment for any CSP change
+    forbidden_directives:
+      - "unsafe-eval"  # Allow only in specific contexts
+      - "*"  # Wildcard sources not allowed without explicit approval
+      - "blob:"  # Blob sources require approval
+    
+  # WAF Risk Scoring
+  waf_rules:
+    enabled: true
+    min_risk_score: 80  # Minimum acceptable WAF risk score (0-100)
+    max_score_decrease_percent: 20  # Max allowed decrease in risk score
+    
+  # Electron Auto-Update Monitoring
+  electron_update:
+    failure_threshold_percent: 5  # >5% update failures triggers rollback
+    failure_window_minutes: 60  # Within 60 minutes
+    
+  # SLSA Provenance
+  slsa:
+    required_for_stable: true  # Require SLSA provenance for stable releases
+    min_level: 1  # Minimum SLSA level (1-4)
+
+# Phase 31 - App Stores & Distribution
+mobile_distribution:
+  # iOS TestFlight Requirements
+  ios_testflight:
+    required_secrets:
+      - APP_STORE_CONNECT_API_KEY
+      - APPLE_TEAM_ID
+    required_files:
+      - docs/PRIVACY_POLICY.md
+      - docs/TERMS.md
+      - apps/mobile/ios/ExportOptions.plist
+    block_on_missing: true  # Block TestFlight upload if requirements missing
+    
+  # Android Play Console Requirements
+  android_play:
+    required_secrets:
+      - ANDROID_KEYSTORE_BASE64
+      - ANDROID_KEYSTORE_PASSWORD
+      - PLAY_JSON
+    required_files:
+      - docs/PRIVACY_POLICY.md
+      - docs/TERMS.md
+      - apps/mobile/android/app/google-services.json
+    staged_rollout:
+      enabled: true
+      initial_percentage: 10
+      increment_hours: 24
+    
+  # Mobile Metrics Thresholds
+  mobile_metrics:
+    crash_rate_threshold: 0.01  # >1% crash rate blocks rollout
+    anr_rate_threshold: 0.007  # >0.7% ANR rate blocks rollout
+    error_rate_threshold: 0.008  # >0.8% error rate triggers rollback
+    window_minutes: 60  # Monitoring window
+    
+  # Deep Link Changes
+  deep_link_protection:
+    require_canary: true  # Any deep link handler changes require canary
+    protected_handlers:
+      - verify
+      - auth/callback
+      - invite
+      - share
+    
+  # Push Notification Requirements
+  push_notifications:
+    require_privacy_explanation: true  # Must explain why push is requested
+    require_opt_in_prompt: true  # Cannot auto-enable
+    forbidden_topics:
+      - spam
+      - marketing_unsolicited
+    
+  # Privacy & Compliance
+  privacy_compliance:
+    required_documents:
+      - docs/PRIVACY_POLICY.md
+      - docs/TERMS.md
+    privacy_policy_url: "https://f0.ai/privacy"
+    terms_url: "https://f0.ai/terms"
+    check_on_release: true  # Validate URLs before release
+    
+  # Store Listing Requirements
+  store_listing:
+    required_screenshots:
+      ios_phone: 2  # Min 2 screenshots
+      ios_tablet: 1
+      android_phone: 2
+      android_tablet: 1
+    description_min_length: 100
+    keywords_max: 30  # iOS limit
+    
+  # Auto-Rollback Mobile
+  auto_rollback_mobile:
+    enabled: true
+    triggers:
+      - crash_rate > 1% sustained 30min
+      - anr_rate > 0.7% sustained 30min
+      - network_error_rate > 15% sustained 15min
+      - sentry_error_rate > 0.8% sustained 15min
+    action: halt_staged_rollout  # Halt at current percentage

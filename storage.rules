@@ -1,0 +1,112 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAuth() { return request.auth != null; }
+    function isAdmin() { return isAuth() && request.auth.token.admin == true; }
+
+    // User uploads before approval (private to owner)
+    match /review_media/{uid}/{reviewId}/{fileName} {
+      allow read: if isAuth() && request.auth.uid == uid;
+      allow write: if isAuth() && request.auth.uid == uid
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Copied here automatically after approval (public for display on product page)
+    match /review_media_public/{reviewId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Creator monthly statements (PDFs)
+    match /creator_statements/{uid}/{yyyymm}.pdf {
+      allow read: if isAuth() && (isAdmin() || request.auth.uid == uid);
+      allow write: if false; // Functions only
+    }
+
+    // Dispute evidence uploads (admin only write, no public read)
+    match /disputes_evidence/{disputeId}/{filename} {
+      allow write: if isAdmin();
+      allow read: if false; // Not directly readable (used by Functions)
+    }
+
+    // Platform reports (admin only)
+    match /platform_reports/{month}.pdf {
+      allow read: if isAdmin();
+      allow write: if false; // Functions only
+    }
+
+    // Platform accounting exports (admin only)
+    match /platform_accounting/{month}/{file} {
+      allow read: if isAdmin();
+      allow write: if false; // Functions only
+    }
+
+    // VAT Invoices (owner or admin via signed URL)
+    match /invoices/{orderId}.pdf {
+      allow read: if false; // Access via signed URLs only
+      allow write: if false; // Functions only
+    }
+
+    // Tax reports (admin only)
+    match /tax_reports/{file} {
+      allow read: if isAdmin();
+      allow write: if false; // Functions only
+    }
+
+    // Customer VAT statements (owner or admin)
+    match /customer_statements/{uid}/{month}.pdf {
+      allow read: if request.auth != null && (request.auth.token.admin == true || request.auth.uid == uid);
+      allow write: if false; // Functions only
+    }
+
+    // ============================================================
+    // PHASE 50: AI STUDIO ASSETS
+    // ============================================================
+
+    // Studio assets: User-uploaded media files
+    match /studio/{uid}/assets/{fileName} {
+      // Users can read their own assets
+      allow read: if isAuth() && request.auth.uid == uid;
+
+      // Users can upload assets (max 100MB)
+      allow write: if isAuth() &&
+                      request.auth.uid == uid &&
+                      request.resource.size < 100 * 1024 * 1024 && // 100MB limit
+                      (request.resource.contentType.matches('image/.*') ||
+                       request.resource.contentType.matches('video/.*') ||
+                       request.resource.contentType.matches('audio/.*'));
+    }
+
+    // Studio outputs: AI-generated content (written by Cloud Functions)
+    match /studio/{uid}/outputs/{fileName} {
+      // Users can read their own outputs
+      allow read: if isAuth() && request.auth.uid == uid;
+
+      // Only Cloud Functions can write outputs
+      allow write: if false;
+    }
+
+    // Studio thumbnails: Auto-generated thumbnails (written by Cloud Functions)
+    match /studio/{uid}/thumbnails/{fileName} {
+      // Users can read their own thumbnails
+      allow read: if isAuth() && request.auth.uid == uid;
+
+      // Only Cloud Functions can write thumbnails
+      allow write: if false;
+    }
+
+    // ============================================================
+    // PHASE 52: DEPLOY EXPORTS (GitHub Integration)
+    // ============================================================
+
+    // Deploy exports: CSV/JSON exports for deployment logs
+    match /deploy-exports/{uid}/{fileName} {
+      // Users can read their own exports
+      allow read: if isAuth() && request.auth.uid == uid;
+
+      // Only Cloud Functions can write (via Admin SDK)
+      allow write: if false;
+    }
+  }
+}

@@ -1,0 +1,89 @@
+name: Upload to Play Console
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Play Console track'
+        required: true
+        type: choice
+        options: [internal, closed, open, production]
+        default: 'internal'
+      status:
+        description: 'Release status'
+        required: true
+        type: choice
+        options: [draft, completed]
+        default: 'draft'
+
+env:
+  FLUTTER_VERSION: '3.24.0'
+
+jobs:
+  upload:
+    name: Upload to Play Console
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Setup Android Keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          mkdir -p $HOME/keystores
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > $HOME/keystores/release.jks
+
+      - name: Create key.properties
+        working-directory: apps/mobile/android
+        run: |
+          cat > key.properties << EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=$HOME/keystores/release.jks
+          EOF
+
+      - name: Get dependencies
+        working-directory: apps/mobile
+        run: flutter pub get
+
+      - name: Build Android App Bundle (Release)
+        working-directory: apps/mobile
+        run: flutter build appbundle --release
+
+      - name: Upload to Play Console
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_JSON }}
+          packageName: com.f0.app
+          releaseFiles: apps/mobile/build/app/outputs/bundle/release/app-release.aab
+          track: ${{ inputs.track }}
+          status: ${{ inputs.status }}
+          inAppUpdatePriority: 2
+          whatsNewDirectory: apps/mobile/whatsnew/
+          mappingFile: apps/mobile/build/app/outputs/mapping/release/mapping.txt
+
+      - name: Notification
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Upload to Play Console Complete!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Track: ${{ inputs.track }}"
+          echo "Status: ${{ inputs.status }}"
+          echo ""
+          echo "Next steps:"
+          echo "1. Review in Play Console"
+          echo "2. Add release notes"
+          echo "3. Promote to next track (if applicable)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+

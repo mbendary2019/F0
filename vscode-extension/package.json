@@ -1,0 +1,48 @@
+{
+  "name": "f0-ops-helper",
+  "displayName": "F0 Ops Helper",
+  "description": "VS Code extension for F0 platform deployment and ops management",
+  "version": "0.1.0",
+  "publisher": "f0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:f0.login",
+    "onCommand:f0.deployPhase",
+    "onCommand:f0.openDashboard",
+    "onCommand:f0.tailLogs"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "f0.login",
+        "title": "F0: Login to Firebase"
+      },
+      {
+        "command": "f0.deployPhase",
+        "title": "F0: Deploy Phase"
+      },
+      {
+        "command": "f0.openDashboard",
+        "title": "F0: Open Firebase Dashboard"
+      },
+      {
+        "command": "f0.tailLogs",
+        "title": "F0: Tail Cloud Functions Logs"
+      }
+    ]
+  },
+  "main": "./out/extension.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.6.3"
+  }
+}

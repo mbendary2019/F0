@@ -1,0 +1,24 @@
+# Environment variables with secrets
+.env
+.env.local
+.env.*.local
+
+# Compiled JavaScript files
+lib/
+
+# Node modules
+node_modules/
+
+# Firebase cache
+.firebase/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

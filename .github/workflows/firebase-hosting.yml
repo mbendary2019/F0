@@ -1,0 +1,25 @@
+name: Deploy Firebase Hosting
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci || npm i
+      - run: npm run build
+      - run: npx next export
+      - name: Write Service Account
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > sa.json
+      - name: Deploy
+        run: |
+          npx firebase-tools hosting:channel:deploy live --project ${{ secrets.FIREBASE_PROJECT_ID }} --json --force --token "$(npx firebase-tools login:ci --no-localhost || true)"
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/sa.json

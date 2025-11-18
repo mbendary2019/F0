@@ -1,0 +1,9 @@
+id: router-safety-guard
+version: 1.0.0
+status: active
+rules:
+  - id: deny-activate-if-violates-7d
+    when: edge_exists
+    where: { kind: VIOLATES, src: policy_version:${policyId}, dst: metric_window:Router:7d, weight_gt: 0.6 }
+    action: deny
+    message: "Policy has strong VIOLATES edges in last 7d (>0.6)."
