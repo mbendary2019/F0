@@ -517,4 +517,10 @@ export { triggerGitHubDeploy } from './integrations/githubDeploy';
 
 export { saveProjectAnalysis } from './projects/analyzer';
 
-console.log('✅ F0 Functions loaded (Phase 75: GitHub Integration | Phase 74: Project Analysis)');
+// ============================================================
+// PHASE 75: PROJECT MEMORY SYSTEM
+// ============================================================
+
+export { updateProjectMemory } from './projects/memory';
+
+console.log('✅ F0 Functions loaded (Phase 75: Project Memory | Phase 74: Project Analysis)');

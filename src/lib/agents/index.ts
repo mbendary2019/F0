@@ -120,7 +120,7 @@ function stripF0Json(content: string): string {
   return content.replace(/```f0json[\s\S]*?```/gi, '').trim();
 }
 
-export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; techStack?: any; lang?: 'ar' | 'en' }): Promise<AgentReply> {
+export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; techStack?: any; memory?: any; lang?: 'ar' | 'en' }): Promise<AgentReply> {
   // Use provided lang from context, or fallback to auto-detection
   const lang = ctx.lang || detectLang(userText);
 
@@ -158,9 +158,42 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
           `**Use this information** to generate tasks compatible with existing tech stack.\n`)
     : '';
 
+  // Build memory context section
+  const memorySection = ctx.memory
+    ? (lang === 'ar'
+        ? `\n**🧠 ذاكرة المشروع (Project Memory - Revision ${ctx.memory.revision || 1}):**\n` +
+          (ctx.memory.summary ? `**📝 الملخص:**\n${ctx.memory.summary}\n\n` : '') +
+          (ctx.memory.architectureNotes ? `**🏗️ القرارات المعمارية:**\n${ctx.memory.architectureNotes}\n\n` : '') +
+          (ctx.memory.codingGuidelines ? `**💻 قواعد البرمجة:**\n${ctx.memory.codingGuidelines}\n\n` : '') +
+          (ctx.memory.uiUxGuidelines ? `**🎨 قواعد التصميم:**\n${ctx.memory.uiUxGuidelines}\n\n` : '') +
+          (ctx.memory.knownIssues && ctx.memory.knownIssues.length > 0
+            ? `**⚠️ المشاكل المعروفة:**\n${ctx.memory.knownIssues.map((i: string) => `- ${i}`).join('\n')}\n\n`
+            : '') +
+          (ctx.memory.importantLinks && ctx.memory.importantLinks.length > 0
+            ? `**🔗 روابط مهمة:**\n${ctx.memory.importantLinks.map((link: string) => `- ${link}`).join('\n')}\n\n`
+            : '') +
+          `**⚠️ مهم جداً:** لا تتعارض مع القرارات المعمارية أو القواعد المذكورة في الذاكرة.\n` +
+          `**⚠️ مهم جداً:** استخدم نفس التقنيات والأنماط المذكورة، ولا تقترح بدائل إلا إذا طلب المستخدم ذلك صراحة.\n`
+        : `\n**🧠 Project Memory (Revision ${ctx.memory.revision || 1}):**\n` +
+          (ctx.memory.summary ? `**📝 Summary:**\n${ctx.memory.summary}\n\n` : '') +
+          (ctx.memory.architectureNotes ? `**🏗️ Architecture Decisions:**\n${ctx.memory.architectureNotes}\n\n` : '') +
+          (ctx.memory.codingGuidelines ? `**💻 Coding Guidelines:**\n${ctx.memory.codingGuidelines}\n\n` : '') +
+          (ctx.memory.uiUxGuidelines ? `**🎨 UI/UX Guidelines:**\n${ctx.memory.uiUxGuidelines}\n\n` : '') +
+          (ctx.memory.knownIssues && ctx.memory.knownIssues.length > 0
+            ? `**⚠️ Known Issues:**\n${ctx.memory.knownIssues.map((i: string) => `- ${i}`).join('\n')}\n\n`
+            : '') +
+          (ctx.memory.importantLinks && ctx.memory.importantLinks.length > 0
+            ? `**🔗 Important Links:**\n${ctx.memory.importantLinks.map((link: string) => `- ${link}`).join('\n')}\n\n`
+            : '') +
+          `**⚠️ CRITICAL:** Do NOT contradict architecture decisions or guidelines listed in memory.\n` +
+          `**⚠️ CRITICAL:** Use the same technologies and patterns mentioned above, do NOT suggest alternatives unless explicitly requested.\n`)
+    : (lang === 'ar'
+        ? `\n**🧠 ذاكرة المشروع:** (لا توجد ذاكرة مسجلة بعد - يمكن إضافتها من إعدادات المشروع)\n`
+        : `\n**🧠 Project Memory:** (no memory document yet - can be added from project settings)\n`);
+
   const sys =
     lang === 'ar'
-      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}${techStackSection}
+      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}${techStackSection}${memorySection}
 
 **منهجك (Method):**
 1. **افهم** - لخّص طلب المستخدم في سطرين واضحين
@@ -205,7 +238,7 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
 
 في نهاية الرسالة، ضَع خطة تقنية مخفية في بلوك \`\`\`f0json\`\`\` على شكل JSON بالمواصفات التالية:
 ${SPEC_JSON}`
-      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}${techStackSection}
+      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}${techStackSection}${memorySection}
 
 **Response Rules:**
 - Write a clean, professional Markdown response in English (headings + bullets).

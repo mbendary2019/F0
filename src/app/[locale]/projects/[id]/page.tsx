@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { ProjectDomainsCard } from '@/features/domains/ProjectDomainsCard';
 import { ProjectGithubActions } from '@/features/projects/ProjectGithubActions';
 import { ProjectTechStackCard } from '@/features/projects/ProjectTechStackCard';
+import { ProjectMemoryCard } from '@/features/projects/ProjectMemoryCard';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Settings, Globe, Zap, Code } from 'lucide-react';
@@ -136,6 +137,11 @@ export default function ProjectDetailsPage() {
         <ProjectTechStackCard projectId={projectId} locale={locale} />
         <ProjectIntegrationsCard projectId={projectId} locale={locale} />
         <ProjectDomainsCard projectId={projectId} />
+      </div>
+
+      {/* Project Memory - Full Width Card */}
+      <div className="grid gap-4">
+        <ProjectMemoryCard projectId={projectId} locale={locale} />
       </div>
 
       {/* Main Workspace: Tasks + Chat */}

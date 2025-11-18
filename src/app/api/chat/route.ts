@@ -40,9 +40,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Step 3: Check if project has brief and tech stack analysis (for plan/execute intents)
+    // Step 3: Check if project has brief, tech stack analysis, and memory (for plan/execute intents)
     let brief = '';
     let techStack = null;
+    let memory = null;
     if (intent === 'plan' || intent === 'execute') {
       try {
         const projectDoc = await getDoc(doc(db, `projects/${projectId}`));
@@ -50,9 +51,10 @@ export async function POST(req: NextRequest) {
           const data = projectDoc.data();
           brief = data?.context?.brief || '';
           techStack = data?.projectAnalysis || null;
+          memory = data?.projectMemory || null;
         }
       } catch (e) {
-        // If Firestore fails, continue without brief/techStack
+        // If Firestore fails, continue without brief/techStack/memory
         console.warn('Failed to fetch project data:', e);
       }
 
@@ -77,8 +79,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Step 5: Call agent with brief, tech stack context, and language preference
-    const reply = await askAgent(text, { projectId, brief, techStack, lang });
+    // Step 5: Call agent with brief, tech stack, memory context, and language preference
+    const reply = await askAgent(text, { projectId, brief, techStack, memory, lang });
 
     // Only include phases in plan if ready=true
     const responsePlan = reply.ready && reply.plan?.phases
