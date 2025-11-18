@@ -1,5 +1,6 @@
 // src/lib/agents/index.ts
 import { TaskClassification, getTaskKindLabel, isCriticalTaskKind } from '@/types/taskKind';
+import { recordTokenUsage, estimateTokens } from './tokenUsage';
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
@@ -336,6 +337,23 @@ ${SPEC_JSON}`;
 
   const data = await res.json();
   const content: string = data.choices?.[0]?.message?.content ?? '';
+
+  // Phase 77: Track token usage
+  const usage = data.usage;
+  if (usage) {
+    try {
+      await recordTokenUsage({
+        projectId: ctx.projectId,
+        model: body.model,
+        inputTokens: usage.prompt_tokens || 0,
+        outputTokens: usage.completion_tokens || 0,
+        provider: 'openai',
+      });
+    } catch (error) {
+      console.error('[Token Usage] Failed to record usage:', error);
+      // Don't fail the request if usage tracking fails
+    }
+  }
 
   const plan = extractF0JsonBlock(content);
   const visible = stripF0Json(content);
