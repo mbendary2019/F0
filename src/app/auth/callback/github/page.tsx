@@ -1,104 +1,73 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function GithubCallbackPage() {
+function GithubCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState('Connecting your GitHub account...');
 
   useEffect(() => {
     const code = searchParams.get('code');
-    const error = searchParams.get('error');
+    const state = searchParams.get('state');
 
-    if (error) {
-      console.error('[GitHub OAuth] Error from GitHub:', error);
-      setStatus('Error: ' + error);
-      setTimeout(() => {
-        router.replace('/ar/settings/integrations?github=error');
-      }, 2000);
-      return;
-    }
-
+    // لو مفيش code نرجع المستخدم لصفحة الإعدادات مع رسالة خطأ بسيطة
     if (!code) {
-      console.error('[GitHub OAuth] Missing "code" param in callback URL');
-      setStatus('Error: Missing authorization code');
-      setTimeout(() => {
-        router.replace('/ar/settings/integrations?github=missing_code');
-      }, 2000);
+      router.replace('/settings/integrations?error=missing_github_code');
       return;
     }
 
-    console.log('[GitHub OAuth] Received code, exchanging for token...');
+    const run = async () => {
+      try {
+        // هنا نكلّم API عندك اللي بيكمّل الربط مع GitHub
+        // عدّل الـ endpoint لو انت مسميه حاجة تانية
+        const res = await fetch('/api/auth/github', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code, state }),
+        });
 
-    // Exchange code for access token
-    exchangeToken(code);
-  }, [router, searchParams]);
+        if (!res.ok) {
+          throw new Error('GitHub auth failed');
+        }
 
-  const exchangeToken = async (code: string) => {
-    try {
-      setStatus('Exchanging authorization code...');
-
-      const response = await fetch('/api/auth/github', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to connect GitHub');
+        // لو كله تمام نرجّع المستخدم مثلاً لصفحة الإعدادات
+        router.replace('/settings/integrations?connected=github');
+      } catch (err) {
+        console.error('[GitHub Callback] Error:', err);
+        router.replace('/settings/integrations?error=github_callback_failed');
       }
+    };
 
-      console.log('[GitHub OAuth] ✅ Success!', data);
-      setStatus(`✅ Connected as ${data.user?.login || 'GitHub user'}!`);
-
-      setTimeout(() => {
-        router.replace('/ar/settings/integrations?github=success');
-      }, 1500);
-    } catch (error: any) {
-      console.error('[GitHub OAuth] Error:', error);
-      setStatus('❌ Error: ' + error.message);
-      setTimeout(() => {
-        router.replace('/ar/settings/integrations?github=error');
-      }, 2000);
-    }
-  };
+    run();
+  }, [searchParams, router]);
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '20px',
-        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
-        padding: '20px',
-      }}
+    <main className="flex min-h-screen items-center justify-center">
+      <div className="space-y-2 text-center">
+        <h1 className="text-2xl font-semibold">Connecting your GitHub…</h1>
+        <p className="text-sm text-muted-foreground">
+          Please wait while we complete the authentication.
+        </p>
+      </div>
+    </main>
+  );
+}
+
+export default function GithubCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center">
+          <p className="text-sm text-muted-foreground">
+            Loading GitHub callback…
+          </p>
+        </main>
+      }
     >
-      <div
-        style={{
-          width: '40px',
-          height: '40px',
-          border: '4px solid #f3f3f3',
-          borderTop: '4px solid #3498db',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-        }}
-      />
-      <p style={{ textAlign: 'center', color: '#666' }}>{status}</p>
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
+      <GithubCallbackInner />
+    </Suspense>
   );
 }
