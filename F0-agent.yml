@@ -1,0 +1,33 @@
+name: F0 Agent Deploy
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [f0-deploy]
+
+  push:
+    branches:
+      - main
+      - "f0/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Done
+        run: echo "F0 workflow executed successfully"
