@@ -511,4 +511,10 @@ export { listGitHubBranches, createGitHubBranch, setCurrentGitHubBranch } from '
 
 export { triggerGitHubDeploy } from './integrations/githubDeploy';
 
-console.log('✅ F0 Functions loaded (Phase 75: Complete GitHub Integration)');
+// ============================================================
+// PHASE 74: PROJECT ANALYSIS & TECH STACK DETECTION
+// ============================================================
+
+export { saveProjectAnalysis } from './projects/analyzer';
+
+console.log('✅ F0 Functions loaded (Phase 75: GitHub Integration | Phase 74: Project Analysis)');
