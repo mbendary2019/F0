@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { askAgent } from '@/lib/agents';
 import { classifyIntent, getSmallTalkResponse, getNeedBriefResponse, generateAutoBrief } from '@/lib/helpers/intent';
+import { classifyUserMessage } from '@/lib/agents/taskClassifier';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -57,6 +58,16 @@ export async function POST(req: NextRequest) {
         // If Firestore fails, continue without brief/techStack/memory
         console.warn('Failed to fetch project data:', e);
       }
+    }
+
+    // Step 3.5: Classify task kind using LLM (Phase 76)
+    const taskClassification = await classifyUserMessage({
+      message: text,
+      locale: lang,
+      projectType: techStack?.projectType,
+      hasUi: !!techStack?.features?.hasTailwind || !!techStack?.features?.hasShadcn,
+      hasBackendApi: !!techStack?.features?.hasBackendApi,
+    });
 
       // Step 4: If no brief, generate intelligent brief from user text
       if (!brief || brief.length < 15) {
@@ -79,8 +90,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Step 5: Call agent with brief, tech stack, memory context, and language preference
-    const reply = await askAgent(text, { projectId, brief, techStack, memory, lang });
+    // Step 5: Call agent with brief, tech stack, memory context, task classification, and language preference
+    const reply = await askAgent(text, { projectId, brief, techStack, memory, lang, taskClassification });
 
     // Only include phases in plan if ready=true
     const responsePlan = reply.ready && reply.plan?.phases
@@ -99,7 +110,11 @@ export async function POST(req: NextRequest) {
         ready: reply.ready,
         clarity: reply.clarity_score,
         missing: reply.missing || [],
-        next_actions: reply.next_actions || []
+        next_actions: reply.next_actions || [],
+        // Phase 76: Include task classification in response
+        taskKind: taskClassification.taskKind,
+        taskConfidence: taskClassification.confidence,
+        taskReasoning: taskClassification.reasoning
       },
       plan: responsePlan
     });

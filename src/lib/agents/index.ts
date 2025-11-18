@@ -1,4 +1,6 @@
 // src/lib/agents/index.ts
+import { TaskClassification, getTaskKindLabel, isCriticalTaskKind } from '@/types/taskKind';
+
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
 type AgentVisible = string;
@@ -120,7 +122,7 @@ function stripF0Json(content: string): string {
   return content.replace(/```f0json[\s\S]*?```/gi, '').trim();
 }
 
-export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; techStack?: any; memory?: any; lang?: 'ar' | 'en' }): Promise<AgentReply> {
+export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; techStack?: any; memory?: any; lang?: 'ar' | 'en'; taskClassification?: TaskClassification }): Promise<AgentReply> {
   // Use provided lang from context, or fallback to auto-detection
   const lang = ctx.lang || detectLang(userText);
 
@@ -191,9 +193,42 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
         ? `\n**🧠 ذاكرة المشروع:** (لا توجد ذاكرة مسجلة بعد - يمكن إضافتها من إعدادات المشروع)\n`
         : `\n**🧠 Project Memory:** (no memory document yet - can be added from project settings)\n`);
 
+  // Build task classification section (Phase 76)
+  const taskClassificationSection = ctx.taskClassification
+    ? (lang === 'ar'
+        ? `\n**🎯 تصنيف المهمة (Task Classification):**\n` +
+          `- نوع المهمة: ${getTaskKindLabel(ctx.taskClassification.taskKind, 'ar')}\n` +
+          `- دقة التصنيف: ${(ctx.taskClassification.confidence * 100).toFixed(0)}%\n` +
+          `- السبب: ${ctx.taskClassification.reasoning}\n\n` +
+          `**بناءً على هذا التصنيف، يجب عليك:**\n` +
+          (ctx.taskClassification.taskKind === 'bug_fix'
+            ? `- التركيز على إصلاح الكود الموجود، وليس إضافة ميزات جديدة\n- استخدام تعديلات دقيقة (patch-based editing)\n- عدم إعادة هيكلة أجزاء غير متعلقة بالمشكلة\n`
+            : ctx.taskClassification.taskKind === 'code_gen' || ctx.taskClassification.taskKind === 'ui_gen'
+            ? `- إنشاء كود جديد من الصفر\n- اتباع أفضل الممارسات والمعايير المذكورة في الذاكرة\n- إنشاء ملفات ومكونات جديدة حسب الحاجة\n`
+            : ctx.taskClassification.taskKind === 'code_edit'
+            ? `- تعديل الكود الموجود بعناية\n- الحفاظ على البنية والأنماط الحالية\n- عدم إضافة ميزات غير مطلوبة\n`
+            : ctx.taskClassification.taskKind === 'doc_explain'
+            ? `- تقديم شرح واضح ومفصل\n- استخدام أمثلة عملية\n- عدم تعديل الكود إلا إذا طُلب منك ذلك\n`
+            : `- فهم طلب المستخدم بدقة\n- تقديم رد مناسب لنوع المهمة\n`)
+        : `\n**🎯 Task Classification:**\n` +
+          `- Task Kind: ${getTaskKindLabel(ctx.taskClassification.taskKind, 'en')}\n` +
+          `- Confidence: ${(ctx.taskClassification.confidence * 100).toFixed(0)}%\n` +
+          `- Reasoning: ${ctx.taskClassification.reasoning}\n\n` +
+          `**Based on this classification, you MUST:**\n` +
+          (ctx.taskClassification.taskKind === 'bug_fix'
+            ? `- Focus on fixing existing code, NOT generating new features\n- Prefer minimal, patch-based editing\n- Do NOT refactor unrelated parts\n`
+            : ctx.taskClassification.taskKind === 'code_gen' || ctx.taskClassification.taskKind === 'ui_gen'
+            ? `- Generate brand new code from scratch\n- Follow best practices and standards mentioned in memory\n- Create new files and components as needed\n`
+            : ctx.taskClassification.taskKind === 'code_edit'
+            ? `- Edit existing code carefully\n- Maintain current structure and patterns\n- Do NOT add unrequested features\n`
+            : ctx.taskClassification.taskKind === 'doc_explain'
+            ? `- Provide clear and detailed explanation\n- Use practical examples\n- Do NOT modify code unless explicitly asked\n`
+            : `- Understand user request accurately\n- Provide appropriate response for task type\n`))
+    : '';
+
   const sys =
     lang === 'ar'
-      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}${techStackSection}${memorySection}
+      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}${techStackSection}${memorySection}${taskClassificationSection}
 
 **منهجك (Method):**
 1. **افهم** - لخّص طلب المستخدم في سطرين واضحين
@@ -238,7 +273,7 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
 
 في نهاية الرسالة، ضَع خطة تقنية مخفية في بلوك \`\`\`f0json\`\`\` على شكل JSON بالمواصفات التالية:
 ${SPEC_JSON}`
-      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}${techStackSection}${memorySection}
+      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}${techStackSection}${memorySection}${taskClassificationSection}
 
 **Response Rules:**
 - Write a clean, professional Markdown response in English (headings + bullets).
