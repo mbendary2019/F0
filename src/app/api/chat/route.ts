@@ -40,17 +40,20 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Step 3: Check if project has brief (for plan/execute intents)
+    // Step 3: Check if project has brief and tech stack analysis (for plan/execute intents)
     let brief = '';
+    let techStack = null;
     if (intent === 'plan' || intent === 'execute') {
       try {
         const projectDoc = await getDoc(doc(db, `projects/${projectId}`));
         if (projectDoc.exists()) {
-          brief = projectDoc.data()?.context?.brief || '';
+          const data = projectDoc.data();
+          brief = data?.context?.brief || '';
+          techStack = data?.projectAnalysis || null;
         }
       } catch (e) {
-        // If Firestore fails, continue without brief
-        console.warn('Failed to fetch project brief:', e);
+        // If Firestore fails, continue without brief/techStack
+        console.warn('Failed to fetch project data:', e);
       }
 
       // Step 4: If no brief, generate intelligent brief from user text
@@ -74,8 +77,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Step 5: Call agent with brief context and language preference
-    const reply = await askAgent(text, { projectId, brief, lang });
+    // Step 5: Call agent with brief, tech stack context, and language preference
+    const reply = await askAgent(text, { projectId, brief, techStack, lang });
 
     // Only include phases in plan if ready=true
     const responsePlan = reply.ready && reply.plan?.phases

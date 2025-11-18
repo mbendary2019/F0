@@ -120,7 +120,7 @@ function stripF0Json(content: string): string {
   return content.replace(/```f0json[\s\S]*?```/gi, '').trim();
 }
 
-export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; lang?: 'ar' | 'en' }): Promise<AgentReply> {
+export async function askAgent(userText: string, ctx: { projectId: string; brief?: string; techStack?: any; lang?: 'ar' | 'en' }): Promise<AgentReply> {
   // Use provided lang from context, or fallback to auto-detection
   const lang = ctx.lang || detectLang(userText);
 
@@ -131,9 +131,36 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
         : `\n**📋 Stored Project Brief:**\n${ctx.brief}\n\n**Use this brief as reference** to understand context and goals.\n`)
     : '';
 
+  // Build tech stack context section
+  const techStackSection = ctx.techStack
+    ? (lang === 'ar'
+        ? `\n**🔧 التقنيات المستخدمة (Tech Stack Analysis):**\n` +
+          `- نوع المشروع: ${ctx.techStack.projectType}\n` +
+          `- الإطار: ${ctx.techStack.framework?.name} (${ctx.techStack.framework?.language})\n` +
+          `- الميزات المكتشفة:\n` +
+          `  ${ctx.techStack.features?.hasAuth ? '✅' : '❌'} Auth\n` +
+          `  ${ctx.techStack.features?.hasFirebase ? '✅' : '❌'} Firebase\n` +
+          `  ${ctx.techStack.features?.hasStripe ? '✅' : '❌'} Stripe\n` +
+          `  ${ctx.techStack.features?.hasTailwind ? '✅' : '❌'} Tailwind CSS\n` +
+          `  ${ctx.techStack.features?.hasShadcn ? '✅' : '❌'} shadcn/ui\n` +
+          `  ${ctx.techStack.features?.hasBackendApi ? '✅' : '❌'} Backend API\n\n` +
+          `**استخدم هذه المعلومات** لتوليد مهام متوافقة مع التقنيات الموجودة.\n`
+        : `\n**🔧 Detected Tech Stack:**\n` +
+          `- Project Type: ${ctx.techStack.projectType}\n` +
+          `- Framework: ${ctx.techStack.framework?.name} (${ctx.techStack.framework?.language})\n` +
+          `- Detected Features:\n` +
+          `  ${ctx.techStack.features?.hasAuth ? '✅' : '❌'} Auth\n` +
+          `  ${ctx.techStack.features?.hasFirebase ? '✅' : '❌'} Firebase\n` +
+          `  ${ctx.techStack.features?.hasStripe ? '✅' : '❌'} Stripe\n` +
+          `  ${ctx.techStack.features?.hasTailwind ? '✅' : '❌'} Tailwind CSS\n` +
+          `  ${ctx.techStack.features?.hasShadcn ? '✅' : '❌'} shadcn/ui\n` +
+          `  ${ctx.techStack.features?.hasBackendApi ? '✅' : '❌'} Backend API\n\n` +
+          `**Use this information** to generate tasks compatible with existing tech stack.\n`)
+    : '';
+
   const sys =
     lang === 'ar'
-      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}
+      ? `أنت Agent تنفيذي محترف متخصص في تخطيط وتنفيذ المشاريع البرمجية.${briefSection}${techStackSection}
 
 **منهجك (Method):**
 1. **افهم** - لخّص طلب المستخدم في سطرين واضحين
@@ -178,7 +205,7 @@ export async function askAgent(userText: string, ctx: { projectId: string; brief
 
 في نهاية الرسالة، ضَع خطة تقنية مخفية في بلوك \`\`\`f0json\`\`\` على شكل JSON بالمواصفات التالية:
 ${SPEC_JSON}`
-      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}
+      : `You are a senior product/tech assistant specialized in planning and executing software projects.${briefSection}${techStackSection}
 
 **Response Rules:**
 - Write a clean, professional Markdown response in English (headings + bullets).

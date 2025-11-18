@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import { ProjectDomainsCard } from '@/features/domains/ProjectDomainsCard';
 import { ProjectGithubActions } from '@/features/projects/ProjectGithubActions';
+import { ProjectTechStackCard } from '@/features/projects/ProjectTechStackCard';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Settings, Globe, Zap, Code } from 'lucide-react';
@@ -130,8 +131,9 @@ export default function ProjectDetailsPage() {
       </div>
 
       {/* Overview Cards Grid */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-4">
         <QuickLinksCard projectId={projectId} />
+        <ProjectTechStackCard projectId={projectId} locale={locale} />
         <ProjectIntegrationsCard projectId={projectId} locale={locale} />
         <ProjectDomainsCard projectId={projectId} />
       </div>
