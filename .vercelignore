@@ -1,1 +1,10 @@
 turbo.json
+pnpm-workspace.yaml
+desktop/
+apps/
+packages/
+orchestrator/
+functions/
+ide/
+tools/
+scripts/
