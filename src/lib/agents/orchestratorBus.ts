@@ -5,27 +5,27 @@
 // Uses global to persist across Next.js hot reloads
 // =============================================================================
 
-import { InMemoryAgentBus } from '../../../orchestrator/core/multiAgent/agentBus';
-import { InMemoryPlanStore } from '../../../orchestrator/core/multiAgent/planStore';
-import { SafeAgentBus, InMemoryPendingActionsStore } from '../../../orchestrator/core/multiAgent/safeAgentBus';
-import { BasicSafetyChecker } from '../../../orchestrator/core/multiAgent/basicSafetyChecker';
+import { InMemoryAgentBus } from '@/orchestrator/core/multiAgent/agentBus';
+import { InMemoryPlanStore } from '@/orchestrator/core/multiAgent/planStore';
+import { SafeAgentBus, InMemoryPendingActionsStore } from '@/orchestrator/core/multiAgent/safeAgentBus';
+import { BasicSafetyChecker } from '@/orchestrator/core/multiAgent/basicSafetyChecker';
 
 // Agents
-import { PlannerAgent } from '../../../orchestrator/agents/plannerAgent';
-import { ReviewAgent } from '../../../orchestrator/agents/reviewAgent';
-import { CodeAgent, DummyCodeEngine } from '../../../orchestrator/agents/codeAgent';
-import { TestAgent, DummyTestEngine } from '../../../orchestrator/agents/testAgent';
-import { ShellAgent, DummyShellEngine } from '../../../orchestrator/agents/shellAgent';
-import { BrowserAgent, DummyBrowserEngine } from '../../../orchestrator/agents/browserAgent';
-import { GitAgent, DummyGitEngine } from '../../../orchestrator/agents/gitAgent';
-import { ConversationAgent } from '../../../orchestrator/agents/conversationAgent';
-import { MediaAgent } from '../../../orchestrator/agents/mediaAgent';
-import { AudioAgent } from '../../../orchestrator/agents/audioAgent';
+import { PlannerAgent } from '@/orchestrator/agents/plannerAgent';
+import { ReviewAgent } from '@/orchestrator/agents/reviewAgent';
+import { CodeAgent, DummyCodeEngine } from '@/orchestrator/agents/codeAgent';
+import { TestAgent, DummyTestEngine } from '@/orchestrator/agents/testAgent';
+import { ShellAgent, DummyShellEngine } from '@/orchestrator/agents/shellAgent';
+import { BrowserAgent, DummyBrowserEngine } from '@/orchestrator/agents/browserAgent';
+import { GitAgent, DummyGitEngine } from '@/orchestrator/agents/gitAgent';
+import { ConversationAgent } from '@/orchestrator/agents/conversationAgent';
+import { MediaAgent } from '@/orchestrator/agents/mediaAgent';
+import { AudioAgent } from '@/orchestrator/agents/audioAgent';
 
 // Conversation Store
-import { getConversationStore } from '../../../orchestrator/core/conversation/conversationStore';
+import { getConversationStore } from '@/orchestrator/core/conversation/conversationStore';
 
-import type { AgentBus } from '../../../orchestrator/core/multiAgent/types';
+import type { AgentBus } from '@/orchestrator/core/multiAgent/types';
 
 // Use global to persist singleton across Next.js hot reloads
 declare global {

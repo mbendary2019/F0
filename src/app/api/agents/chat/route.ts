@@ -6,7 +6,7 @@
 // =============================================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getOrchestratorBus } from '@/orchestrator/core/multiAgent/orchestratorBus';
+import { getOrchestratorBus } from '@/lib/agents/orchestratorBus';
 import { getConversationStore } from '@/orchestrator/core/conversation/conversationStore';
 import type { AgentMessage } from '@/orchestrator/core/multiAgent/types';
 
