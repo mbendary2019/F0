@@ -76,7 +76,7 @@
     "y-webrtc": "^10.3.0",
     "y-websocket": "^2.0.4",
     "yjs": "^13.6.10",
-    "zod": "^4.1.12"
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
