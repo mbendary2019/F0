@@ -6,27 +6,44 @@
 import Stripe from 'stripe';
 import type { BillingPlan, PlanConfig } from '@/types/billing';
 
-// Initialize Stripe with appropriate key based on environment
-const getStripeKey = () => {
-  if (process.env.STRIPE_SECRET_KEY) {
-    return process.env.STRIPE_SECRET_KEY;
+// Lazy initialization of Stripe to avoid build-time errors
+let _stripe: Stripe | null = null;
+
+function getStripeInstance(): Stripe {
+  if (_stripe) {
+    return _stripe;
   }
 
-  // Fallback to test key if no key is set
-  console.warn('[stripe] No STRIPE_SECRET_KEY found, using empty key');
-  return '';
-};
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error('[stripe] STRIPE_SECRET_KEY is not configured');
+  }
 
-export const stripe = new Stripe(getStripeKey(), {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
+  _stripe = new Stripe(key, {
+    apiVersion: '2024-12-18.acacia',
+    typescript: true,
+  });
+
+  return _stripe;
+}
+
+// Export stripe as a getter to enable lazy initialization
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    const instance = getStripeInstance();
+    const value = (instance as any)[prop];
+    if (typeof value === 'function') {
+      return value.bind(instance);
+    }
+    return value;
+  },
 });
 
 /**
  * Check if we're in test mode
  */
 export const isTestMode = () => {
-  const key = getStripeKey();
+  const key = process.env.STRIPE_SECRET_KEY || '';
   return key.startsWith('sk_test_');
 };
 

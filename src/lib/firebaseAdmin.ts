@@ -4,6 +4,8 @@ if (!admin.apps.length) {
   try { admin.initializeApp(); } catch {}
 }
 
+// Export the app instance for use in other modules
+export const adminApp = admin.apps[0] || admin.app();
 export const adminDb = admin.firestore();
 export const adminAuth = admin.auth();
 
