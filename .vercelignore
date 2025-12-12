@@ -1,10 +1,19 @@
+# Monorepo config files
 turbo.json
 pnpm-workspace.yaml
-desktop/
-apps/
-packages/
-orchestrator/
-functions/
-ide/
-tools/
-scripts/
+pnpm-lock.yaml
+
+# Other workspaces (not the main Next.js app)
+/desktop/
+/apps/
+/packages/
+/orchestrator/
+/functions/
+/ide/
+/tools/
+/scripts/
+
+# Dev files
+*.md
+.env*
+!.env.example
