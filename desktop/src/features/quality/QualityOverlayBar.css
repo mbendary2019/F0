@@ -1,0 +1,334 @@
+/* desktop/src/features/quality/QualityOverlayBar.css */
+/* Phase 138.6.1: Global Quality Overlay Bar Styles */
+
+.qob-bar {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(
+    to right,
+    rgba(11, 2, 31, 0.95),
+    rgba(18, 4, 51, 0.95),
+    rgba(11, 2, 31, 0.95)
+  );
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 30px rgba(120, 40, 255, 0.15);
+  font-size: 11px;
+  color: rgba(226, 232, 240, 0.9);
+  flex-shrink: 0;
+}
+
+.qob-bar.qob-rtl {
+  direction: rtl;
+}
+
+/* Sections */
+.qob-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qob-section-health {
+  gap: 10px;
+}
+
+.qob-section-metrics {
+  flex: 1;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.qob-section-actions {
+  gap: 12px;
+}
+
+/* Health display */
+.qob-label {
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.qob-health-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e879f9;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px rgba(232, 121, 249, 0.4);
+}
+
+/* Risk badges */
+.qob-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.qob-badge-icon {
+  font-size: 10px;
+}
+
+.qob-badge-none {
+  background: rgba(100, 116, 139, 0.15);
+  color: rgba(203, 213, 225, 0.8);
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+.qob-badge-low {
+  background: rgba(16, 185, 129, 0.15);
+  color: rgb(110, 231, 183);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.qob-badge-medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: rgb(252, 211, 77);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.qob-badge-high {
+  background: rgba(249, 115, 22, 0.15);
+  color: rgb(253, 186, 116);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.qob-badge-critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: rgb(252, 165, 165);
+  border-color: rgba(239, 68, 68, 0.4);
+  animation: qob-critical-pulse 2s infinite;
+}
+
+@keyframes qob-critical-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.2); }
+}
+
+.qob-stale-badge {
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  background: rgba(245, 158, 11, 0.2);
+  color: rgb(252, 211, 77);
+}
+
+.qob-rtl .qob-stale-badge {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+/* Metric buttons */
+.qob-metric-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  color: inherit;
+  font-size: 11px;
+}
+
+.qob-metric-btn:hover {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+.qob-metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.qob-dot-tests {
+  background: #22d3ee;
+}
+
+.qob-dot-security {
+  background: #f87171;
+}
+
+.qob-dot-issues {
+  background: #fbbf24;
+}
+
+.qob-dot-ace {
+  background: #a78bfa;
+}
+
+.qob-metric-label {
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.qob-metric-value {
+  font-weight: 500;
+  color: rgba(226, 232, 240, 0.95);
+}
+
+.qob-metric-time {
+  color: rgba(100, 116, 139, 0.8);
+  font-size: 10px;
+}
+
+/* Tests status colors */
+.qob-tests-passing .qob-dot-tests {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+}
+
+.qob-tests-failing .qob-dot-tests {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+.qob-tests-running .qob-dot-tests {
+  background: #8b5cf6;
+  animation: qob-running-pulse 1s infinite;
+}
+
+@keyframes qob-running-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.qob-tests-unknown .qob-dot-tests {
+  background: #64748b;
+}
+
+/* Blocking badge */
+.qob-blocking-badge {
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  background: rgba(239, 68, 68, 0.25);
+  color: rgb(252, 165, 165);
+  margin-left: 4px;
+}
+
+.qob-rtl .qob-blocking-badge {
+  margin-left: 0;
+  margin-right: 4px;
+}
+
+/* ACE badge */
+.qob-ace-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+
+.qob-ace-low {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.qob-ace-medium {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.qob-ace-high {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: rgba(236, 72, 153, 0.4);
+}
+
+.qob-ace-critical {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.qob-ace-value {
+  text-transform: capitalize;
+  color: #c4b5fd;
+}
+
+/* Snapshot time */
+.qob-snapshot-time {
+  font-size: 10px;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.qob-snapshot-label {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .qob-snapshot-label {
+    display: inline;
+  }
+}
+
+.qob-snapshot-value {
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.qob-snapshot-none {
+  font-style: italic;
+  color: rgba(100, 116, 139, 0.7);
+}
+
+/* Run button */
+.qob-run-btn {
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85));
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.4);
+}
+
+.qob-run-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 1), rgba(168, 85, 247, 1));
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+  transform: translateY(-1px);
+}
+
+.qob-run-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+  .qob-bar {
+    padding: 6px 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .qob-section-metrics {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    padding-top: 6px;
+    border-top: 1px solid rgba(139, 92, 246, 0.1);
+  }
+
+  .qob-metric-btn {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+}

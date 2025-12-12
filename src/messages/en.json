@@ -296,6 +296,44 @@
       }
     }
   },
+  "Dashboard": {
+    "welcomeTitle": "Welcome back",
+    "welcomeSubtitle": "Manage your projects, AI sessions, tokens, and deployments — all from one unified F0 workspace.",
+
+    "totalProjectsLabel": "Total projects",
+    "projectsHint": "+{count} this week",
+    "projectsThisWeek": "this week",
+
+    "liveSessionsLabel": "Live coding sessions",
+    "liveSessionsHint": "Start a new session to preview patches in real time.",
+
+    "deploymentsLabel": "Deployments",
+    "deploymentsHint": "Across all projects",
+
+    "tokensLabel": "FZ Tokens",
+    "tokensSubtitle": "Balance snapshot · Free tier",
+    "currentPlanLabel": "Current plan",
+    "openWallet": "Open wallet",
+    "viewPlans": "View plans",
+
+    "activityTitle": "AI Activity & Suggestions",
+    "activityDescription": "Try enabling Live Coding for your most active project. F0 Agent noticed frequent changes in your Delivery App project, and can generate a deployment-ready patch directly in your IDE.",
+
+    "startLive": "Start Live Session",
+    "viewLogs": "View AI Logs",
+
+    "quickNewProjectTitle": "Create a fresh workspace",
+    "quickNewProjectDesc": "Start a brand-new project with F0 Agent from scratch.",
+    "quickNewProjectCta": "Start new project →",
+
+    "quickContinueTitle": "Continue where you left off",
+    "quickContinueDesc": "Jump back into your existing apps and sessions.",
+    "quickContinueCta": "Open existing project →",
+
+    "quickLiveTitle": "Start live coding session",
+    "quickLiveDesc": "Pair with F0 Agent inside your IDE in real time.",
+    "quickLiveCta": "Start live session →"
+  },
   "common": {
     "loading": "Loading...",
     "backToHome": "← Back to home",

@@ -90,19 +90,19 @@
   },
   "emulators": {
     "auth": {
-      "host": "127.0.0.1",
+      "host": "localhost",
       "port": 9099
     },
     "functions": {
-      "host": "127.0.0.1",
+      "host": "localhost",
       "port": 5001
     },
     "firestore": {
-      "host": "127.0.0.1",
+      "host": "localhost",
       "port": 8080
     },
     "storage": {
-      "host": "127.0.0.1",
+      "host": "localhost",
       "port": 9199
     },
     "hosting": {
@@ -110,7 +110,7 @@
     },
     "ui": {
       "enabled": true,
-      "host": "127.0.0.1",
+      "host": "localhost",
       "port": 4000
     },
     "singleProjectMode": true

@@ -1,0 +1,173 @@
+/* desktop/src/components/cleanup/CleanupRunning.css */
+/* Phase 129.3: Cleanup Running View Styles */
+
+.cleanup-running {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #1e1e1e;
+  border-radius: 12px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.cleanup-running.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Header */
+.running-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.running-icon {
+  font-size: 3rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.running-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+/* Current step */
+.current-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+}
+
+.current-step .step-icon {
+  font-size: 1.5rem;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.current-step .step-label {
+  font-size: 1rem;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Progress bar */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #22c55e);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #888;
+  min-width: 40px;
+  text-align: right;
+}
+
+.cleanup-running.rtl .progress-text {
+  text-align: left;
+}
+
+/* Steps list */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #252525;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.step-item.running {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.step-item.completed {
+  opacity: 0.7;
+}
+
+.step-item.skipped,
+.step-item.failed {
+  opacity: 0.5;
+}
+
+.step-status {
+  font-size: 1rem;
+}
+
+.step-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.step-result {
+  font-size: 0.8rem;
+  color: #22c55e;
+  font-weight: 500;
+}
+
+/* Actions */
+.running-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.btn-cancel {
+  padding: 0.6rem 1.5rem;
+  background: #333;
+  color: #ccc;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #444;
+  color: #fff;
+}

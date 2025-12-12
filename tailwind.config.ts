@@ -18,6 +18,14 @@ const config: Config = {
           cyan: "#38BDF8",
           glow: "#9B5CF6",
         },
+        // Phase 150.1: Desktop-synced colors
+        f0: {
+          bg: '#05010b',
+          panel: '#0b0616',
+          accent: '#9D4EDD',
+          dark: '#140b22',
+          darker: '#1b1028',
+        },
         // Keep existing shadcn/ui colors for compatibility
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

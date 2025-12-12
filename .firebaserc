@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "from-zero-84253"
-  }
+    "│ from zero": "cryptodex-631a0",
+    "From Zero": "from-zero-84253"
+  },
+  "targets": {},
+  "etags": {}
 }

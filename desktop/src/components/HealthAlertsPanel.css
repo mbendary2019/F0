@@ -1,0 +1,303 @@
+/* desktop/src/components/HealthAlertsPanel.css */
+/* Phase 127.4: Health Alerts Panel Styles */
+
+.f0-alerts-panel {
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 10, 50, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  min-width: 320px;
+  max-width: 420px;
+  max-height: 500px;
+}
+
+/* Header */
+.f0-alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 15, 60, 0.8);
+}
+
+.f0-alerts-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.f0-alerts-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+.f0-alerts-unread-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.f0-alerts-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.f0-alerts-action-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #c0c0c0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-alerts-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.f0-alerts-action-btn.f0-alerts-action-danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.f0-alerts-close-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #808080;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-alerts-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Alert List */
+.f0-alerts-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+/* Empty state */
+.f0-alerts-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.f0-alerts-empty-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.f0-alerts-empty p {
+  margin: 0;
+  color: #808080;
+  font-size: 13px;
+}
+
+/* Single Alert Item */
+.f0-alert-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: rgba(30, 25, 70, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.f0-alert-item:last-child {
+  margin-bottom: 0;
+}
+
+.f0-alert-item:hover {
+  background: rgba(40, 35, 90, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Level-based left border */
+.f0-alert-item.alert-level-critical {
+  border-left: 3px solid #ef4444;
+}
+
+.f0-alert-item.alert-level-warning {
+  border-left: 3px solid #eab308;
+}
+
+.f0-alert-item.alert-level-info {
+  border-left: 3px solid #3b82f6;
+}
+
+/* Alert Icon */
+.f0-alert-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* Alert Content */
+.f0-alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.f0-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.f0-alert-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+.f0-alert-level-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.f0-alert-level-badge.alert-level-critical {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.f0-alert-level-badge.alert-level-warning {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fde047;
+}
+
+.f0-alert-level-badge.alert-level-info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.f0-alert-message {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #a0a0a0;
+  line-height: 1.4;
+}
+
+.f0-alert-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.f0-alert-time {
+  font-size: 10px;
+  color: #707070;
+}
+
+.f0-alert-dismiss-btn {
+  padding: 3px 8px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #909090;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-alert-dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #d0d0d0;
+}
+
+/* Scrollbar styling */
+.f0-alerts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.f0-alerts-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.f0-alerts-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.f0-alerts-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* RTL support */
+[dir="rtl"] .f0-alert-item.alert-level-critical {
+  border-left: none;
+  border-right: 3px solid #ef4444;
+}
+
+[dir="rtl"] .f0-alert-item.alert-level-warning {
+  border-left: none;
+  border-right: 3px solid #eab308;
+}
+
+[dir="rtl"] .f0-alert-item.alert-level-info {
+  border-left: none;
+  border-right: 3px solid #3b82f6;
+}
+
+/* Modal wrapper */
+.f0-alerts-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Header health badge container */
+.f0-header-health {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  margin-right: 8px;
+}

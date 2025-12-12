@@ -250,6 +250,20 @@ export { exportAuditCsv } from './analytics/exportAuditCsv';
 export { aggregateKpisOnEvent } from './analytics/aggregateKpis';
 
 // ============================================================
+// PHASE 138: PROJECT OPTIMIZATION PIPELINE
+// ============================================================
+
+// Phase 138.0: Optimization Pipeline Skeleton
+export {
+  runProjectOptimization,
+  getOptimizationRunStatus,
+  cancelOptimizationRun,
+} from './optimization/runProjectOptimization';
+
+// Phase 138.1: Optimization Run Processor (Firestore trigger)
+export { processProjectOptimizationRun } from './optimization/processProjectOptimization';
+
+// ============================================================
 // PHASE 49: ERROR TRACKING & INCIDENT MANAGEMENT
 // ============================================================
 
@@ -493,23 +507,26 @@ export {
 export { saveProjectIntegrations } from './projects/saveProjectIntegrations';
 
 // ============================================================
-// PHASE 75: GITHUB PUSH & SYNC INTEGRATION
+// PHASE 75: GITHUB PUSH & SYNC INTEGRATION (TEMPORARILY DISABLED)
 // ============================================================
 
-export { pushProjectToGitHub } from './integrations/githubPush';
-export { syncProjectFromGitHub } from './integrations/githubSync';
+// TODO: Enable when GitHubClient and parseGitHubUrl are implemented
+// export { pushProjectToGitHub } from './integrations/githubPush';
+// export { syncProjectFromGitHub } from './integrations/githubSync';
 
 // ============================================================
-// PHASE 75: GITHUB BRANCHES MANAGEMENT
+// PHASE 75: GITHUB BRANCHES MANAGEMENT (TEMPORARILY DISABLED)
 // ============================================================
 
-export { listGitHubBranches, createGitHubBranch, setCurrentGitHubBranch } from './integrations/githubBranches';
+// TODO: Enable when GitHubClient and parseGitHubUrl are implemented
+// export { listGitHubBranches, createGitHubBranch, setCurrentGitHubBranch } from './integrations/githubBranches';
 
 // ============================================================
-// PHASE 75: GITHUB ACTIONS DEPLOY
+// PHASE 75: GITHUB ACTIONS DEPLOY (TEMPORARILY DISABLED)
 // ============================================================
 
-export { triggerGitHubDeploy } from './integrations/githubDeploy';
+// TODO: Enable when GitHubClient and parseGitHubUrl are implemented
+// export { triggerGitHubDeploy } from './integrations/githubDeploy';
 
 // ============================================================
 // PHASE 74: PROJECT ANALYSIS & TECH STACK DETECTION
@@ -529,4 +546,58 @@ export { updateProjectMemory } from './projects/memory';
 
 export { applyPatch } from './projects/applyPatch';
 
-console.log('✅ F0 Functions loaded (Phase 82: Patch VFS | Phase 75: Project Memory | Phase 74: Project Analysis)');
+// ============================================================
+// PHASE 83: GITHUB INTEGRATION
+// ============================================================
+
+export { linkGithubRepo } from './integrations/github/linkRepo';
+export { syncFromGithubToVfs } from './integrations/github/syncToVfs';
+export { applyPatchToGithubBranch } from './integrations/github/applyPatchToGithub';
+
+// ============================================================
+// PHASE 85: AI LOGS & ACTIVITY TRACKING
+// ============================================================
+
+export const saveAiLog = functions.https.onCall(async (data: any, context: any) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "Not signed in");
+  }
+
+  const uid = context.auth.uid;
+
+  const payload = {
+    ownerUid: uid,
+    projectId: data.projectId || "",
+    projectName: data.projectName || "",
+    type: data.type || "Unknown",
+    description: data.description || "",
+    status: data.status || "Info",
+    createdAt: Date.now(),
+  };
+
+  await admin.firestore().collection("ops_aiLogs").add(payload);
+
+  return { success: true };
+});
+
+// ============================================================
+// PHASE 86: IDE BRIDGE - IDE TO DASHBOARD COMMUNICATION
+// ============================================================
+
+export { ideIngestEvent } from './ide/ideIngestEvent';
+export { ideSendCommand } from './ide/ideSendCommand';
+export { ideGetCommands } from './ide/ideGetCommands';
+
+// Phase 168.3: Vision API (secure - uses Firebase secrets)
+export { visionAnalyze } from './ide/visionAnalyze';
+
+// Phase 168.6: Whisper Audio Transcription (secure - uses Firebase secrets)
+export { whisperTranscribe } from './ide/whisperTranscribe';
+
+// ============================================================
+// PHASE 147: ACE AUTO-FIX BACKEND
+// ============================================================
+
+export { aceAutoFix } from './ace/aceAutoFix';
+
+console.log('✅ F0 Functions loaded (Phase 147: ACE Auto-Fix | Phase 86: IDE Bridge | Phase 85: AI Logs | Phase 83: GitHub Integration + Patch Apply | Phase 82: Patch VFS | Phase 75: Project Memory | Phase 74: Project Analysis)');

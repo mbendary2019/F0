@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="h-full">
+      <body className="h-screen overflow-hidden bg-background text-foreground" suppressHydrationWarning>
         {children}
         <ToastProvider />
       </body>

@@ -296,6 +296,44 @@
       }
     }
   },
+  "Dashboard": {
+    "welcomeTitle": "مرحباً بعودتك",
+    "welcomeSubtitle": "إدارة مشاريعك، جلسات الـAI، الرموز، والديبلويمِنت — كل ذلك من مساحة عمل F0 واحدة.",
+
+    "totalProjectsLabel": "إجمالي المشاريع",
+    "projectsHint": "+{count} هذا الأسبوع",
+    "projectsThisWeek": "هذا الأسبوع",
+
+    "liveSessionsLabel": "جلسات Live Coding",
+    "liveSessionsHint": "ابدأ جلسة جديدة لمعاينة التعديلات في الوقت الحقيقي.",
+
+    "deploymentsLabel": "عمليات النشر",
+    "deploymentsHint": "عبر كل المشاريع",
+
+    "tokensLabel": "رموز FZ",
+    "tokensSubtitle": "لقطة رصيد · الخطة المجانية",
+    "currentPlanLabel": "الخطة الحالية",
+    "openWallet": "فتح المحفظة",
+    "viewPlans": "عرض الباقات",
+
+    "activityTitle": "نشاط واقتراحات الـAI",
+    "activityDescription": "جرّب تفعيل Live Coding لأكثر مشروع عليه تغييرات. F0 Agent لاحظ تعديلات متكررة في مشروع تطبيق التوصيل، ويقدر يولّد لك Patch جاهز للنشر مباشرة داخل IDE.",
+
+    "startLive": "بدء جلسة مباشرة",
+    "viewLogs": "عرض سجلات AI",
+
+    "quickNewProjectTitle": "إنشاء مساحة عمل جديدة",
+    "quickNewProjectDesc": "ابدأ مشروع جديد تماماً بمساعدة F0 Agent من الصفر.",
+    "quickNewProjectCta": "ابدأ مشروع جديد →",
+
+    "quickContinueTitle": "أكمل من آخر نقطة توقفت عندها",
+    "quickContinueDesc": "ارجع لمشاريعك الحالية وجلساتك السابقة.",
+    "quickContinueCta": "افتح مشروعاً قائماً →",
+
+    "quickLiveTitle": "ابدأ جلسة Live Coding",
+    "quickLiveDesc": "اربط F0 Agent داخل الـIDE في الوقت الحقيقي.",
+    "quickLiveCta": "ابدأ جلسة Live →"
+  },
   "common": {
     "loading": "جاري التحميل...",
     "backToHome": "← العودة للصفحة الرئيسية",

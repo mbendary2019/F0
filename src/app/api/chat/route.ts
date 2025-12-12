@@ -6,6 +6,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { runPatchApply, previewPatch } from '@/lib/agents/patch/orchestrator';
 import { shouldUsePatchMode } from '@/lib/agents/patch/usePatchMode';
+// Phase 109.6: Unified AI Logs
+import { logAiOperation, type AiLogMode } from '@/lib/server/aiLogs';
 
 export async function POST(req: NextRequest) {
   try {
@@ -130,6 +132,38 @@ export async function POST(req: NextRequest) {
         // Don't fail the entire request if patch detection fails
       }
     }
+
+    // Step 7: Log AI operation (Phase 109.6 unified logging)
+    // Map taskKind to AiLogMode
+    const aiLogMode: AiLogMode =
+      reply.intent === 'plan' ? 'plan' :
+      patchResult?.success ? 'refactor' :
+      taskClassification.taskKind === 'analysis' ? 'explain' :
+      'chat';
+
+    // Build summary
+    let summary = text.slice(0, 100);
+    if (reply.intent === 'plan' && reply.ready) {
+      summary = `Generated plan: ${brief.slice(0, 80)}`;
+    } else if (patchResult?.success) {
+      summary = `Applied ${patchResult.patchCount} patch(es): ${patchResult.patches.map((p: any) => p.filePath).join(', ').slice(0, 80)}`;
+    }
+
+    // Log async, non-blocking
+    logAiOperation({
+      origin: 'web-ide',
+      projectId,
+      mode: aiLogMode,
+      success: true,
+      summary,
+      message: text,
+      metadata: {
+        taskKind: taskClassification.taskKind,
+        patchCount: patchResult?.patchCount || 0,
+        intent: reply.intent,
+        ready: reply.ready,
+      },
+    }).catch(err => console.error('[Chat API] Failed to save AI log:', err));
 
     // Only include phases in plan if ready=true
     const responsePlan = reply.ready && reply.plan?.phases

@@ -1,0 +1,107 @@
+# F0 Code Agent - Continue.dev Configuration
+# Phase 106.3: OpenAI-Compatible API Integration
+#
+# Installation:
+# 1. Copy this file to ~/.continue/config.yaml
+# 2. Replace YOUR_F0_EXT_API_KEY with your actual API key from .env.local
+# 3. Adjust apiBase URL if not using localhost:3030
+# 4. Reload VS Code window (Cmd+Shift+P → "Reload Window")
+
+name: f0-config
+version: 0.0.1
+schema: v1
+
+# Model Definitions
+models:
+  # F0 Code Agent (Primary)
+  - name: f0-code-agent
+    provider: openai
+    model: f0-code-agent
+    apiBase: http://localhost:3030/api/openai_compat/v1
+    apiKey: "f298b769047167e2c2504ff6fc5d55f9c40f90838e34527d47123470a945351f"
+    roles:
+      - chat
+      - autocomplete
+
+    # Optional: Advanced settings
+    # requestOptions:
+    #   timeout: 30000
+    #   maxTokens: 2000
+    #   temperature: 0.7
+
+# Chat Configuration
+chat:
+  defaultModel: f0-code-agent
+  systemMessage: |
+    You are the F0 Code Agent connected to the user's project.
+
+    Instructions:
+    - Always return concrete, working code
+    - Prefer TypeScript over JavaScript
+    - Use React functional components with hooks
+    - Follow Next.js 14+ App Router conventions
+    - Never return empty code blocks
+    - Never use placeholder comments like "// TODO" or "// Your code here"
+    - Include proper error handling
+    - Use modern ES6+ syntax
+
+    When generating components:
+    - Add TypeScript types for all props
+    - Use semantic HTML
+    - Consider accessibility (ARIA labels)
+    - Add inline styles only when requested, otherwise use Tailwind CSS classes
+
+    Format:
+    - Return code in markdown code blocks
+    - Add brief explanations above code blocks
+    - Highlight any dependencies that need installation
+
+# Autocomplete Configuration
+autocomplete:
+  model: f0-code-agent
+  # Note: Autocomplete may be slower than dedicated models
+  # Consider disabling if latency is high
+
+# Slash Commands (Optional)
+# Customize these based on your workflow
+slashCommands:
+  - name: "explain"
+    description: "Explain the selected code"
+    prompt: "Explain what this code does in detail:\n\n{{{input}}}"
+
+  - name: "refactor"
+    description: "Refactor the selected code"
+    prompt: "Refactor this code to be more maintainable and follow best practices:\n\n{{{input}}}"
+
+  - name: "test"
+    description: "Generate tests for the selected code"
+    prompt: "Generate comprehensive unit tests for this code using Jest:\n\n{{{input}}}"
+
+  - name: "optimize"
+    description: "Optimize the selected code"
+    prompt: "Optimize this code for better performance:\n\n{{{input}}}"
+
+# Context Providers (Optional)
+# These tell Continue what context to include
+contextProviders:
+  - name: "file"
+    params:
+      maxFiles: 10
+
+  - name: "folder"
+    params:
+      maxDepth: 3
+
+  - name: "code"
+    params:
+      maxChars: 5000
+
+# UI Settings
+ui:
+  fontSize: 14
+  theme: "dark"  # or "light"
+
+# Experimental Features
+experimental:
+  # Enable if you want to test new features
+  streaming: false  # Set to true when Phase 107 implements SSE

@@ -1,6 +1,6 @@
 // src/lib/firebaseClient.ts - Client-side Firebase initialization (browser only)
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getAuth, connectAuthEmulator, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
@@ -19,7 +19,8 @@ const firebaseConfig = {
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const functions = getFunctions(app);
+// Explicitly set region to match Cloud Functions deployment
+export const functions = getFunctions(app, "us-central1");
 
 // App Check (browser only, production)
 if (typeof window !== 'undefined' && !('__appCheckInit' in window)) {
@@ -49,7 +50,7 @@ if (typeof window !== 'undefined' && !('__appCheckInit' in window)) {
 // Emulator connections (development only)
 if (process.env.NEXT_PUBLIC_USE_EMULATORS === '1') {
   try {
-    connectFirestoreEmulator(db, '127.0.0.1', 8080);
+    connectFirestoreEmulator(db, 'localhost', 8080);
     console.log("✅ [firebaseClient] Connected to Firestore Emulator: 127.0.0.1:8080");
   } catch (e: any) {
     if (!e.message?.includes('already')) {
@@ -75,3 +76,7 @@ if (process.env.NEXT_PUBLIC_USE_EMULATORS === '1') {
     }
   }
 }
+
+// Auth providers
+export const googleProvider = new GoogleAuthProvider();
+export const githubProvider = new GithubAuthProvider();

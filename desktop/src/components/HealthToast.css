@@ -1,0 +1,238 @@
+/* desktop/src/components/HealthToast.css */
+/* Phase 127.4: Toast notification styles */
+
+.f0-health-toast {
+  position: fixed;
+  /* Move to top-right near header instead of bottom */
+  top: 64px;
+  right: 16px;
+  bottom: auto;
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  max-width: 360px;
+  min-width: 280px;
+  background: linear-gradient(135deg, rgba(43, 4, 16, 0.98) 0%, rgba(59, 4, 24, 0.98) 50%, rgba(27, 3, 16, 0.98) 100%);
+  border: 1px solid rgba(249, 115, 115, 0.4);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(248, 113, 113, 0.35),
+    0 0 0 1px rgba(239, 68, 68, 0.2);
+  z-index: 9999;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-health-toast:hover {
+  border-color: rgba(254, 202, 202, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(248, 113, 113, 0.55),
+    0 0 0 1px rgba(239, 68, 68, 0.3);
+}
+
+/* Animation */
+.f0-health-toast.toast-enter {
+  animation: slideInRight 0.3s ease forwards;
+}
+
+.f0-health-toast.toast-exit {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* RTL support */
+[dir="rtl"] .f0-health-toast {
+  left: 16px;
+  right: auto;
+}
+
+[dir="rtl"] .f0-health-toast.toast-enter {
+  animation: slideInLeft 0.3s ease forwards;
+}
+
+[dir="rtl"] .f0-health-toast.toast-exit {
+  animation: slideOutLeft 0.3s ease forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+/* Icon */
+.f0-toast-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* Content */
+.f0-toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.f0-toast-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.f0-toast-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+.f0-toast-level {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.f0-toast-level.level-critical {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+.f0-toast-level.level-warning {
+  background: rgba(234, 179, 8, 0.25);
+  color: #fde047;
+}
+
+.f0-toast-level.level-info {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+}
+
+.f0-toast-message {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #a0a0a0;
+  line-height: 1.4;
+}
+
+/* Actions */
+.f0-toast-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.f0-toast-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #c0c0c0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-toast-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.f0-toast-btn-primary {
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: white;
+}
+
+.f0-toast-btn-primary:hover {
+  background: linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+}
+
+/* Close button */
+.f0-toast-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #606060;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-toast-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #a0a0a0;
+}
+
+[dir="rtl"] .f0-toast-close {
+  right: auto;
+  left: 8px;
+}
+
+/* Hint text */
+.f0-toast-hint {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.f0-toast-hint::after {
+  content: '→';
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+[dir="rtl"] .f0-toast-hint::after {
+  content: '←';
+}

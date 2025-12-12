@@ -1,0 +1,240 @@
+/* desktop/src/components/preview/QRCodePanel.css */
+/* Phase 131.4: QR Code Panel Styles */
+
+.f0-qr-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.f0-qr-panel {
+  background: var(--bg-secondary, #1e1e1e);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  width: 380px;
+  max-width: 90vw;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.f0-qr-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.f0-qr-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.f0-qr-icon {
+  font-size: 24px;
+}
+
+.f0-qr-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary, #2a2a2a);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-secondary, #888);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-qr-close:hover {
+  background: var(--bg-hover, #333);
+  color: var(--text-primary, #fff);
+}
+
+/* QR Code Container */
+.f0-qr-code-container {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 16px;
+}
+
+.f0-qr-code {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+.f0-qr-code svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Subtitle */
+.f0-qr-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary, #888);
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+
+/* URL Container */
+.f0-qr-url-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.f0-qr-url-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+  margin-bottom: 8px;
+}
+
+.f0-qr-url-box {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-tertiary, #2a2a2a);
+  border: 1px solid var(--border-color, #444);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.f0-qr-url {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-primary, #fff);
+  word-break: break-all;
+  background: transparent;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.f0-qr-copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: var(--accent-primary, #0d99ff);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.f0-qr-copy-btn:hover {
+  background: var(--accent-hover, #0a7acc);
+}
+
+.f0-qr-copy-btn.copied {
+  background: #22c55e;
+}
+
+/* Note */
+.f0-qr-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-tertiary, #2a2a2a);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.f0-qr-note-icon {
+  font-size: 14px;
+}
+
+/* Close Button */
+.f0-qr-close-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-tertiary, #2a2a2a);
+  border: 1px solid var(--border-color, #444);
+  border-radius: 8px;
+  color: var(--text-primary, #fff);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-qr-close-btn:hover {
+  background: var(--bg-hover, #333);
+  border-color: var(--text-secondary, #666);
+}
+
+/* RTL Support */
+[dir="rtl"] .f0-qr-panel-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-qr-panel-title {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-qr-url-box {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-qr-note {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-qr-url-label {
+  text-align: right;
+}
+
+[dir="rtl"] .f0-qr-copy-btn {
+  flex-direction: row-reverse;
+}

@@ -1,398 +1,217 @@
 // functions/src/integrations/github/client.ts
+// Phase 83.1: GitHub API Client using Octokit
+
 import { Octokit } from '@octokit/rest';
-import * as logger from 'firebase-functions/logger';
 
-export interface GitHubConfig {
-  owner: string;
-  repo: string;
-  token: string;
-}
+/**
+ * Get Octokit instance with authentication
+ * Uses GITHUB_TOKEN from environment variables
+ */
+export function getOctokit(): Octokit {
+  const githubToken = process.env.GITHUB_TOKEN;
 
-export class GitHubClient {
-  private octokit: Octokit;
-  private owner: string;
-  private repo: string;
-
-  constructor(config: GitHubConfig) {
-    this.owner = config.owner;
-    this.repo = config.repo;
-    this.octokit = new Octokit({
-      auth: config.token,
-      userAgent: 'F0-Platform/1.0',
-    });
+  if (!githubToken) {
+    console.warn('[GitHub] GITHUB_TOKEN not set - GitHub features will not work');
+    // Return unauthenticated client for now (will fail on auth-required operations)
+    return new Octokit();
   }
 
-  /**
-   * Get repository information
-   */
-  async getRepo() {
-    try {
-      const { data } = await this.octokit.repos.get({
-        owner: this.owner,
-        repo: this.repo,
-      });
-      return data;
-    } catch (error: any) {
-      logger.error('[GitHubClient] getRepo error:', error);
-      throw new Error(`Failed to get repo: ${error.message}`);
-    }
-  }
-
-  /**
-   * Get default branch
-   */
-  async getDefaultBranch(): Promise<string> {
-    const repo = await this.getRepo();
-    return repo.default_branch;
-  }
-
-  /**
-   * Get latest commit on a branch
-   */
-  async getLatestCommit(branch: string) {
-    try {
-      const { data } = await this.octokit.repos.getCommit({
-        owner: this.owner,
-        repo: this.repo,
-        ref: branch,
-      });
-      return {
-        sha: data.sha,
-        message: data.commit.message,
-        author: data.commit.author?.name || 'Unknown',
-        date: data.commit.author?.date || new Date().toISOString(),
-      };
-    } catch (error: any) {
-      logger.error('[GitHubClient] getLatestCommit error:', error);
-      throw new Error(`Failed to get latest commit: ${error.message}`);
-    }
-  }
-
-  /**
-   * Create or update a file
-   */
-  async createOrUpdateFile(params: {
-    path: string;
-    content: string;
-    message: string;
-    branch: string;
-    sha?: string;
-  }) {
-    try {
-      const { data } = await this.octokit.repos.createOrUpdateFileContents({
-        owner: this.owner,
-        repo: this.repo,
-        path: params.path,
-        message: params.message,
-        content: Buffer.from(params.content).toString('base64'),
-        branch: params.branch,
-        sha: params.sha,
-      });
-      return data;
-    } catch (error: any) {
-      logger.error('[GitHubClient] createOrUpdateFile error:', error);
-      throw new Error(`Failed to create/update file: ${error.message}`);
-    }
-  }
-
-  /**
-   * Get file content from repository
-   */
-  async getFileContent(path: string, branch?: string) {
-    try {
-      const { data } = await this.octokit.repos.getContent({
-        owner: this.owner,
-        repo: this.repo,
-        path,
-        ref: branch,
-      });
-
-      if (Array.isArray(data) || data.type !== 'file') {
-        throw new Error('Path is not a file');
-      }
-
-      return {
-        content: Buffer.from(data.content, 'base64').toString('utf-8'),
-        sha: data.sha,
-      };
-    } catch (error: any) {
-      if (error.status === 404) {
-        return null; // File doesn't exist
-      }
-      logger.error('[GitHubClient] getFileContent error:', error);
-      throw new Error(`Failed to get file content: ${error.message}`);
-    }
-  }
-
-  /**
-   * Create a new branch
-   */
-  async createBranch(newBranch: string, fromBranch: string) {
-    try {
-      // Get the SHA of the commit we want to branch from
-      const { data: refData } = await this.octokit.git.getRef({
-        owner: this.owner,
-        repo: this.repo,
-        ref: `heads/${fromBranch}`,
-      });
-
-      // Create the new branch
-      const { data } = await this.octokit.git.createRef({
-        owner: this.owner,
-        repo: this.repo,
-        ref: `refs/heads/${newBranch}`,
-        sha: refData.object.sha,
-      });
-
-      return {
-        branch: newBranch,
-        sha: data.object.sha,
-      };
-    } catch (error: any) {
-      logger.error('[GitHubClient] createBranch error:', error);
-      throw new Error(`Failed to create branch: ${error.message}`);
-    }
-  }
-
-  /**
-   * List branches
-   */
-  async listBranches() {
-    try {
-      const { data } = await this.octokit.repos.listBranches({
-        owner: this.owner,
-        repo: this.repo,
-      });
-      return data.map((branch) => ({
-        name: branch.name,
-        protected: branch.protected,
-      }));
-    } catch (error: any) {
-      logger.error('[GitHubClient] listBranches error:', error);
-      throw new Error(`Failed to list branches: ${error.message}`);
-    }
-  }
-
-  /**
-   * Trigger workflow dispatch
-   */
-  async triggerWorkflow(workflowId: string, inputs: Record<string, any> = {}) {
-    try {
-      await this.octokit.actions.createWorkflowDispatch({
-        owner: this.owner,
-        repo: this.repo,
-        workflow_id: workflowId,
-        ref: 'main', // Can be parameterized
-        inputs,
-      });
-      return { success: true };
-    } catch (error: any) {
-      logger.error('[GitHubClient] triggerWorkflow error:', error);
-      throw new Error(`Failed to trigger workflow: ${error.message}`);
-    }
-  }
-
-  /**
-   * Get workflow runs
-   */
-  async getWorkflowRuns(workflowId?: string) {
-    try {
-      const params: any = {
-        owner: this.owner,
-        repo: this.repo,
-      };
-
-      if (workflowId) {
-        params.workflow_id = workflowId;
-      }
-
-      const { data } = await this.octokit.actions.listWorkflowRunsForRepo(params);
-
-      return data.workflow_runs.map((run) => ({
-        id: run.id,
-        name: run.name,
-        status: run.status,
-        conclusion: run.conclusion,
-        createdAt: run.created_at,
-        updatedAt: run.updated_at,
-        htmlUrl: run.html_url,
-      }));
-    } catch (error: any) {
-      logger.error('[GitHubClient] getWorkflowRuns error:', error);
-      throw new Error(`Failed to get workflow runs: ${error.message}`);
-    }
-  }
-
-  /**
-   * Create a tree (for multi-file commits)
-   */
-  async createTree(files: Array<{ path: string; content: string; mode?: string }>, baseTreeSha?: string) {
-    try {
-      const tree = files.map((file) => ({
-        path: file.path,
-        mode: (file.mode || '100644') as '100644' | '100755' | '040000' | '160000' | '120000',
-        type: 'blob' as const,
-        content: file.content,
-      }));
-
-      const { data } = await this.octokit.git.createTree({
-        owner: this.owner,
-        repo: this.repo,
-        tree,
-        base_tree: baseTreeSha,
-      });
-
-      return data;
-    } catch (error: any) {
-      logger.error('[GitHubClient] createTree error:', error);
-      throw new Error(`Failed to create tree: ${error.message}`);
-    }
-  }
-
-  /**
-   * Create a commit
-   */
-  async createCommit(message: string, treeSha: string, parentSha: string) {
-    try {
-      const { data } = await this.octokit.git.createCommit({
-        owner: this.owner,
-        repo: this.repo,
-        message,
-        tree: treeSha,
-        parents: [parentSha],
-      });
-
-      return data;
-    } catch (error: any) {
-      logger.error('[GitHubClient] createCommit error:', error);
-      throw new Error(`Failed to create commit: ${error.message}`);
-    }
-  }
-
-  /**
-   * Update branch reference
-   */
-  async updateRef(branch: string, sha: string) {
-    try {
-      const { data } = await this.octokit.git.updateRef({
-        owner: this.owner,
-        repo: this.repo,
-        ref: `heads/${branch}`,
-        sha,
-      });
-
-      return data;
-    } catch (error: any) {
-      logger.error('[GitHubClient] updateRef error:', error);
-      throw new Error(`Failed to update ref: ${error.message}`);
-    }
-  }
-
-  /**
-   * Push multiple files in a single commit
-   * Handles both empty and non-empty repositories
-   */
-  async pushFiles(params: {
-    branch: string;
-    message: string;
-    files: Array<{ path: string; content: string }>;
-  }) {
-    try {
-      let baseTreeSha: string | undefined;
-      let parentSha: string | undefined;
-      let isInitialCommit = false;
-
-      // حاول تجيب آخر commit — لو الريبو فاضي هنعمل path خاص
-      try {
-        const latestCommit = await this.getLatestCommit(params.branch);
-
-        // Get the tree of the latest commit
-        const { data: commitData } = await this.octokit.git.getCommit({
-          owner: this.owner,
-          repo: this.repo,
-          commit_sha: latestCommit.sha,
-        });
-
-        baseTreeSha = commitData.tree.sha;
-        parentSha = latestCommit.sha;
-      } catch (err: any) {
-        // الحالة دي بتحصل لما الريبو فاضي تمامًا
-        if (
-          err?.status === 409 ||
-          (typeof err?.message === "string" &&
-            err.message.includes("Git Repository is empty"))
-        ) {
-          isInitialCommit = true;
-        } else {
-          throw err;
-        }
-      }
-
-      // Create new tree with the files
-      const tree = await this.createTree(params.files, baseTreeSha);
-
-      // Create commit
-      const commit = await this.octokit.git.createCommit({
-        owner: this.owner,
-        repo: this.repo,
-        message: params.message,
-        tree: tree.sha,
-        parents: isInitialCommit || !parentSha ? [] : [parentSha],
-      });
-
-      // لو ده أول commit → أنشئ الـ branch من الصفر
-      if (isInitialCommit) {
-        await this.octokit.git.createRef({
-          owner: this.owner,
-          repo: this.repo,
-          ref: `refs/heads/${params.branch}`,
-          sha: commit.data.sha,
-        });
-      } else {
-        await this.updateRef(params.branch, commit.data.sha);
-      }
-
-      return {
-        sha: commit.data.sha,
-        message: commit.data.message,
-        url: commit.data.html_url,
-      };
-    } catch (error: any) {
-      logger.error("[GitHubClient] pushFiles error:", error);
-      throw new Error(`Failed to push files: ${error.message}`);
-    }
-  }
+  return new Octokit({
+    auth: githubToken,
+    baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
+  });
 }
 
 /**
- * Parse GitHub repo URL to extract owner and repo name
+ * Get repository information
  */
-export function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
-  try {
-    // Support formats:
-    // - https://github.com/owner/repo
-    // - https://github.com/owner/repo.git
-    // - git@github.com:owner/repo.git
-
-    const httpsMatch = url.match(/github\.com\/([^\/]+)\/([^\/\.]+)/);
-    if (httpsMatch) {
-      return {
-        owner: httpsMatch[1],
-        repo: httpsMatch[2],
-      };
-    }
-
-    const sshMatch = url.match(/github\.com:([^\/]+)\/([^\/\.]+)/);
-    if (sshMatch) {
-      return {
-        owner: sshMatch[1],
-        repo: sshMatch[2],
-      };
-    }
-
-    return null;
-  } catch (error) {
-    logger.error('[parseGitHubUrl] error:', error);
-    return null;
-  }
+export async function getRepo(owner: string, repo: string) {
+  const octokit = getOctokit();
+  const { data } = await octokit.repos.get({ owner, repo });
+  return data;
 }
+
+/**
+ * Get default branch of a repository
+ */
+export async function getDefaultBranch(owner: string, repo: string): Promise<string> {
+  const repoData = await getRepo(owner, repo);
+  return repoData.default_branch;
+}
+
+/**
+ * Create a new branch from an existing branch
+ */
+export async function createBranch(
+  owner: string,
+  repo: string,
+  fromBranch: string,
+  newBranch: string
+): Promise<string> {
+  const octokit = getOctokit();
+
+  // Get ref of source branch
+  const { data: refData } = await octokit.git.getRef({
+    owner,
+    repo,
+    ref: `heads/${fromBranch}`,
+  });
+
+  // Create new branch
+  await octokit.git.createRef({
+    owner,
+    repo,
+    ref: `refs/heads/${newBranch}`,
+    sha: refData.object.sha,
+  });
+
+  return refData.object.sha;
+}
+
+/**
+ * Get file content from repository
+ */
+export async function getFileContent(
+  owner: string,
+  repo: string,
+  path: string,
+  ref: string = 'main'
+): Promise<string> {
+  const octokit = getOctokit();
+
+  const { data } = await octokit.repos.getContent({
+    owner,
+    repo,
+    path,
+    ref,
+  });
+
+  if (!('content' in data)) {
+    throw new Error(`Path ${path} is not a file`);
+  }
+
+  const buff = Buffer.from(data.content, 'base64');
+  return buff.toString('utf8');
+}
+
+/**
+ * List files in repository tree (recursive)
+ */
+export async function listTree(owner: string, repo: string, branch: string) {
+  const octokit = getOctokit();
+
+  // Get branch ref
+  const { data: ref } = await octokit.git.getRef({
+    owner,
+    repo,
+    ref: `heads/${branch}`,
+  });
+
+  const commitSha = ref.object.sha;
+
+  // Get commit
+  const { data: commit } = await octokit.git.getCommit({
+    owner,
+    repo,
+    commit_sha: commitSha,
+  });
+
+  const treeSha = commit.tree.sha;
+
+  // Get tree (recursive)
+  const { data: tree } = await octokit.git.getTree({
+    owner,
+    repo,
+    tree_sha: treeSha,
+    recursive: 'true',
+  });
+
+  return tree;
+}
+
+/**
+ * Update file content (create or modify)
+ */
+export async function updateFileOnBranch(
+  owner: string,
+  repo: string,
+  path: string,
+  content: string,
+  message: string,
+  branch: string
+): Promise<string> {
+  const octokit = getOctokit();
+
+  // Get current file SHA (if exists)
+  let sha: string | undefined;
+  try {
+    const { data } = await octokit.repos.getContent({
+      owner,
+      repo,
+      path,
+      ref: branch,
+    });
+    if ('sha' in data) sha = data.sha;
+  } catch (error: any) {
+    // File doesn't exist, will be created
+    if (error.status !== 404) throw error;
+  }
+
+  // Encode content to base64
+  const encoded = Buffer.from(content, 'utf8').toString('base64');
+
+  // Create or update file
+  const { data } = await octokit.repos.createOrUpdateFileContents({
+    owner,
+    repo,
+    path,
+    message,
+    content: encoded,
+    sha,
+    branch,
+  });
+
+  return data.commit.sha || '';
+}
+
+/**
+ * Create a Pull Request
+ */
+export async function createPullRequest(
+  owner: string,
+  repo: string,
+  title: string,
+  head: string,
+  base: string,
+  body?: string
+): Promise<{ number: number; url: string }> {
+  const octokit = getOctokit();
+
+  const { data } = await octokit.pulls.create({
+    owner,
+    repo,
+    title,
+    head,
+    base,
+    body,
+  });
+
+  return {
+    number: data.number,
+    url: data.html_url,
+  };
+}
+
+// ============================================================
+// TEMPORARY STUBS FOR PHASE 75+ (NOT YET IMPLEMENTED)
+// ============================================================
+
+export class GitHubClient {
+  // Stub class for future implementation
+}
+
+export function parseGitHubUrl(url: string): { owner: string; repo: string } {
+  // Stub function for future implementation
+  throw new Error("parseGitHubUrl not yet implemented");
+}
+

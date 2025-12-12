@@ -25,7 +25,8 @@ const csp = [
 ].join('; ');
 
 const nextConfig = {
-  reactStrictMode: true,
+  // Disable StrictMode in dev to prevent double rendering issues with Firestore listeners
+  reactStrictMode: !isDev,
   swcMinify: true,
 
   // لا تستخدم HTTPS محليًا - assetPrefix فارغ في dev

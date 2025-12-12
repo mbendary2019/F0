@@ -1,0 +1,43 @@
+/* desktop/src/components/cleanup/CleanupPanel.css */
+/* Phase 129.3: Main Cleanup Panel Styles */
+
+.cleanup-panel {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cleanup-panel.rtl {
+  direction: rtl;
+}
+
+/* Close button */
+.panel-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #888;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.cleanup-panel.rtl .panel-close {
+  right: auto;
+  left: 0.5rem;
+}
+
+.panel-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}

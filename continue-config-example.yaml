@@ -1,0 +1,92 @@
+# Continue Extension Configuration for F0 Code Agent
+# Place this file at: ~/.continue/config.yaml
+
+name: f0-config
+version: 0.0.1
+schema: v1
+
+models:
+  # F0 Code Agent - Main model
+  - name: f0-code-agent
+    provider: openai
+    model: f0-code-agent
+
+    # Local development
+    apiBase: http://localhost:3030/api/openai_compat/v1
+
+    # Production (uncomment when deploying)
+    # apiBase: https://your-f0-domain.com/api/openai_compat/v1
+
+    # API Key (same as F0_EXT_API_KEY in your .env.local)
+    apiKey: your-secret-key-here
+
+    # Model roles
+    roles:
+      - chat
+      - autocomplete
+
+# Chat configuration
+chat:
+  defaultModel: f0-code-agent
+
+  # System message for F0 Code Agent
+  systemMessage: |
+    You are the F0 Code Agent, a highly skilled code generation assistant.
+
+    You are connected to the user's F0 project and have access to their codebase context.
+
+    Guidelines:
+    - Generate production-ready, well-tested code
+    - Follow TypeScript best practices
+    - Include proper error handling
+    - Add helpful comments for complex logic
+    - Use modern React patterns (hooks, functional components)
+    - Follow Next.js 14 App Router conventions
+    - Ensure type safety with proper TypeScript types
+    - Consider performance and accessibility
+
+    Always respond with concrete code implementations, not just explanations.
+
+# Autocomplete configuration
+autocomplete:
+  model: f0-code-agent
+
+# Optional: Context providers
+contextProviders:
+  - name: codebase
+    params:
+      enabled: true
+
+  - name: file
+    params:
+      enabled: true
+
+  - name: folder
+    params:
+      enabled: true
+
+# Optional: Slash commands
+slashCommands:
+  - name: explain
+    description: "Explain the selected code"
+
+  - name: refactor
+    description: "Refactor the selected code"
+
+  - name: test
+    description: "Generate tests for the selected code"
+
+  - name: fix
+    description: "Fix issues in the selected code"
+
+  - name: optimize
+    description: "Optimize the selected code"
+
+# Optional: Keyboard shortcuts
+# You can customize these in VS Code settings
+
+# Notes:
+# 1. Generate API key: openssl rand -hex 32
+# 2. Add to .env.local: F0_EXT_API_KEY=your-secret-key-here
+# 3. Restart VS Code after changing this config
+# 4. Press Cmd+L (Mac) or Ctrl+L (Windows) to open Continue chat

@@ -1,8 +1,15 @@
 // src/lib/functionsClient.ts
-const PROJECT = process.env.FIREBASE_PROJECT_ID!;
-const REGION = process.env.FUNCTIONS_REGION || "us-central1";
-const USE_EMU = process.env.USE_FUNCTIONS_EMULATOR === "true";
-const EMU_ORIGIN = process.env.FUNCTIONS_EMULATOR_ORIGIN || `http://127.0.0.1:5001`;
+// Use NEXT_PUBLIC_ prefix for client-side access
+const PROJECT = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'from-zero-84253';
+const REGION = process.env.NEXT_PUBLIC_FUNCTIONS_REGION || "us-central1";
+
+// Check if we're in development/emulator mode
+const isDev = typeof window !== 'undefined'
+  ? window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  : process.env.NODE_ENV === 'development';
+
+const USE_EMU = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true" || isDev;
+const EMU_ORIGIN = process.env.NEXT_PUBLIC_FUNCTIONS_EMULATOR_ORIGIN || `http://127.0.0.1:5001`;
 
 function baseUrl() {
   if (USE_EMU) return `${EMU_ORIGIN}/${PROJECT}/${REGION}`;

@@ -1,0 +1,90 @@
+{
+  "name": "f0-live-bridge",
+  "displayName": "F0 Live Bridge",
+  "description": "Connect your VS Code workspace with the F0 AI Agent for live patch-based coding.",
+  "version": "0.0.1",
+  "publisher": "from-zero",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:f0.openAssistant",
+    "onCommand:f0.fixSelection",
+    "onCommand:f0.initProject",
+    "onCommand:f0.linkProject",
+    "onCommand:f0.signOut",
+    "onCommand:f0.startBridge",
+    "onCommand:f0.stopBridge",
+    "onUri"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "f0.openAssistant",
+        "title": "F0: Open Assistant"
+      },
+      {
+        "command": "f0.fixSelection",
+        "title": "F0: Fix Selected Code"
+      },
+      {
+        "command": "f0.initProject",
+        "title": "F0: Initialize Project"
+      },
+      {
+        "command": "f0.linkProject",
+        "title": "F0: Link Project"
+      },
+      {
+        "command": "f0.signOut",
+        "title": "F0: Sign Out"
+      },
+      {
+        "command": "f0.startBridge",
+        "title": "F0: Start Live Bridge"
+      },
+      {
+        "command": "f0.stopBridge",
+        "title": "F0: Stop Live Bridge"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "F0 Settings",
+      "properties": {
+        "f0.projectId": {
+          "type": "string",
+          "default": "",
+          "description": "F0 projectId to link this workspace to."
+        },
+        "f0.apiBase": {
+          "type": "string",
+          "default": "http://localhost:3030",
+          "description": "Base URL of your F0 backend (e.g. https://f0.app or http://localhost:3030 for dev)."
+        },
+        "f0.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Optional API key or Firebase Auth token for authenticating with F0."
+        },
+        "f0.inlineSuggestions.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable F0 inline code suggestions (like GitHub Copilot)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.6.0"
+  }
+}

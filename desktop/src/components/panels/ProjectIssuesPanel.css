@@ -1,0 +1,557 @@
+/* desktop/src/components/panels/ProjectIssuesPanel.css */
+/* Phase 124.8: Project-Wide Issues Panel Styles */
+/* Phase 144.3: Added Auto-Fix Result Panel Modal Overlay */
+
+/* Phase 144.3: Auto-Fix Result Panel Modal Overlay */
+.f0-pip-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+}
+
+/* Modal Wrapper */
+.f0-project-issues-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.f0-project-issues-modal .f0-project-issues-panel {
+  width: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.f0-project-issues-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--f0-bg-secondary, #1a1a2e);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'SF Mono', Monaco, 'Fira Code', monospace;
+  font-size: 13px;
+}
+
+/* Header */
+.f0-pip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--f0-bg-tertiary, #16213e);
+  border-bottom: 1px solid var(--f0-border, #2a2a4a);
+}
+
+.f0-pip-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--f0-text-primary, #e0e0e0);
+}
+
+.f0-pip-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.f0-pip-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f0-pip-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.f0-pip-btn-scan {
+  background: var(--f0-accent, #00d9ff);
+  color: #000;
+}
+
+.f0-pip-btn-scan:hover:not(:disabled) {
+  background: var(--f0-accent-hover, #00b8d9);
+}
+
+.f0-pip-btn-clear {
+  background: var(--f0-bg-tertiary, #2a2a4a);
+  color: var(--f0-text-secondary, #a0a0a0);
+}
+
+.f0-pip-btn-clear:hover:not(:disabled) {
+  background: var(--f0-bg-hover, #3a3a5a);
+}
+
+.f0-pip-btn-close {
+  background: transparent;
+  color: var(--f0-text-secondary, #a0a0a0);
+}
+
+.f0-pip-btn-close:hover {
+  color: var(--f0-text-primary, #e0e0e0);
+}
+
+/* Phase 124.9: Fix All button */
+.f0-pip-btn-fix-all {
+  background: linear-gradient(135deg, var(--f0-accent, #00d9ff), #00ff88);
+  color: #000;
+  font-weight: 600;
+}
+
+.f0-pip-btn-fix-all:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00b8d9, #00cc6e);
+}
+
+/* Phase 143.3: Auto-Fix (Beta) button */
+.f0-pip-btn-auto-fix {
+  background: linear-gradient(135deg, #9333ea, #6366f1);
+  color: #fff;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.f0-pip-btn-auto-fix::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: f0-shimmer 2s infinite;
+}
+
+.f0-pip-btn-auto-fix:hover:not(:disabled) {
+  background: linear-gradient(135deg, #7c22ce, #4f46e5);
+}
+
+.f0-pip-btn-auto-fix:disabled {
+  background: linear-gradient(135deg, #6b21a8, #4338ca);
+  opacity: 0.7;
+}
+
+@keyframes f0-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Phase 124.9: Cancel button */
+.f0-pip-btn-cancel {
+  background: rgba(255, 85, 85, 0.2);
+  color: var(--f0-error, #ff5555);
+  border: 1px solid var(--f0-error, #ff5555);
+}
+
+.f0-pip-btn-cancel:hover {
+  background: rgba(255, 85, 85, 0.3);
+}
+
+/* Phase 124.9: Progress display */
+.f0-pip-fix-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.f0-pip-fix-progress {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(0, 217, 255, 0.15);
+  color: var(--f0-accent, #00d9ff);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  animation: f0-pulse 1.5s ease-in-out infinite;
+}
+
+/* Phase 124.9.2: Currently fixing indicator */
+.f0-pip-currently-fixing {
+  font-size: 10px;
+  color: var(--f0-text-muted, #666);
+  padding-inline-start: 12px;
+}
+
+@keyframes f0-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Phase 124.8.x: Profile Selector */
+.f0-pip-profiles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--f0-bg-tertiary, #16213e);
+  border-bottom: 1px solid var(--f0-border, #2a2a4a);
+  flex-wrap: wrap;
+}
+
+.f0-pip-profiles-label {
+  font-size: 11px;
+  color: var(--f0-text-muted, #666);
+  margin-inline-end: 4px;
+}
+
+.f0-pip-profiles-btns {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.f0-pip-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--f0-border, #2a2a4a);
+  border-radius: 4px;
+  background: var(--f0-bg-secondary, #1a1a2e);
+  color: var(--f0-text-secondary, #a0a0a0);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.f0-pip-profile-btn:hover {
+  background: var(--f0-bg-hover, #2a2a4a);
+  color: var(--f0-text-primary, #e0e0e0);
+  border-color: var(--f0-text-muted, #666);
+}
+
+.f0-pip-profile-btn-active {
+  background: rgba(0, 217, 255, 0.15);
+  color: var(--f0-accent, #00d9ff);
+  border-color: var(--f0-accent, #00d9ff);
+}
+
+.f0-pip-profile-btn-active:hover {
+  background: rgba(0, 217, 255, 0.25);
+  color: var(--f0-accent, #00d9ff);
+  border-color: var(--f0-accent, #00d9ff);
+}
+
+.f0-pip-profile-icon {
+  font-size: 12px;
+}
+
+.f0-pip-profile-label {
+  white-space: nowrap;
+}
+
+/* Stats Strip */
+.f0-pip-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--f0-bg-tertiary, #16213e);
+  border-bottom: 1px solid var(--f0-border, #2a2a4a);
+}
+
+.f0-pip-stat {
+  font-size: 11px;
+  color: var(--f0-text-secondary, #a0a0a0);
+}
+
+.f0-pip-stat-total {
+  font-weight: 600;
+  color: var(--f0-text-primary, #e0e0e0);
+}
+
+.f0-pip-stat-error {
+  color: var(--f0-error, #ff5555);
+}
+
+.f0-pip-stat-warning {
+  color: var(--f0-warning, #ffaa00);
+}
+
+.f0-pip-stat-info {
+  color: var(--f0-info, #00aaff);
+}
+
+.f0-pip-stat-time {
+  color: var(--f0-text-muted, #666);
+}
+
+/* Error Message */
+.f0-pip-error {
+  padding: 8px 16px;
+  background: rgba(255, 85, 85, 0.1);
+  border-bottom: 1px solid var(--f0-error, #ff5555);
+  color: var(--f0-error, #ff5555);
+  font-size: 12px;
+}
+
+/* Progress */
+.f0-pip-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--f0-text-secondary, #a0a0a0);
+}
+
+.f0-pip-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--f0-border, #2a2a4a);
+  border-top-color: var(--f0-accent, #00d9ff);
+  border-radius: 50%;
+  animation: f0-spin 1s linear infinite;
+}
+
+@keyframes f0-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Files List */
+.f0-pip-files {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.f0-pip-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--f0-text-muted, #666);
+  font-size: 13px;
+  text-align: center;
+}
+
+.f0-pip-success {
+  color: var(--f0-success, #00ff88);
+}
+
+/* File Item */
+.f0-pip-file {
+  margin-bottom: 4px;
+  background: var(--f0-bg-tertiary, #16213e);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.f0-pip-file-expanded {
+  background: var(--f0-bg-tertiary, #1a1a3e);
+}
+
+.f0-pip-file-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.f0-pip-file-header:hover {
+  background: var(--f0-bg-hover, #2a2a4a);
+}
+
+.f0-pip-file-icon {
+  font-size: 10px;
+  color: var(--f0-text-muted, #666);
+  width: 12px;
+}
+
+.f0-pip-file-path {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--f0-text-primary, #e0e0e0);
+  font-size: 12px;
+}
+
+.f0-pip-file-counts {
+  display: flex;
+  gap: 4px;
+}
+
+.f0-pip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.f0-pip-count-error {
+  background: rgba(255, 85, 85, 0.2);
+  color: var(--f0-error, #ff5555);
+}
+
+.f0-pip-count-warning {
+  background: rgba(255, 170, 0, 0.2);
+  color: var(--f0-warning, #ffaa00);
+}
+
+.f0-pip-count-info {
+  background: rgba(0, 170, 255, 0.2);
+  color: var(--f0-info, #00aaff);
+}
+
+.f0-pip-file-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.f0-pip-file-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  background: var(--f0-bg-secondary, #2a2a4a);
+  color: var(--f0-text-secondary, #a0a0a0);
+  transition: all 0.15s ease;
+}
+
+.f0-pip-file-btn:hover:not(:disabled) {
+  background: var(--f0-bg-hover, #3a3a5a);
+  color: var(--f0-text-primary, #e0e0e0);
+}
+
+.f0-pip-file-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.f0-pip-file-btn-fix {
+  background: rgba(0, 217, 255, 0.2);
+  color: var(--f0-accent, #00d9ff);
+}
+
+.f0-pip-file-btn-fix:hover:not(:disabled) {
+  background: rgba(0, 217, 255, 0.3);
+}
+
+/* Issues List */
+.f0-pip-issues {
+  padding: 8px 12px 12px 32px;
+  background: var(--f0-bg-secondary, #1a1a2e);
+  border-top: 1px solid var(--f0-border, #2a2a4a);
+}
+
+.f0-pip-issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.f0-pip-issue + .f0-pip-issue {
+  border-top: 1px solid var(--f0-border, #2a2a4a);
+}
+
+.f0-pip-issue-icon {
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.f0-pip-issue-line {
+  flex-shrink: 0;
+  min-width: 60px;
+  color: var(--f0-text-muted, #666);
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.f0-pip-issue-category {
+  flex-shrink: 0;
+  color: var(--f0-text-muted, #666);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.f0-pip-issue-message {
+  flex: 1;
+  color: var(--f0-text-secondary, #a0a0a0);
+}
+
+.f0-pip-issue-error .f0-pip-issue-message {
+  color: var(--f0-error, #ff5555);
+}
+
+.f0-pip-issue-warning .f0-pip-issue-message {
+  color: var(--f0-warning, #ffaa00);
+}
+
+.f0-pip-issue-info .f0-pip-issue-message {
+  color: var(--f0-info, #00aaff);
+}
+
+/* RTL Support */
+[dir="rtl"] .f0-pip-file-path {
+  direction: ltr;
+  text-align: right;
+}
+
+[dir="rtl"] .f0-pip-issue-line {
+  direction: ltr;
+  text-align: right;
+}
+
+/* Scrollbar */
+.f0-pip-files::-webkit-scrollbar {
+  width: 6px;
+}
+
+.f0-pip-files::-webkit-scrollbar-track {
+  background: var(--f0-bg-secondary, #1a1a2e);
+}
+
+.f0-pip-files::-webkit-scrollbar-thumb {
+  background: var(--f0-border, #2a2a4a);
+  border-radius: 3px;
+}
+
+.f0-pip-files::-webkit-scrollbar-thumb:hover {
+  background: var(--f0-bg-hover, #3a3a5a);
+}

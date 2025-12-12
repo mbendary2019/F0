@@ -1,0 +1,228 @@
+/* desktop/src/components/preview/MobilePreviewPane.css */
+/* Phase 131.3: Mobile Preview Pane Styles */
+
+.f0-mobile-preview-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary, #121212);
+  overflow: hidden;
+}
+
+/* URL Bar */
+.f0-preview-url-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-secondary, #1e1e1e);
+  border-bottom: 1px solid var(--border-color, #333);
+}
+
+.f0-preview-url-form {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+}
+
+.f0-preview-url-input {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg-tertiary, #2a2a2a);
+  border: 1px solid var(--border-color, #444);
+  border-radius: 6px;
+  color: var(--text-primary, #fff);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.f0-preview-url-input:focus {
+  outline: none;
+  border-color: var(--accent-primary, #0d99ff);
+}
+
+.f0-preview-url-input::placeholder {
+  color: var(--text-secondary, #888);
+}
+
+.f0-preview-url-go {
+  padding: 8px 16px;
+  background: var(--accent-primary, #0d99ff);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.f0-preview-url-go:hover {
+  background: var(--accent-hover, #0a7acc);
+}
+
+/* Connection Status */
+.f0-preview-connection-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-tertiary, #2a2a2a);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-secondary, #888);
+}
+
+.f0-preview-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+  transition: background 0.3s ease;
+}
+
+.f0-preview-connection-status.connected .f0-preview-status-dot {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.f0-preview-connection-status.connecting .f0-preview-status-dot {
+  background: #f59e0b;
+  animation: pulse 1.5s infinite;
+}
+
+.f0-preview-connection-status.disconnected .f0-preview-status-dot {
+  background: #666;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.f0-preview-status-text {
+  white-space: nowrap;
+}
+
+/* Viewport Area */
+.f0-preview-viewport {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at center, #1a1a1a, #0a0a0a);
+  overflow: auto;
+  position: relative;
+}
+
+/* Loading Overlay */
+.f0-preview-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+  color: var(--text-secondary, #888);
+  font-size: 14px;
+}
+
+.f0-preview-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color, #444);
+  border-top-color: var(--accent-primary, #0d99ff);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* iframe styling */
+.f0-preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* Viewport scrollbar styling */
+.f0-preview-viewport::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.f0-preview-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.f0-preview-viewport::-webkit-scrollbar-thumb {
+  background: var(--border-color, #333);
+  border-radius: 4px;
+}
+
+.f0-preview-viewport::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary, #666);
+}
+
+/* Dark mode grid background */
+.f0-preview-viewport::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+/* RTL Support */
+[dir="rtl"] .f0-preview-url-bar {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-preview-url-form {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .f0-preview-url-input {
+  text-align: right;
+}
+
+[dir="rtl"] .f0-preview-connection-status {
+  flex-direction: row-reverse;
+}
+
+/* Phase 131.5: QR Code Button */
+.f0-preview-qr-btn {
+  padding: 6px 10px;
+  background: var(--accent-primary, #0d99ff);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f0-preview-qr-btn:hover {
+  background: var(--accent-hover, #0a7acc);
+  transform: scale(1.05);
+}

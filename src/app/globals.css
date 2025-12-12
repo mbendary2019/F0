@@ -2,6 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================================================
+   Phase 154 – Monaco Issue Badges (Glyph Margin + Inline Decorations)
+   PHASE 154 – INLINE ISSUES STYLING (WEB IDE) – LOCKED
+   Any major behavioural changes require Phase >= 160.
+   ============================================================================= */
+
+/* Glyph margin dots (left side of line numbers) */
+.monaco-editor .f0-issue-glyph-error {
+  background-color: #ef4444 !important; /* red-500 */
+  border-radius: 9999px;
+  width: 8px !important;
+  height: 8px !important;
+  margin-left: 4px;
+  margin-top: 5px;
+}
+
+.monaco-editor .f0-issue-glyph-warning {
+  background-color: #f59e0b !important; /* amber-500 */
+  border-radius: 9999px;
+  width: 8px !important;
+  height: 8px !important;
+  margin-left: 4px;
+  margin-top: 5px;
+}
+
+.monaco-editor .f0-issue-glyph-info {
+  background-color: #0ea5e9 !important; /* sky-500 */
+  border-radius: 9999px;
+  width: 8px !important;
+  height: 8px !important;
+  margin-left: 4px;
+  margin-top: 5px;
+}
+
+/* Line background highlight for issues */
+.monaco-editor .f0-issue-inline-error {
+  background-color: rgba(239, 68, 68, 0.1) !important; /* red-500/10 */
+  border-left: 3px solid #ef4444;
+}
+
+.monaco-editor .f0-issue-inline-warning {
+  background-color: rgba(245, 158, 11, 0.08) !important; /* amber-500/8 */
+  border-left: 3px solid #f59e0b;
+}
+
+.monaco-editor .f0-issue-inline-info {
+  background-color: rgba(14, 165, 233, 0.06) !important; /* sky-500/6 */
+  border-left: 3px solid #0ea5e9;
+}
+
+/* =============================================================================
+   Phase 154.5 – Issue badge pulse animation
+   ============================================================================= */
+
+@keyframes f0-issue-badge-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.0);
+  }
+  70% {
+    transform: scale(1.03);
+    box-shadow: 0 0 16px 2px rgba(244, 63, 94, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+  }
+}
+
+.monaco-editor .view-line .f0-issue-inline-error::before,
+.monaco-editor .view-line .f0-issue-inline-warning::before,
+.monaco-editor .view-line .f0-issue-inline-info::before {
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+/* Hover glow + pulse */
+.monaco-editor .view-line .f0-issue-inline-error:hover::before {
+  animation: f0-issue-badge-pulse 0.7s ease-out;
+}
+
+.monaco-editor .view-line .f0-issue-inline-warning:hover::before,
+.monaco-editor .view-line .f0-issue-inline-info:hover::before {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px 1px rgba(59, 130, 246, 0.3);
+}
+
+/* Glyph margin hover */
+.monaco-editor .f0-issue-glyph-error,
+.monaco-editor .f0-issue-glyph-warning,
+.monaco-editor .f0-issue-glyph-info {
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  border-radius: 9999px;
+}
+
+.monaco-editor .f0-issue-glyph-error:hover,
+.monaco-editor .f0-issue-glyph-warning:hover,
+.monaco-editor .f0-issue-glyph-info:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 10px 2px rgba(148, 163, 184, 0.6);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -95,6 +196,53 @@
 }
 
 /* ============================================
+   Phase 131.7: Mobile Scroll Fix
+   Enable proper scrolling on mobile devices
+   ============================================ */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Make sure main content areas allow scrolling */
+@media (max-width: 768px) {
+  html, body {
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: auto !important;
+  }
+
+  /* Ensure containers don't block scroll */
+  main, .main-content, [role="main"] {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile-friendly scrollbar (visible on mobile) */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+  }
+}
+
+/* ============================================
    Phase 53: Live Cursors & Selection Styles
    ============================================ */
 
@@ -169,4 +317,542 @@
 .fz-remote-cursor:hover::before {
   animation: none;
   opacity: 1;
+}
+
+/* Neon pulse and drift animations for Auth page */
+@keyframes neonPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.95;
+  }
+}
+
+@keyframes neonDrift {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateX(-12px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateX(12px);
+  }
+}
+
+/* =========================
+ * 🌌 F0 Neon Unified Background
+ * Universal neon shell for all F0 pages
+ * ========================= */
+.f0-neon-shell {
+  position: relative;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(88, 28, 135, 0.85), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.85), transparent 55%),
+    #020617;
+}
+
+/* Electric lines / neon columns (subtle) - DISABLED to fix layout issues */
+/*
+.f0-neon-shell::before,
+.f0-neon-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      120deg,
+      rgba(147, 51, 234, 0.0) 0%,
+      rgba(147, 51, 234, 0.32) 40%,
+      rgba(56, 189, 248, 0.0) 80%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.45;
+  animation: f0NeonSweep 12s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+*/
+
+/* DISABLED - was causing layout issues
+.f0-neon-shell::after {
+  animation-delay: -6s;
+  transform: scaleX(-1);
+}
+*/
+
+@keyframes f0NeonSweep {
+  0% {
+    transform: translateX(-10%) translateY(0) scale(1.05);
+  }
+  50% {
+    transform: translateX(10%) translateY(-2%) scale(1.08);
+  }
+  100% {
+    transform: translateX(-10%) translateY(0) scale(1.05);
+  }
+}
+
+/* Legacy backgrounds - kept for backward compatibility */
+.login-background {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(88, 28, 135, 0.85), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.85), transparent 55%),
+    #020617;
+}
+
+.dashboard-background {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(88, 28, 135, 0.85), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.85), transparent 55%),
+    #020617;
+}
+
+.neon-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(88, 28, 135, 0.85), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.85), transparent 55%),
+    #020617;
+}
+
+/* ⚡ F0 Lightning Neon Background (login only) */
+.f0-lightning-bg {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(142, 68, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(0, 200, 255, 0.18), transparent 55%),
+    linear-gradient(120deg, #3b0b80 0%, #39118a 35%, #003a6f 100%);
+  overflow: hidden;
+}
+
+/* خطوط نيون مائلة خفيفة */
+.f0-lightning-bg::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.04) 0,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  animation: f0-drift-lines 22s linear infinite;
+}
+
+/* ومضات البرق */
+.f0-lightning-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 65% 35%, rgba(255, 255, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 30% 72%, rgba(190, 120, 255, 0.28), transparent 60%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: f0-lightning-flash 7s ease-in-out infinite;
+}
+
+@keyframes f0-drift-lines {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-8%, -8%, 0);
+  }
+}
+
+@keyframes f0-lightning-flash {
+  0%,
+  12%,
+  100% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 0.95;
+  }
+  6% {
+    opacity: 0.25;
+  }
+  9% {
+    opacity: 0.8;
+  }
+}
+
+/* Float animation for mascots */
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* ============================================
+   Phase 98.1: Marketplace Styles
+   ============================================ */
+
+.marketplace-page {
+  padding: 0 1.5rem 2rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.marketplace-page.rtl {
+  direction: rtl;
+}
+
+/* Hero Section */
+.marketplace-hero {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.marketplace-hero-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(90deg, #a855f7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.marketplace-hero-subtitle {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Filters Section */
+.marketplace-filters {
+  margin-bottom: 1.5rem;
+}
+
+.marketplace-search {
+  margin-bottom: 1rem;
+}
+
+.marketplace-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.marketplace-search-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.marketplace-search-input::placeholder {
+  color: #64748b;
+}
+
+.marketplace-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.marketplace-category-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.4);
+  color: #94a3b8;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.marketplace-category-btn:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+}
+
+.marketplace-category-btn.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.3));
+  border-color: #8b5cf6;
+  color: #e9d5ff;
+}
+
+.marketplace-category-count {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+}
+
+/* Section Titles */
+.marketplace-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 1rem;
+}
+
+/* Grid */
+.marketplace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.marketplace-grid.featured {
+  margin-bottom: 2rem;
+}
+
+/* Card */
+.marketplace-card {
+  background: radial-gradient(circle at top left, rgba(124, 58, 237, 0.12), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: all 0.25s;
+}
+
+.marketplace-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
+}
+
+.marketplace-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.marketplace-card-icon {
+  font-size: 1.75rem;
+}
+
+.marketplace-card-badges {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.marketplace-badge {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.marketplace-badge.featured {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(249, 115, 22, 0.2));
+  border: 1px solid rgba(234, 179, 8, 0.5);
+  color: #fcd34d;
+}
+
+.marketplace-badge.status {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid;
+}
+
+.marketplace-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.marketplace-card-tagline {
+  font-size: 0.85rem;
+  color: #c4b5fd;
+  margin: 0;
+  font-weight: 500;
+}
+
+.marketplace-card-description {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.marketplace-card-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.marketplace-platform-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.marketplace-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.marketplace-difficulty {
+  font-weight: 500;
+}
+
+.marketplace-mvp-days {
+  color: #64748b;
+}
+
+.marketplace-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.marketplace-tech-tag {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(71, 85, 105, 0.3);
+  color: #94a3b8;
+}
+
+.marketplace-tech-tag.more {
+  color: #64748b;
+}
+
+.marketplace-card-cta {
+  display: block;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.marketplace-card-cta:hover {
+  background: linear-gradient(135deg, #8b5cf6, #818cf8);
+  transform: scale(1.02);
+}
+
+.marketplace-card-cta.disabled {
+  background: rgba(71, 85, 105, 0.4);
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.marketplace-card-cta.disabled:hover {
+  transform: none;
+}
+
+/* Loading */
+.marketplace-loading {
+  text-align: center;
+  padding: 3rem 0;
+  color: #94a3b8;
+}
+
+.marketplace-loading-spinner {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 1rem;
+  border: 3px solid rgba(139, 92, 246, 0.2);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.marketplace-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+/* CTA Section */
+.marketplace-cta {
+  text-align: center;
+  padding: 2rem;
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.15), transparent);
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  margin-top: 2rem;
+}
+
+.marketplace-cta h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0 0 0.5rem;
+}
+
+.marketplace-cta p {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0 0 1rem;
+}
+
+.marketplace-cta-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.marketplace-cta-btn:hover {
+  background: linear-gradient(135deg, #8b5cf6, #818cf8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }

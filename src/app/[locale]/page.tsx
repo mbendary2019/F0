@@ -1,92 +1,88 @@
-// src/app/[locale]/page.tsx
 'use client';
-import Link from 'next/link';
-import {useLocale, useTranslations} from 'next-intl';
-import { useProjects } from '@/features/projects/useProjects';
-import { ProjectCard } from '@/features/projects/ProjectCard';
-import { isMockMode } from '@/lib/mock';
 
-export default function Home() {
-  const locale = useLocale();
-  const t = useTranslations();
-  const { projects, loading, error } = useProjects();
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+
+export default function LandingPage() {
+  const params = useParams();
+  const locale = params?.locale as string || 'en';
 
   return (
-    <main className="min-h-dvh flex items-center justify-center p-8">
-      <div className="max-w-3xl w-full space-y-6">
-        <h1 className="text-3xl font-semibold">{t('home.title')}</h1>
-        <p className="text-muted-foreground">
-          {t('home.subtitle')}
-        </p>
-        {isMockMode() && (
-          <p className="text-sm text-neutral-400 bg-neutral-900/50 rounded-lg px-3 py-2">
-            Mock Mode is ON — البيانات الحالية تجريبية لحين ربط Firestore.
-          </p>
-        )}
+    <main className="min-h-screen f0-lightning-bg relative overflow-hidden">
+      {/* Overlay خفيف عشان يبان النص */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
 
-        {/* زر تسجيل الدخول */}
-        <div className="flex">
-          <Link
-            href={`/${locale}/login`}
-            className="inline-flex items-center rounded-xl border px-4 py-2 text-sm font-medium hover:shadow transition-shadow"
-          >
-            {t('home.loginCta')}
-          </Link>
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 lg:flex-row lg:justify-between lg:px-10">
+        {/* الماسكوت */}
+        <div className="mb-10 flex flex-1 items-center justify-center lg:mb-0">
+          <div className="rounded-full bg-purple-500/10 p-6 backdrop-blur">
+            <Image
+              src="/mascots/f0-mascot-login.gif"
+              alt="F0 Mascot"
+              width={420}
+              height={420}
+              className="max-w-[60vw] animate-[float_6s_ease-in-out_infinite] drop-shadow-[0_0_45px_rgba(129,140,248,0.7)]"
+            />
+          </div>
         </div>
 
-        {/* Projects Section */}
-        <section>
-          <h2 className="text-xl font-semibold mb-3">Your Projects</h2>
-
-          {loading && <div className="text-sm text-neutral-400">Loading…</div>}
-          {error && (
-            <div className="text-sm text-red-500">Failed to load projects.</div>
-          )}
-
-          <div className="grid gap-3 md:grid-cols-3 mb-6">
-            {projects.map((p) => (
-              <ProjectCard key={p.id} p={p} />
-            ))}
+        {/* الـ Hero Text + الأزرار */}
+        <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left space-y-6">
+          <div className="inline-flex items-center rounded-full bg-black/40 px-4 py-1 text-xs font-medium text-slate-200 shadow-lg shadow-purple-800/30 border border-white/5 mb-2">
+            From Zero → Production • AI Coding Workspace
           </div>
-        </section>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <Link href={`/${locale}/developers`} className="rounded-2xl border p-4 hover:shadow">
-            <h3 className="font-medium">{t('nav.developers')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('nav.developers_desc')}
-            </p>
-          </Link>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight">
+            Build <span className="text-fuchsia-300">full apps</span>
+            <br className="hidden sm:block" />
+            with <span className="text-sky-300">F0 Agent</span> in minutes.
+          </h1>
 
-          <Link href={`/${locale}/developers/billing`} className="rounded-2xl border p-4 hover:shadow">
-            <h3 className="font-medium">{t('nav.billing')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('nav.billing_desc')}
-            </p>
-          </Link>
+          <p className="max-w-xl text-sm sm:text-base text-slate-200/80 leading-relaxed">
+            Start a new project, chat with your AI agent, and deploy to the cloud —
+            all from one unified dashboard with live coding sessions.
+          </p>
 
-          <Link href={`/${locale}/ops/analytics`} className="rounded-2xl border p-4 hover:shadow">
-            <h3 className="font-medium">{t('nav.opsAnalytics')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('nav.opsAnalytics_desc')}
-            </p>
-          </Link>
+          {/* الأزرار الأساسية */}
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={`/${locale}/auth`}
+              className="inline-flex items-center justify-center rounded-full px-7 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(168,85,247,0.7)]
+                         bg-gradient-to-r from-fuchsia-500 via-purple-500 to-sky-400 hover:opacity-95 hover:-translate-y-[1px]
+                         transition-transform transition-opacity duration-200"
+            >
+              🚀 Start New Project
+            </Link>
 
-          <Link href={`/${locale}/ops/audit`} className="rounded-2xl border p-4 hover:shadow">
-            <h3 className="font-medium">{t('nav.audit')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('nav.audit_desc')}
-            </p>
-          </Link>
+            <Link
+              href={`/${locale}/pricing`}
+              className="inline-flex items-center justify-center rounded-full px-7 py-3 text-sm font-semibold
+                         border border-white/15 bg-black/40 text-slate-100 hover:border-white/30 hover:bg-black/60
+                         transition-colors duration-200"
+            >
+              💎 View Plans & Pricing
+            </Link>
+          </div>
 
-          <Link href={`/${locale}/f0`} className="rounded-2xl border p-4 hover:shadow col-span-full">
-            <h3 className="font-medium">{t('f0.title')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('f0.subtitle')}
-            </p>
-          </Link>
+          {/* Info صغيرة تحت الأزرار */}
+          <p className="text-xs text-slate-300/70 mt-3">
+            No credit card required • Free tier available • Arabic & English support
+          </p>
         </div>
       </div>
+
+      {/* Floating animation */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+      `}</style>
     </main>
   );
 }

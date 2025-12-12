@@ -1,0 +1,27 @@
+{
+  "name": "f0-xcode-helper",
+  "version": "0.0.1",
+  "description": "F0 Helper Daemon for Xcode Source Editor Extension",
+  "main": "dist/helperService.js",
+  "bin": {
+    "f0-xcode-helper": "./dist/helperService.js"
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "dev": "tsx src/helperService.ts"
+  },
+  "keywords": ["f0", "xcode", "ai", "assistant"],
+  "author": "From Zero",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0",
+    "open": "^8.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-fetch": "^2.6.9",
+    "typescript": "^5.6.0",
+    "tsx": "^4.7.0"
+  }
+}

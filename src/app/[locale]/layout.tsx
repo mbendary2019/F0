@@ -24,10 +24,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-        <header className="w-full flex justify-end p-4 border-b">
-          <LanguageSwitcher />
-        </header>
+      <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen md:h-screen md:overflow-hidden overflow-y-auto">
         {children}
         <ToastProvider />
       </div>

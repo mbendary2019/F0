@@ -108,5 +108,18 @@ service firebase.storage {
       // Only Cloud Functions can write (via Admin SDK)
       allow write: if false;
     }
+
+    // ============================================================
+    // PHASE 100: AI MEDIA STUDIO
+    // ============================================================
+
+    // Media assets: AI-generated images (logos, icons, etc.)
+    match /media/{projectId}/{assetId} {
+      // Public read for all generated media assets (beta)
+      allow read: if true;
+
+      // Only server (Admin SDK) can write
+      allow write: if false;
+    }
   }
 }

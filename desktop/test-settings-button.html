@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Settings Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #050816;
+      color: #e5e7eb;
+    }
+    button {
+      padding: 10px 20px;
+      background: #7c3aed;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #6d28d9;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #1f2937;
+      border-radius: 8px;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Test F0 Desktop IDE - Settings Button</h1>
+
+  <p>التطبيق شغال على: <a href="http://localhost:5174" target="_blank" style="color: #7c3aed;">http://localhost:5174</a></p>
+
+  <h2>التعليمات:</h2>
+  <ol>
+    <li>افتح الرابط أعلاه في متصفح جديد</li>
+    <li>اضغط F12 لفتح DevTools</li>
+    <li>اذهب إلى تبويب Console</li>
+    <li>اضغط على زر Settings في الـ header</li>
+    <li>تحقق من ظهور النافذة المنبثقة</li>
+  </ol>
+
+  <h2>إذا لم يعمل الزر:</h2>
+  <ul>
+    <li>تحقق من وجود أخطاء في Console</li>
+    <li>تحقق من أن الكود يتم تحميله بشكل صحيح</li>
+    <li>جرب إعادة تحميل الصفحة (Ctrl+R أو Cmd+R)</li>
+  </ul>
+
+  <div id="result">
+    <strong>حالة السيرفر:</strong> ✅ Vite dev server شغال على http://localhost:5174
+  </div>
+
+  <h2>الكود المتوقع أن يعمل:</h2>
+  <pre style="background: #0a0f1e; padding: 15px; border-radius: 8px; overflow-x: auto;">
+// في App.tsx:
+const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+&lt;button
+  className="f0-btn f0-btn-secondary"
+  onClick={() => setIsSettingsOpen(true)}
+&gt;
+  Settings
+&lt;/button&gt;
+
+&lt;SettingsModal
+  open={isSettingsOpen}
+  onClose={() => setIsSettingsOpen(false)}
+  onSaved={handleSettingsSaved}
+/&gt;
+  </pre>
+</body>
+</html>

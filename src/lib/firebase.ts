@@ -1,6 +1,7 @@
 /**
  * Firebase Client SDK Configuration
- * Unified exports for Firebase services with emulator support
+ * Phase 82: Unified Environment Management
+ * Single source of truth for Firebase client initialization with emulator support
  */
 
 import { getApp, getApps, initializeApp } from 'firebase/app';
@@ -8,6 +9,7 @@ import { getAuth, connectAuthEmulator, signInAnonymously } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { resolveClientEnv, logClientEnv } from '@/lib/env/resolveEnv';
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -29,51 +31,58 @@ export const firestore = db; // Alias for compatibility
 export const functions = getFunctions(app, 'us-central1');
 export const storage = getStorage(app);
 
-// Connect to Firebase Emulators in development
-const useEmulators = process.env.NEXT_PUBLIC_USE_EMULATORS === '1' || process.env.NEXT_PUBLIC_USE_EMULATORS === 'true';
+// Phase 82: Unified Environment Resolution
+const env = resolveClientEnv();
 
-if (useEmulators) {
-  let emulatorsConnected = false;
+// Global flag to prevent duplicate emulator connections
+let emulatorsConnected = false;
 
+if (env.effective === 'emulator' && !emulatorsConnected) {
   try {
-    if (!emulatorsConnected) {
-      // Connect Auth emulator (client-side only)
-      if (typeof window !== 'undefined') {
-        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-      }
+    // Connect Auth emulator (client-side only)
+    if (typeof window !== 'undefined' && env.auth.useEmulator && env.auth.url) {
+      connectAuthEmulator(auth, env.auth.url, { disableWarnings: true });
+    }
 
-      // Connect Firestore emulator (both client & server)
-      connectFirestoreEmulator(db, 'localhost', 8080);
+    // Connect Firestore emulator (both client & server)
+    if (env.firestore.useEmulator && env.firestore.host && env.firestore.port) {
+      connectFirestoreEmulator(db, env.firestore.host, env.firestore.port);
+    }
 
-      // Connect Functions emulator (both client & server)
-      connectFunctionsEmulator(functions, 'localhost', 5001);
+    // Connect Functions emulator (both client & server)
+    if (env.functions.useEmulator && env.functions.host && env.functions.port) {
+      connectFunctionsEmulator(functions, env.functions.host, env.functions.port);
+    }
 
-      // Connect Storage emulator (client-side only)
-      if (typeof window !== 'undefined') {
-        connectStorageEmulator(storage, 'localhost', 9199);
-      }
+    // Connect Storage emulator (client-side only)
+    if (typeof window !== 'undefined') {
+      connectStorageEmulator(storage, 'localhost', 9199);
+    }
 
-      emulatorsConnected = true;
-      console.log('✅ [firebase] Connected to emulators');
+    emulatorsConnected = true;
+    console.log('✅ [Phase 82] Connected to Firebase emulators');
+    logClientEnv('[Phase 82]');
 
-      // Auto sign-in anonymously for emulator (ensures request.auth != null)
-      if (typeof window !== 'undefined') {
-        // Wait for auth to be ready, then sign in
-        auth.onAuthStateChanged((user) => {
-          if (!user) {
-            signInAnonymously(auth)
-              .then(() => console.log('✅ [firebase] Signed in anonymously'))
-              .catch((e) => console.warn('⚠️ [firebase] Anonymous sign-in failed:', e.message));
-          }
-        });
-      }
+    // Auto sign-in anonymously for emulator (ensures request.auth != null)
+    if (typeof window !== 'undefined') {
+      // Wait for auth to be ready, then sign in
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          signInAnonymously(auth)
+            .then(() => console.log('✅ [Phase 82] Signed in anonymously'))
+            .catch((e) => console.warn('⚠️ [Phase 82] Anonymous sign-in failed:', e.message));
+        }
+      });
     }
   } catch (error: any) {
     // Emulators already connected or not available
-    if (!error.message?.includes('already been called')) {
-      console.warn('⚠️ [firebase] Emulators not available:', error.message);
+    if (!error.message?.includes('already been called') && !error.message?.includes('emulator-config-failed')) {
+      console.warn('⚠️ [Phase 82] Emulators not available:', error.message);
     }
   }
+} else if (env.effective === 'cloud') {
+  console.log('☁️ [Phase 82] Using Firebase Cloud services');
+  logClientEnv('[Phase 82]');
 }
 
 // Export default app for compatibility

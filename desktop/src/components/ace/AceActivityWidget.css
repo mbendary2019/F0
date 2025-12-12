@@ -1,0 +1,103 @@
+/* desktop/src/components/ace/AceActivityWidget.css */
+/* Phase 128.8: ACE Activity Widget Styles */
+
+.f0-ace-widget {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--bg-tertiary, #252540);
+  border: 1px solid var(--border-color, #333);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary, #aaa);
+}
+
+.f0-ace-widget:hover {
+  background: var(--bg-hover, #2a2a45);
+  border-color: var(--ace-status-color, #3b82f6);
+  color: var(--text-primary, #fff);
+}
+
+.f0-ace-widget.pulsing {
+  animation: widget-glow 2s ease-in-out infinite;
+}
+
+@keyframes widget-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 8px 2px var(--ace-status-color);
+  }
+}
+
+/* Icon */
+.f0-ace-widget-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.f0-ace-widget:hover .f0-ace-widget-icon {
+  transform: scale(1.1);
+}
+
+/* Status dot */
+.f0-ace-widget-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-tertiary, #252540);
+}
+
+.f0-ace-widget-dot.pulsing {
+  animation: dot-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Alert badge */
+.f0-ace-widget-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-secondary, #1a1a2e);
+}
+
+/* RTL Support */
+[dir="rtl"] .f0-ace-widget-dot {
+  right: auto;
+  left: 4px;
+}
+
+[dir="rtl"] .f0-ace-widget-badge {
+  right: auto;
+  left: -4px;
+}
