@@ -198,3 +198,6 @@ export function getFeatureNames(advanced = false): string[] {
 
   return base;
 }
+
+// Alias for backward compatibility
+export const extractAllFeatures = extractAdvancedFeatures;

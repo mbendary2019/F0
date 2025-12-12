@@ -30,7 +30,9 @@ export const adminDb = admin.firestore();
 export const adminAuth = admin.auth();
 export const adminStorage = admin.storage();
 
-// Legacy exports for backward compatibility
+// Alias exports for backward compatibility
+export const auth = adminAuth;
+export const storage = adminStorage;
 export const db = adminDb; // Used by many files expecting { db }
 
 // Legacy init function for backward compatibility

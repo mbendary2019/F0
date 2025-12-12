@@ -4,6 +4,9 @@
 import { db } from "../memory/firestoreSchema";
 import type { FieldValue, Timestamp } from "firebase-admin/firestore";
 
+// Re-export computeReward from computeRewards for backward compatibility
+export { computeReward } from "./computeRewards";
+
 // === Collections ===
 export const COL_FEEDBACK = "ops_memory_feedback" as const;
 

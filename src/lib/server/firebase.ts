@@ -78,3 +78,7 @@ export const authAdmin = new Proxy({} as Auth, {
 
 // Legacy function export for backwards compatibility
 export const initAdmin = initAdminApp;
+
+// Additional alias exports for code compatibility
+export const initFirebaseAdmin = initAdminApp;
+export const adminDb = firestoreAdmin;

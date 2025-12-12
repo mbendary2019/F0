@@ -3,6 +3,7 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 const firebaseConfig = {
@@ -21,6 +22,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 // Explicitly set region to match Cloud Functions deployment
 export const functions = getFunctions(app, "us-central1");
+export const storage = getStorage(app);
 
 // App Check (browser only, production)
 if (typeof window !== 'undefined' && !('__appCheckInit' in window)) {
@@ -73,6 +75,15 @@ if (process.env.NEXT_PUBLIC_USE_EMULATORS === '1') {
   } catch (e: any) {
     if (!e.message?.includes('already')) {
       console.warn("[firebaseClient] Functions emulator connection failed:", e);
+    }
+  }
+
+  try {
+    connectStorageEmulator(storage, '127.0.0.1', 9199);
+    console.log("✅ [firebaseClient] Connected to Storage Emulator: 127.0.0.1:9199");
+  } catch (e: any) {
+    if (!e.message?.includes('already')) {
+      console.warn("[firebaseClient] Storage emulator connection failed:", e);
     }
   }
 }
