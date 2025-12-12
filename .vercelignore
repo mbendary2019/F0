@@ -7,8 +7,6 @@ pnpm-lock.yaml
 /desktop/
 /apps/
 /packages/
-/orchestrator/
-/functions/
 /ide/
 /tools/
 /scripts/
