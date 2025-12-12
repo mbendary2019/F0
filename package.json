@@ -2,7 +2,7 @@
   "name": "f0-agent",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.18.0",
+  "packageManager": "pnpm@8.15.4",
   "scripts": {
     "dev": "next dev -p 3030",
     "dev:web": "next dev -p 3030",
