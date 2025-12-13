@@ -1,3 +1,6 @@
+# Prevent Turbo monorepo detection - this is a single Next.js app
+turbo.json
+
 # Other workspaces (not the main Next.js app)
 /desktop/
 /apps/
