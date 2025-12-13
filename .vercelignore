@@ -1,17 +1,10 @@
-# Monorepo config files
-turbo.json
-pnpm-workspace.yaml
-pnpm-lock.yaml
-
 # Other workspaces (not the main Next.js app)
 /desktop/
 /apps/
 /packages/
 /ide/
 /tools/
-/scripts/
 
-# Dev files
+# Documentation files (reduces deploy size)
 *.md
-.env*
-!.env.example
+!README.md
