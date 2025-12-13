@@ -6,11 +6,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import type {
-
-export const dynamic = 'force-dynamic';
   GitHubDevicePollRequest,
   GitHubDevicePollResponse,
 } from '@/types/integrations';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {

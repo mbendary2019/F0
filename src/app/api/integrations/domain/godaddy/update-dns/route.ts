@@ -10,12 +10,12 @@ import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 import { getFirestore } from 'firebase-admin/firestore';
 import { adminApp } from '@/lib/firebaseAdmin';
 import type {
-
-export const dynamic = 'force-dynamic';
   UpdateGoDaddyDNSRequest,
   UpdateGoDaddyDNSResponse,
   DomainIntegrationData,
 } from '@/types/integrations';
+
+export const dynamic = 'force-dynamic';
 
 const db = getFirestore(adminApp);
 
