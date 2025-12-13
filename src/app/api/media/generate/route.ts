@@ -10,9 +10,18 @@ import type { F0MediaAsset, F0MediaKind } from '@/types/media';
 
 export const runtime = 'nodejs';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy initialization of OpenAI client to avoid build-time errors
+let _openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (_openai) return _openai;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('[media/generate] OPENAI_API_KEY is not configured');
+  }
+  _openai = new OpenAI({ apiKey });
+  return _openai;
+}
 
 interface GenerateBody {
   projectId: string;
@@ -47,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     // 1️⃣ نولّد الصورة من OpenAI (نستخدم URL بدل base64)
     console.log('[media/generate] calling OpenAI.images.generate...');
-    const imageResponse = await openai.images.generate({
+    const imageResponse = await getOpenAIClient().images.generate({
       model: 'dall-e-3',
       prompt: prompt,
       size: '1024x1024',

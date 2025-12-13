@@ -46,12 +46,20 @@ interface AceAutoFixResponse {
 }
 
 // ============================================
-// LLM Client
+// LLM Client (Lazy initialization to avoid build-time errors)
 // ============================================
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+let _openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (_openai) return _openai;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('[ACE AutoFix] OPENAI_API_KEY is not configured');
+  }
+  _openai = new OpenAI({ apiKey });
+  return _openai;
+}
 
 // ============================================
 // Phase 145.3.4: F0 ACE Expert Prompts
@@ -280,7 +288,7 @@ async function generatePatches(input: AceAutoFixRequest): Promise<AceAutoFixResp
   });
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {

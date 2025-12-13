@@ -9,9 +9,18 @@ import type { VoiceToTextResponse } from '@/types/media';
 
 export const runtime = 'nodejs';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy initialization of OpenAI client to avoid build-time errors
+let _openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (_openai) return _openai;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('[media/voice] OPENAI_API_KEY is not configured');
+  }
+  _openai = new OpenAI({ apiKey });
+  return _openai;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,7 +61,7 @@ export async function POST(req: NextRequest) {
     console.log('[media/voice] Calling OpenAI Whisper API...');
 
     // Call Whisper API
-    const transcription = await openai.audio.transcriptions.create({
+    const transcription = await getOpenAIClient().audio.transcriptions.create({
       file: openaiFile,
       model: 'whisper-1',
       language: language === 'ar' ? 'ar' : 'en', // Specify language for better accuracy

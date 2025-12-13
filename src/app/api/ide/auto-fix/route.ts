@@ -31,12 +31,20 @@ export interface AutoFixHttpResponse {
 }
 
 // ============================================
-// LLM Client
+// LLM Client (Lazy initialization to avoid build-time errors)
 // ============================================
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+let _openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (_openai) return _openai;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('[AutoFix] OPENAI_API_KEY is not configured');
+  }
+  _openai = new OpenAI({ apiKey });
+  return _openai;
+}
 
 // ============================================
 // Auto-Fix Logic
@@ -73,7 +81,7 @@ ${source}
 Return the fixed file content (no markdown, no backticks, just the code):`;
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
