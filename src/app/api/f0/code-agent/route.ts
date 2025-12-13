@@ -16,9 +16,20 @@ import { extractJsonFromText } from '@/lib/llm/extractJsonFromText';
 import { validateCodeAgentResponse } from '@/lib/llm/validateCodeAgentResponse';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+// Lazy initialization of OpenAI client to avoid build-time errors
+let _openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (_openai) return _openai;
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('[Code Agent] OPENAI_API_KEY is not configured');
+  }
+
+  _openai = new OpenAI({ apiKey });
+  return _openai;
+}
 
 // Dev bypass helper
 function isDevEnv() {
@@ -149,7 +160,7 @@ Stack:
       const readableStream = new ReadableStream({
         async start(controller) {
           try {
-            const streamResponse = await openai.chat.completions.create({
+            const streamResponse = await getOpenAIClient().chat.completions.create({
               model: 'gpt-4o-mini',
               messages: [
                 { role: 'system', content: CODE_AGENT_SYSTEM_PROMPT },
