@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { Suspense, useEffect, useState, useCallback, useMemo } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebaseClient';
 import { useLiveSessionsList } from '@/hooks/useLiveSessionsList';
@@ -191,7 +191,7 @@ const MOCK_PROJECT_FILES: FileInput[] = [
   { relativePath: 'README.md' },
 ];
 
-export default function LiveCodingPage() {
+function LiveCodingContent() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -945,5 +945,28 @@ export default function LiveCodingPage() {
         </div>
       </div>
     </F0Shell>
+  );
+}
+
+// Loading fallback for Suspense boundary
+function LiveCodingLoading() {
+  return (
+    <F0Shell>
+      <div className="flex h-full items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading Live Coding...</p>
+        </div>
+      </div>
+    </F0Shell>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function LiveCodingPage() {
+  return (
+    <Suspense fallback={<LiveCodingLoading />}>
+      <LiveCodingContent />
+    </Suspense>
   );
 }

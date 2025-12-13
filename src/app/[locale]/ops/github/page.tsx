@@ -12,7 +12,7 @@
 
 'use client';
 
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {getFunctions, httpsCallable} from 'firebase/functions';
 import {app, auth} from '@/lib/firebaseClient';
@@ -46,7 +46,7 @@ interface ConnectedRepo {
   lastSyncAt: string | null;
 }
 
-export default function GitHubIntegrationPage() {
+function GitHubIntegrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -374,5 +374,13 @@ export default function GitHubIntegrationPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function GitHubIntegrationPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto p-6"><p>Loading...</p></div>}>
+      <GitHubIntegrationContent />
+    </Suspense>
   );
 }

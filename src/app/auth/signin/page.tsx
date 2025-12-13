@@ -5,12 +5,12 @@
  * Phase 84.5: OAuth integration for VS Code extension
  */
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
-export default function VSCodeSignInPage() {
+function VSCodeSignInContent() {
   const searchParams = useSearchParams();
   const vscodeCallback = searchParams.get('vscode_callback');
   const state = searchParams.get('state');
@@ -111,5 +111,30 @@ export default function VSCodeSignInPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Loading fallback for Suspense boundary
+function SignInLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Loading...</h2>
+          <div className="mt-4 flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function VSCodeSignInPage() {
+  return (
+    <Suspense fallback={<SignInLoading />}>
+      <VSCodeSignInContent />
+    </Suspense>
   );
 }

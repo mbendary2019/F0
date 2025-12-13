@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import F0Shell from '@/components/f0/F0Shell';
 import { auth, db } from '@/lib/firebase';
@@ -12,7 +12,7 @@ type InfraType = 'firebase' | 'supabase' | 'custom';
 type MobileTarget = 'ios' | 'android';
 type DesktopTarget = 'mac' | 'windows' | 'linux';
 
-export default function NewProjectPage() {
+function NewProjectContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -518,5 +518,29 @@ export default function NewProjectPage() {
         </form>
       </div>
     </F0Shell>
+  );
+}
+
+// Loading fallback for Suspense boundary
+function NewProjectLoading() {
+  return (
+    <F0Shell>
+      <div className="max-w-3xl mx-auto py-20 text-center">
+        <div className="animate-pulse">
+          <div className="h-8 w-48 mx-auto bg-slate-700 rounded mb-4" />
+          <div className="h-4 w-64 mx-auto bg-slate-800 rounded" />
+        </div>
+        <p className="text-slate-400 mt-4">Loading...</p>
+      </div>
+    </F0Shell>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function NewProjectPage() {
+  return (
+    <Suspense fallback={<NewProjectLoading />}>
+      <NewProjectContent />
+    </Suspense>
   );
 }

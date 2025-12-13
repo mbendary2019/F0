@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -54,7 +54,7 @@ async function trackEvent(kind: string, productId: string | null, searchParams: 
   }
 }
 
-export default function ProductPage() {
+function ProductPageContent() {
   const params = useParams<{ slug: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -294,5 +294,13 @@ export default function ProductPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading…</div>}>
+      <ProductPageContent />
+    </Suspense>
   );
 }

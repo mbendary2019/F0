@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import F0Shell from '@/components/f0/F0Shell';
@@ -16,7 +16,7 @@ type Message = {
   createdAt: number;
 };
 
-export default function AgentWorkspacePage() {
+function AgentWorkspaceContent() {
   const params = useParams();
   const locale = (params?.locale as string) || 'en';
   const isRTL = locale === 'ar';
@@ -537,5 +537,29 @@ export default function AgentWorkspacePage() {
         </div>
       </div>
     </F0Shell>
+  );
+}
+
+// Loading fallback for Suspense boundary
+function AgentWorkspaceLoading() {
+  return (
+    <F0Shell>
+      <div className="flex flex-col gap-6 max-w-5xl mx-auto">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-64 bg-slate-700 rounded" />
+          <div className="h-4 w-96 bg-slate-800 rounded" />
+          <div className="h-40 bg-slate-900/70 rounded-2xl" />
+        </div>
+      </div>
+    </F0Shell>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function AgentWorkspacePage() {
+  return (
+    <Suspense fallback={<AgentWorkspaceLoading />}>
+      <AgentWorkspaceContent />
+    </Suspense>
   );
 }

@@ -5,9 +5,9 @@ import { useMemoryTimeline, formatMemoryTimestamp } from '@/lib/collab/memory/us
 import { searchMemories, type SearchResult } from '@/lib/collab/memory/search';
 import { findSimilar } from '@/lib/collab/memory/similar';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
-export default function MemoryPage() {
+function MemoryPageContent() {
   const sp = useSearchParams();
   const router = useRouter();
 
@@ -329,5 +329,19 @@ export default function MemoryPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MemoryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 p-6">
+        <div className="text-center text-neutral-600 dark:text-neutral-400">
+          Loading timeline...
+        </div>
+      </div>
+    }>
+      <MemoryPageContent />
+    </Suspense>
   );
 }
