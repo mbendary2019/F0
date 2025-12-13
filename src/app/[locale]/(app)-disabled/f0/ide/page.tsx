@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { createIdeSession, sendIdeChat } from '@/lib/ideClient';
 import { useIdeFiles } from './hooks/useIdeFiles';
 import { parseAiPatch, FilePatch } from '@/lib/patch/parsePatch';
@@ -26,8 +26,11 @@ import {
   type IdeFileMap,
 } from '@/lib/ide/sandboxEngine';
 
+// Force dynamic rendering to avoid SSR issues with Monaco and window usage
+export const dynamic = 'force-dynamic';
+
 // Dynamic import to avoid SSR issues with Monaco
-const Editor = dynamic(() => import('@monaco-editor/react'), {
+const Editor = nextDynamic(() => import('@monaco-editor/react'), {
   ssr: false,
   loading: () => <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Loading Editor...</div>
 });
