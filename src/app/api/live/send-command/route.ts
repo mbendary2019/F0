@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { assertAuth } from '@/server/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Send Command to IDE
  *

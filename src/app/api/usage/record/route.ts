@@ -9,6 +9,8 @@ import { recordUsage, type UsageKind } from '@/server/usage';
 import { auditLog } from '@/server/audit';
 import { rateLimitGuard } from '@/server/rate-limit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   // Rate limiting
   const rateLimitResult = await rateLimitGuard(req, {

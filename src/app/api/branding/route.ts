@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authAdmin, firestoreAdmin } from '@/lib/server/firebase';
 
+export const dynamic = 'force-dynamic';
+
 const ENV_KEY = process.env.BRANDING_ENV || 'prod';
 
 export async function GET() {

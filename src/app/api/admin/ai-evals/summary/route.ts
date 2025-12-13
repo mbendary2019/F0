@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminFromHeaders } from '@/lib/admin-auth';
 import { db } from '@/lib/firebase-admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Verify admin authentication

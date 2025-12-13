@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireUser } from '@/lib/api/requireUser';
 import { createCheckoutSession } from '@/lib/server/stripe';
 import type {
+
+export const dynamic = 'force-dynamic';
   CreateCheckoutSessionRequest,
   CreateCheckoutSessionResponse,
 } from '@/types/billing';

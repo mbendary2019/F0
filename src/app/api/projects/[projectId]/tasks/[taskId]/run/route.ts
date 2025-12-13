@@ -13,6 +13,8 @@ import { updateTaskStatus, type TaskStatus } from '@/lib/server/projectPlan';
 import { logAiOperation } from '@/lib/server/aiLogs';
 import { enqueueTaskExecution, logTaskActivity } from '@/lib/server/taskRunner';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 // Dev bypass helper

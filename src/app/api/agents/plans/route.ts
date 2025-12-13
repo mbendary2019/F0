@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPlanStore } from '@/lib/agents/orchestratorBus';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   console.log('[155.4][API] GET /api/agents/plans');
 

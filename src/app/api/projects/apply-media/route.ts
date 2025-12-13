@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getFirestoreAdmin } from "@/lib/server/firebase";
 import type { F0MediaAsset } from "@/types/media";
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = "nodejs";
 
 type ApplySlot = "logo" | "splash" | "hero";

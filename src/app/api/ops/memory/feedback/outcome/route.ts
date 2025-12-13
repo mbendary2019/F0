@@ -5,6 +5,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import {
+
+export const dynamic = 'force-dynamic';
   submitOutcome,
   submitOutcomeBatch,
   type Outcome,

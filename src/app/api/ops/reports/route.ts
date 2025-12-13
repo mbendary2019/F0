@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb } from "@/lib/firebase-admin";
 import { getStorage } from "firebase-admin/storage";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Authentication: Get token from Authorization header or __session cookie

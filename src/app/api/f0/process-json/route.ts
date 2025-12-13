@@ -20,6 +20,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestoreAdmin } from '@/lib/server/firebase';
 import { saveProjectPlan, type AgentPhase, type AgentTask } from '@/lib/server/projectPlan';
 import {
+
+export const dynamic = 'force-dynamic';
   initializeMemoryFromF0Json,
   applyMemoryUpdatesFromJson,
   type MemoryUpdateJson,

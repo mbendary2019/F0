@@ -1,5 +1,7 @@
 import { callCallable } from "@/lib/functionsClient";
 
+export const dynamic = 'force-dynamic';
+
 // listApiKeys, createApiKey: موجودين في functions/src/apiKeys.ts كـ onCall
 export async function GET() {
   try {

@@ -12,6 +12,8 @@ import { requireUser } from '@/lib/api/requireUser';
 import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 import { askAgent } from '@/lib/agents';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 type AgentChatRequest = {

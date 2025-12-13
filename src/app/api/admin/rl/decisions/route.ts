@@ -9,6 +9,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const ApprovalSchema = z.object({
   decision_id: z.string().min(1),
   approved: z.boolean(),

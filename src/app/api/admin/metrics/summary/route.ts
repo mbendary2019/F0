@@ -6,6 +6,8 @@
 import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getSummaryMetrics, queryAudit } from '@/lib/admin/observability';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   await assertAdminReq();
 

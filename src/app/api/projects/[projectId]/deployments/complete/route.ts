@@ -17,6 +17,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { syncProjectPreviewUrlWithLatestDeployment } from '@/lib/server/deployments';
 import type { DeploymentEnv } from '@/types/deployment';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 interface RouteContext {

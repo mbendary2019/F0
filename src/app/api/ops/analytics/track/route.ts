@@ -4,6 +4,8 @@ import { getFirestore } from "firebase-admin/firestore";
 import { rateLimitAllow, getKeyFingerprint } from "@/lib/rateLimit";
 import { isOriginAllowed, buildCorsHeaders, getIpFromRequest } from "@/lib/http/cors";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Community Analytics Tracking API
  *

@@ -10,6 +10,8 @@ import { adminApp } from '@/lib/firebaseAdmin';
 import { requireUser } from '@/lib/api/requireUser';
 import type { F0Project, CreateProjectRequest, ListProjectsResponse } from '@/types/project';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 /**

@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import type { VoiceToTextResponse } from '@/types/media';
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = 'nodejs';
 
 // Lazy initialization of OpenAI client to avoid build-time errors

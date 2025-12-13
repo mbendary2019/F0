@@ -11,6 +11,8 @@ import { requireUser } from '@/lib/api/requireUser';
 import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 import { askAgent } from '@/lib/agents';
 
+export const dynamic = 'force-dynamic';
+
 // Phase 90.1: Plan structure types
 export interface Task {
   id: string;

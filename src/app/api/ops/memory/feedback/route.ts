@@ -7,6 +7,8 @@ import { recordFeedback } from "@/lib/ai/feedback/recordFeedback";
 import { updateClusterWeight } from "@/lib/ai/feedback/updateClusterWeights";
 import type { Thumb } from "@/lib/ai/feedback/feedbackSchema";
 
+export const dynamic = 'force-dynamic';
+
 // === Request/Response Types ===
 
 type FeedbackRequest = {

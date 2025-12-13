@@ -45,6 +45,8 @@ import { db } from "@/lib/firebase-admin";
 import { buildSessionSummaryVM } from "@/orchestrator/ops/timeline/viewmodel";
 import type { AnyEvent } from "@/orchestrator/ops/timeline/types";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { sessionId: string } }

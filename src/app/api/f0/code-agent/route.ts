@@ -16,6 +16,8 @@ import { extractJsonFromText } from '@/lib/llm/extractJsonFromText';
 import { validateCodeAgentResponse } from '@/lib/llm/validateCodeAgentResponse';
 import OpenAI from 'openai';
 
+export const dynamic = 'force-dynamic';
+
 // Lazy initialization of OpenAI client to avoid build-time errors
 let _openai: OpenAI | null = null;
 

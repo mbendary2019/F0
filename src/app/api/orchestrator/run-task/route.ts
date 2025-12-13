@@ -13,6 +13,8 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { adminApp } from '@/lib/firebaseAdmin';
 import { askAgent } from '@/lib/agents';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 // Agent-specific system prompts

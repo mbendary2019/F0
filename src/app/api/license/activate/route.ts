@@ -5,6 +5,8 @@ import { getAuth } from 'firebase-admin/auth';
 import { licenseManager } from '@/lib/license/manager';
 import { signActivationReceipt } from '@/lib/license/signature';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Verify token

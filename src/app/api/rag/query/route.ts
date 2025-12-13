@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { recall } from '@/lib/rag/recallEngine';
 import { RecallOpts } from '@/lib/rag/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/rag/query
  *

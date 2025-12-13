@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authAdmin, firestoreAdmin } from '@/lib/server/firebase';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Verify auth

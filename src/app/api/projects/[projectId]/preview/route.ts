@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProjectPreviewUrl, updateProjectPreviewUrl } from '@/lib/server/projectPreview';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteContext {
   params: Promise<{ projectId: string }>;
 }

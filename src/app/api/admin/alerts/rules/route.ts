@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 
+export const dynamic = 'force-dynamic';
+
 const AlertRuleSchema = z.object({
   name: z.string().min(3),
   metric: z.enum(['errors_per_min', 'calls_per_min', 'latency_p95']),

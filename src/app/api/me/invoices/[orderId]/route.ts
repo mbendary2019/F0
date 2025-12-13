@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb, verifyIdToken } from "@/lib/firebaseAdmin";
 import { getStorage } from "firebase-admin/storage";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { orderId: string } }

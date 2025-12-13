@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { AceInlineRequest, AceInlineResponse } from '@/types/aceInline';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as AceInlineRequest;
 

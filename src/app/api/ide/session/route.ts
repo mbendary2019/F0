@@ -12,6 +12,8 @@ import { requireUser } from '@/lib/api/requireUser';
 import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 import type { IdeSessionRequest, IdeSessionResponse } from '@/types/ideBridge';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 export async function POST(req: NextRequest) {

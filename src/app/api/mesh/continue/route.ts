@@ -10,6 +10,8 @@ import { runMesh } from "@/orchestrator/mesh/router";
 import type { MeshRoute } from "@/orchestrator/mesh/protocol";
 import { validateConsensus } from "@/orchestrator/rag/consensus";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/mesh/continue
  * Continue an existing mesh session with feedback

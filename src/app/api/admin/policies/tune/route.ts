@@ -9,6 +9,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const TuneSchema = z.object({
   alpha: z.number().min(0.1).max(1.5).optional(),
   lr: z.number().min(0.005).max(0.2).optional(),

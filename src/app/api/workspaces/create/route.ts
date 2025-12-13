@@ -4,6 +4,8 @@ import { assertAuth } from "@/server/authAssert";
 import { limitOrNull } from "@/server/rateLimit";
 import { logAudit } from "@/server/audit";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Create Workspace API
  *

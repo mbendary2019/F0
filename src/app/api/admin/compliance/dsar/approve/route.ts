@@ -9,6 +9,8 @@ import { db } from '@/lib/firebase-admin';
 import { startDeletion } from '@/server/dsar';
 import { recordAuditLog } from '@/server/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   // Require admin
   const auth = await assertAuth(req, { requireAdmin: true });

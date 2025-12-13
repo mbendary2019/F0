@@ -8,6 +8,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { adminApp } from '@/lib/firebaseAdmin';
 import type { F0Template } from '@/types/templates';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const db = getFirestore(adminApp);

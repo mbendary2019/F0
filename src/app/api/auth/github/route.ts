@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '@/lib/firebase';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { code } = await req.json();

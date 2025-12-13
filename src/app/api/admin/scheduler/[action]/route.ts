@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
 import { callCallable } from "@/lib/functionsClient";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(_: Request, { params }: { params: { action: string }}) {
   const map: Record<string, string> = {
     "rollup": "debugRollup",

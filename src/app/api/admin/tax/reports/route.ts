@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken } from "@/lib/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 async function requireAdmin(req: NextRequest) {
   const h = req.headers.get("authorization") || "";
   if (!h.startsWith("Bearer ")) throw new Error("Unauthorized");

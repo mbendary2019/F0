@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authAdmin } from '@/lib/server/firebase';
 import { checkAndConsume, QuotaExceededError } from '@/lib/server/quota';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Verify auth token

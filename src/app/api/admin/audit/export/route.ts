@@ -7,6 +7,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { queryAudit } from '@/lib/admin/observability';
 import { toCSV } from '@/lib/admin/csv';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   await assertAdminReq();
 

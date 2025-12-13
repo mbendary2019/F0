@@ -6,6 +6,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // In-memory audit log store (for development)
 // In production, this would use Firestore
 interface AuditLogEntry {

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
 import { creditsManager } from '@/lib/billing/credits';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET - Get user's credit balance
  */

@@ -33,6 +33,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase-admin";
 import { isUncertain, getUncertaintyScore, suggestSamplesForLabeling } from "@/orchestrator/rag/activeLabeling";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Parse query params

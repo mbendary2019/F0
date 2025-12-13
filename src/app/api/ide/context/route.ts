@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Workspace context from IDE
  */

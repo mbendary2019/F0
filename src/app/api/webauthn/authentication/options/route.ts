@@ -3,6 +3,8 @@ import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import { adminDb } from "@/server/firebaseAdmin";
 import { randomUUID } from "crypto";
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = "nodejs";
 
 /**

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runPreflight, startRun, runSingleTask } from '@/lib/agents/runner';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { projectId, action, taskId } = await req.json();

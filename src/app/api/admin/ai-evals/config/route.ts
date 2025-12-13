@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestore } from 'firebase-admin/firestore';
 import { requireAdminFromHeaders } from '@/lib/admin-auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/admin/ai-evals/config
  * Returns current AI Governance configuration

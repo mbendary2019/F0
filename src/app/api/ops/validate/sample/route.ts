@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { saveSample, type SampleDoc } from "@/orchestrator/rag/online_learning";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Auth check

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getFirestore } from "firebase-admin/firestore";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(_req: Request, { params }: { params: { slug: string }}) {
   const db = getFirestore();
   const snap = await db.collection("products").where("slug","==",params.slug).limit(1).get();

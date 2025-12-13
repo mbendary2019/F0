@@ -18,6 +18,8 @@ import type {
 } from '@/types/files';
 import type { GitHubIntegrationData } from '@/types/integrations';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 export async function POST(req: NextRequest) {

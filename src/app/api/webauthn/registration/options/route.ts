@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { adminAuth, adminDb } from "@/server/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = "nodejs";
 
 /**

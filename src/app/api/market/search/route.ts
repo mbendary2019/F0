@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 const SEARCH_V2_ENABLED = process.env.SEARCH_V2_ENABLED === "true";
 const ALG_APP = process.env.ALGOLIA_APP_ID;
 const ALG_KEY = process.env.ALGOLIA_SEARCH_KEY;

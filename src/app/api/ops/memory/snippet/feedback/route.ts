@@ -12,6 +12,8 @@ import {
 } from "@/lib/ai/memory/snippetFeedback";
 import type { Thumb } from "@/lib/ai/feedback/feedbackSchema";
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = "nodejs";
 
 // === Types ===

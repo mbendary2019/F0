@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import admin from "firebase-admin";
 
+export const dynamic = 'force-dynamic';
+
 async function initAdmin() {
   if (!admin.apps.length) {
     admin.initializeApp({

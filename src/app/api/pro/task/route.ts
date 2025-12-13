@@ -4,6 +4,8 @@ import { limitOrNull } from "@/server/rateLimit";
 import { limitFs } from "@/server/rateLimitFirestore";
 import { logAudit } from "@/server/audit";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Protected Pro API Route Example
  *

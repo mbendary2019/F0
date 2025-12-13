@@ -1,6 +1,8 @@
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Export creator earnings as CSV
  * Only accessible by the creator themselves

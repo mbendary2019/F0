@@ -36,6 +36,8 @@ import {
 } from '@/lib/server/qa';
 import { touchPreviewHeartbeat } from '@/lib/server/previewHeartbeat';
 
+export const dynamic = 'force-dynamic';
+
 // Dev bypass helper
 function isDevEnv() {
   return (

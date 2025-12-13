@@ -14,6 +14,8 @@ import { validateConsensus } from "@/orchestrator/rag/consensus";
 import { logEvent } from "@/lib/telemetry/log";
 import { ensureUser, ensureFeature, ensureQuota } from "@/lib/security/rbac";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/mesh/execute
  * Execute a new cognitive mesh task

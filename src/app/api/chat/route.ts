@@ -9,6 +9,8 @@ import { shouldUsePatchMode } from '@/lib/agents/patch/usePatchMode';
 // Phase 109.6: Unified AI Logs
 import { logAiOperation, type AiLogMode } from '@/lib/server/aiLogs';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { projectId, text, locale } = await req.json();

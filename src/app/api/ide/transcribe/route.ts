@@ -10,6 +10,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+export const dynamic = 'force-dynamic';
+
 // Supported audio formats for Whisper
 const SUPPORTED_FORMATS = ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm', 'ogg'];
 

@@ -12,6 +12,8 @@ import {
 } from '@/lib/agents/orchestratorBus';
 import { addAuditLog } from '../audit-logs/route';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   console.log('[156.3][API] GET /api/agents/pending-actions');
 

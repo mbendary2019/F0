@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callLLM, type LLMMessage } from '@/lib/llm/unifiedLLMClient';
 import {
+
+export const dynamic = 'force-dynamic';
   getLoadBalancingStats,
   selectModel,
   MODEL_REGISTRY,

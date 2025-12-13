@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 
+export const dynamic = 'force-dynamic';
+
 const FeedbackSchema = z.object({
   vote: z.enum(['up', 'down']),
   question: z.string().min(1),

@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { adminDb } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 const RemediationRuleSchema = z.object({

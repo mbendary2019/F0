@@ -13,6 +13,8 @@ import {
 } from '@/types/inlineSuggestions';
 import { askAgent } from '@/lib/agents';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Verify authentication

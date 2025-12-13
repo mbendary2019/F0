@@ -50,6 +50,8 @@ import { chooseModel, classifyError, getNextFallback, type ModelSelectorDecision
 import { extractPDFContent } from '../../../../../orchestrator/core/media/extractors/pdfExtractor';
 import type { DocumentAttachmentData } from '@/lib/ide/types';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 // API Key for Desktop authentication

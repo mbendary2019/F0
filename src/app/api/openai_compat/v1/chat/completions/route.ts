@@ -13,6 +13,8 @@ import { runIdeChat } from '@/lib/agent/code/runIdeChat';
 import { streamIdeChatAsChunks } from '@/lib/agent/stream/streamIdeChat';
 import type { F0ChatCompletionRequest, F0ChatCompletionResponse } from '@/types/openaiCompat';
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = 'nodejs';
 export const maxDuration = 300; // 5 minutes for code generation
 

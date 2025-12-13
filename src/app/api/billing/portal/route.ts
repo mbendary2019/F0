@@ -1,5 +1,7 @@
 import { callCallable } from "@/lib/functionsClient";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST() {
   try {
     const out = await callCallable<{ url: string }>("createBillingPortalLink", {

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 
+export const dynamic = 'force-dynamic';
+
 async function requireAdmin(req: Request) {
   const hdr = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!hdr?.startsWith("Bearer ")) throw new Error("Unauthorized");

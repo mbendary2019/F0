@@ -8,6 +8,8 @@ import OpenAI from 'openai';
 import { getFirestoreAdmin } from '@/lib/server/firebase';
 import type { F0MediaAsset, F0MediaKind } from '@/types/media';
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = 'nodejs';
 
 // Lazy initialization of OpenAI client to avoid build-time errors

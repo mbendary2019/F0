@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { app } from '@/lib/firebase';
 
+export const dynamic = 'force-dynamic';
+
 const functions = getFunctions(app);
 const onPreflightCheck = httpsCallable(functions, 'onPreflightCheck');
 

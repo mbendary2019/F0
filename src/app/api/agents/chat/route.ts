@@ -10,6 +10,8 @@ import { getOrchestratorBus } from '@/lib/agents/orchestratorBus';
 import { getConversationStore } from '@/orchestrator/core/conversation/conversationStore';
 import type { AgentMessage } from '@/orchestrator/core/multiAgent/types';
 
+export const dynamic = 'force-dynamic';
+
 function generateId(prefix = 'msg'): string {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }

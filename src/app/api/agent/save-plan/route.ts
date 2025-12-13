@@ -13,6 +13,8 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { adminDb } from '@/lib/firebaseAdmin';
 import type { ProjectPlan, Phase, Task } from '../plan-project/route';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 // Phase 90.2: Firestore document types

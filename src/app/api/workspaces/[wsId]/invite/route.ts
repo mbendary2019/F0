@@ -5,6 +5,8 @@ import { limitOrNull } from "@/server/rateLimit";
 import { logAudit } from "@/server/audit";
 import { createInviteToken, hashToken } from "@/server/crypto";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Create Workspace Invite API
  *

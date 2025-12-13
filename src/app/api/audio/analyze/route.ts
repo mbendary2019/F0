@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAgents } from '@/lib/agents/orchestratorBus';
 import type { AudioAnalysisMode } from '../../../../../orchestrator/core/audio/types';
 
+export const dynamic = 'force-dynamic';
+
 // =============================================================================
 // POST /api/audio/analyze
 // Trigger analysis for an audio attachment

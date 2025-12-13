@@ -1,5 +1,7 @@
 import { callCallable } from "@/lib/functionsClient";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const items = await callCallable("listWebhookDeliveries");

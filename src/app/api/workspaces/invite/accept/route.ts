@@ -4,6 +4,8 @@ import { assertAuth } from "@/server/authAssert";
 import { logAudit } from "@/server/audit";
 import { hashToken } from "@/server/crypto";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Accept Workspace Invite API
  *

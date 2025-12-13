@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getLatestSuccessfulDeployment } from '@/lib/server/deployments';
 import type { DeploymentEnv } from '@/types/deployment';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteContext {
   params: Promise<{ projectId: string }>;
 }

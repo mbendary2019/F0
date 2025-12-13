@@ -9,6 +9,8 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { adminApp } from '@/lib/firebaseAdmin';
 import type { TemplateFile, F0Template, CreateProjectFromTemplateRequest, CreateProjectFromTemplateResponse } from '@/types/templates';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Verify authentication

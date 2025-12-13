@@ -10,6 +10,8 @@ import {
   createAttachmentId,
 } from '@/orchestrator/core/attachments/attachmentStore';
 import {
+
+export const dynamic = 'force-dynamic';
   ProjectAttachment,
   guessAttachmentKind,
   isAllowedMimeType,

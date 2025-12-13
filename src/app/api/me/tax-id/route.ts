@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken, adminDb } from "@/lib/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 export async function PATCH(req: NextRequest) {
   try {
     const token = req.headers.get("authorization")?.replace("Bearer ", "");

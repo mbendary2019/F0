@@ -32,6 +32,8 @@ import { getSampleStats } from "@/orchestrator/rag/online_learning";
 import { getActiveLearningMetrics, recommendStrategyToLabel } from "@/orchestrator/rag/activeLabeling";
 import { db } from "@/lib/firebase-admin";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Get sample statistics

@@ -8,6 +8,8 @@
 import { NextResponse } from 'next/server';
 import type { F0ModelsListResponse } from '@/types/openaiCompat';
 
+export const dynamic = 'force-dynamic';
+
 export const runtime = 'nodejs';
 
 export async function GET() {

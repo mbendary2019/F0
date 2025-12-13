@@ -10,6 +10,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebase-admin';
 import { enqueueTests, type QaMode } from '@/lib/server/actions';
 
+export const dynamic = 'force-dynamic';
+
 // Dev bypass helper
 function isDevEnv() {
   return (

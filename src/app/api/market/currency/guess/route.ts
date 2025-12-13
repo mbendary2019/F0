@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 const COUNTRY_CURRENCY_MAP: Record<string, string> = {
   AE: "AED",
   GB: "GBP",

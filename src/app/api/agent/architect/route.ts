@@ -3,6 +3,8 @@
 import { NextResponse } from 'next/server';
 import { runArchitectAgent } from '@/lib/agent/roles/architectAgent';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/agent/architect
  *

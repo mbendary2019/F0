@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAttachmentStore } from '@/orchestrator/core/attachments/attachmentStore';
 
+export const dynamic = 'force-dynamic';
+
 // =============================================================================
 // GET: List attachments
 // =============================================================================

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { initAdmin } from '@/lib/firebase-admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { db } = initAdmin();

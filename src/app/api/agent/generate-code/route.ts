@@ -5,6 +5,8 @@ import { runCodeGeneratorAgent } from '@/lib/agent/roles/codeGeneratorAgent';
 import { ArchitectPlan } from '@/lib/agent/roles/architectAgent';
 import { DecomposedTask } from '@/lib/agent/roles/taskDecomposerAgent';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/agent/generate-code
  *

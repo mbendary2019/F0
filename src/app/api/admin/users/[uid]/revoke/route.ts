@@ -4,6 +4,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { removeRole } from '@/lib/userProfile';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const Body = z.object({ role: z.string().min(2) }).strict();
 
 export async function POST(

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { runTaskDecomposerAgent } from '@/lib/agent/roles/taskDecomposerAgent';
 import { ArchitectPlan } from '@/lib/agent/roles/architectAgent';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/agent/decompose
  *

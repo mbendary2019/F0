@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { assertAuth } from '@/server/auth';
 import { db } from '@/lib/firebase-admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   // Authenticate user
   const auth = await assertAuth(req, { requireActive: false });

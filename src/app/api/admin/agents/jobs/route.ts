@@ -9,6 +9,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const JobSchema = z.object({
   kind: z.enum(['predict', 'remediate', 'report', 'guard']),
   payload: z.record(z.string(), z.any()).default({}),

@@ -8,6 +8,8 @@ import { assertAuth } from '@/server/auth';
 import { db } from '@/lib/firebase-admin';
 import { recordAuditLog } from '@/server/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   // Authenticate user
   const auth = await assertAuth(req, { requireActive: false });

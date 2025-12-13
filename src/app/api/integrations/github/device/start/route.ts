@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireUser } from '@/lib/api/requireUser';
 import type { GitHubDeviceCodeResponse } from '@/types/integrations';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Verify authentication

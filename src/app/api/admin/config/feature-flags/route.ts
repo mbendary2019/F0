@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { verifySessionCookie } from "@/lib/auth-helpers";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/admin/config/feature-flags
  * Returns current feature flags

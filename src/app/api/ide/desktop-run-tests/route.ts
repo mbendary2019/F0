@@ -12,6 +12,8 @@ import { runCombinedQa } from '@/lib/server/qa';
 import type { QaMode } from '@/lib/server/actions';
 import { logAiOperation } from '@/lib/server/aiLogs';
 
+export const dynamic = 'force-dynamic';
+
 const db = adminDb;
 
 // API Key for Desktop authentication

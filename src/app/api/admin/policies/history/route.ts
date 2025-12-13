@@ -6,6 +6,8 @@
 import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/admin/policies/history
  * Returns current policy state, guardrails, and auto-doc log

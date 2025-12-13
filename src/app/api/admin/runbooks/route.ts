@@ -9,6 +9,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const RunbookSchema = z.object({
   name: z.string().min(3).max(100),
   trigger: z.string().min(3).max(200),

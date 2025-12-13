@@ -6,6 +6,8 @@
 import { NextResponse } from 'next/server';
 import { firestoreAdmin } from '@/lib/server/firebase';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const snap = await firestoreAdmin

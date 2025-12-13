@@ -9,6 +9,8 @@ import { assertAuth } from '@/server/auth';
 import { getUserUsageToday, getUserUsageHistory } from '@/server/usage';
 import { rateLimitGuard } from '@/server/rate-limit';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   // Rate limiting
   const rateLimitResult = await rateLimitGuard(req);

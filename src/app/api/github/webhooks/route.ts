@@ -13,6 +13,8 @@ import crypto from 'crypto';
 import {headers} from 'next/headers';
 import {adminDb} from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET!;
 
 if (!WEBHOOK_SECRET) {

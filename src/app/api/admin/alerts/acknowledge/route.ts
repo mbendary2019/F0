@@ -9,6 +9,8 @@ import { acknowledgeAlert } from '@/server/alerts';
 import { rateLimitGuard } from '@/server/rate-limit';
 import { auditLog } from '@/server/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   // Rate limiting
   const rateLimitResult = await rateLimitGuard(req);

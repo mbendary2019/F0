@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 const FALLBACK_RATES: Record<string, number> = {
   EUR: 0.92,
   GBP: 0.78,

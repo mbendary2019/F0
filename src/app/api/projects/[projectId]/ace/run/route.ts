@@ -7,6 +7,8 @@ import { NextResponse } from 'next/server';
 import { getFirestoreAdmin } from '@/lib/server/firebase';
 import type { AceJob, TriggerAceRunRequest, TriggerAceJobResponse } from '@/types/ace';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(
   req: Request,
   { params }: { params: { projectId: string } }

@@ -15,6 +15,8 @@ import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { adminApp } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 const db = getFirestore(adminApp);
 
 // Maximum tasks to execute in a single request (prevent timeout)

@@ -9,6 +9,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractPDFContent } from '../../../../../orchestrator/core/media/extractors/pdfExtractor';
 
+export const dynamic = 'force-dynamic';
+
 // CORS headers for Desktop IDE
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

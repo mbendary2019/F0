@@ -9,6 +9,8 @@ import { assertAdminReq } from '@/lib/admin/assertAdminReq';
 import { getFirestore } from 'firebase-admin/firestore';
 import { auditAdmin } from '@/lib/admin/audit';
 
+export const dynamic = 'force-dynamic';
+
 const PolicyUpdateSchema = z.object({
   learning_rate: z.number().min(0).max(1).optional(),
   exploration_alpha: z.number().min(0).max(2).optional(),

@@ -5,6 +5,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/server/firebase';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/projects/[projectId]/snapshot
  * Load project snapshot from Firestore

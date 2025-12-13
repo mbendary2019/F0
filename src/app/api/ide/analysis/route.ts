@@ -10,6 +10,8 @@ import {
   analyzeDependencyGraph,
 } from '@/lib/ide/dependencyGraph';
 import {
+
+export const dynamic = 'force-dynamic';
   saveProjectAnalysis,
   loadProjectAnalysis,
 } from '@/lib/ide/projectAnalysisStore';

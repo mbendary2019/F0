@@ -11,6 +11,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
+export const dynamic = 'force-dynamic';
+
 interface VercelTokenResponse {
   access_token: string;
   token_type: string;

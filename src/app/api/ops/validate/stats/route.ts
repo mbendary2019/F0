@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSampleStats } from "@/orchestrator/rag/online_learning";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Get sample statistics

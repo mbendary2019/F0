@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyIdToken, verifySessionCookie, adminDb } from "@/lib/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/user/session
  *

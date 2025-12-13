@@ -9,6 +9,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
 import {
+
+export const dynamic = 'force-dynamic';
   getProjectMemory,
   updateMemorySection,
   appendToMemorySection,

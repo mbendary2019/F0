@@ -11,6 +11,8 @@ import { loadLatestModel, saveModel, type ModelDoc } from "@/orchestrator/rag/sc
 import { calibrateModel } from "@/orchestrator/rag/calibrator";
 import { getSampleStats } from "@/orchestrator/rag/online_learning";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Auth check

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { licenseManager } from '@/lib/license/manager';
 import { verifyActivationReceipt } from '@/lib/license/signature';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

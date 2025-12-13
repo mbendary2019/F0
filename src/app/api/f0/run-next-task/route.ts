@@ -11,6 +11,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
+export const dynamic = 'force-dynamic';
+
 // Dev bypass helper
 function isDevEnv() {
   return process.env.NODE_ENV === 'development' ||

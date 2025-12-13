@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from 'next/server';
 // Import orchestrator singleton (will be created next)
 import { getOrchestratorBus } from '@/lib/agents/orchestratorBus';
 
+export const dynamic = 'force-dynamic';
+
 interface RunPlanRequest {
   projectId: string;
   goal: string;

@@ -3,6 +3,8 @@ import { initAdmin } from "@/lib/firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   await initAdmin();
   try {

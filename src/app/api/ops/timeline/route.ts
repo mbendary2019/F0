@@ -32,6 +32,8 @@ import { db } from "@/lib/firebase-admin";
 import { buildTimelineVM, buildPaginatedResponse } from "@/orchestrator/ops/timeline/viewmodel";
 import type { AnyEvent } from "@/orchestrator/ops/timeline/types";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     // Parse query parameters

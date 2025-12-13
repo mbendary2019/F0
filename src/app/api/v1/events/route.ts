@@ -1,5 +1,7 @@
 import { callCallable } from '@/lib/functionsClient';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const limit = Number(url.searchParams.get("limit") || "5");

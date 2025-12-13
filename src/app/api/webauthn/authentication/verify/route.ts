@@ -3,6 +3,8 @@ import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import type { VerifiedAuthenticationResponse } from "@simplewebauthn/server";
 import { adminAuth, adminDb } from "@/server/firebaseAdmin";
 
+export const dynamic = 'force-dynamic';
+
 type AuthenticationResponseJSON = any;
 
 export const runtime = "nodejs";

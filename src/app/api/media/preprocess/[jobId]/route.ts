@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestore } from 'firebase-admin/firestore';
 import { initFirebaseAdmin } from '@/lib/server/firebase';
 
+export const dynamic = 'force-dynamic';
+
 // Initialize Firebase
 initFirebaseAdmin();
 const db = getFirestore();

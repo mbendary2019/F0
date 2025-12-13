@@ -3,6 +3,8 @@ import { adminDb } from "@/server/firebaseAdmin";
 import { assertAuth } from "@/server/authAssert";
 import { logAudit } from "@/server/audit";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Change Member Role API
  *

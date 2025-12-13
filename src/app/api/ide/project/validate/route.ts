@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireUser } from '@/lib/api/requireUser';
 import { requireProjectOwner } from '@/lib/api/requireProjectOwner';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     // Phase 84.7: Verify authentication

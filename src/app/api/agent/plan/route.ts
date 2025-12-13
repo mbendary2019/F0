@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { planActions } from '@/lib/agent/actions/actionPlanner';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/agent/plan
  *

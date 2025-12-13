@@ -1,6 +1,8 @@
 // API route to run a task on F0 Orchestrator
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_F0_BASE || "http://localhost:8787";
