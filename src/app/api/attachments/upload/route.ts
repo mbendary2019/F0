@@ -10,13 +10,13 @@ import {
   createAttachmentId,
 } from '@/orchestrator/core/attachments/attachmentStore';
 import {
-
-export const dynamic = 'force-dynamic';
   ProjectAttachment,
   guessAttachmentKind,
   isAllowedMimeType,
   ATTACHMENT_LIMITS,
 } from '@/orchestrator/core/attachments/types';
+
+export const dynamic = 'force-dynamic';
 
 // =============================================================================
 // In-memory file storage for development

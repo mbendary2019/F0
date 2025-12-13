@@ -8,11 +8,11 @@ import { requireUser } from '@/lib/api/requireUser';
 import { getCheckoutSession, extractBillingFromSession } from '@/lib/server/stripe';
 import { setUserBilling } from '@/lib/server/entitlements';
 import type {
-
-export const dynamic = 'force-dynamic';
   ConfirmBillingRequest,
   ConfirmBillingResponse,
 } from '@/types/billing';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {

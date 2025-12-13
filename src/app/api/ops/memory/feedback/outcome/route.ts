@@ -5,12 +5,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import {
-
-export const dynamic = 'force-dynamic';
   submitOutcome,
   submitOutcomeBatch,
   type Outcome,
 } from "@/lib/ai/feedback/outcomeSignals";
+
+export const dynamic = 'force-dynamic';
 
 export const runtime = "nodejs";
 

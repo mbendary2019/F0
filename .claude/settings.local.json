@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git filter-branch:*)",
+      "Bash('git rm --cached --ignore-unmatch start-dev.sh PHASE_100_4_OPENAI_INTEGRATION_COMPLETE.md PHASE_70_2_COMPLETE.md PHASE_83_QUICK_START_TESTING.md .claude/settings.local.json' )",
+      "Bash('git rm --cached --ignore-unmatch start-dev.sh PHASE_100_4_OPENAI_INTEGRATION_COMPLETE.md PHASE_70_2_COMPLETE.md PHASE_83_QUICK_START_TESTING.md .claude/settings.local.json 2>/dev/null || true' )",
+      "Bash(git commit:*)",
+      "Bash(npx next build)",
+      "Bash(git reset:*)",
+      "Bash(OPENAI_API_KEY=\"\" npx next:*)",
+      "Bash(node -e:*)"
+    ]
+  }
+}

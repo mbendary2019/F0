@@ -24,11 +24,11 @@ import {
   saveProjectAnalysis,
 } from '@/lib/ide/projectAnalysisStore';
 import {
-
-export const dynamic = 'force-dynamic';
   buildDependencyGraph,
   analyzeDependencyGraph,
 } from '@/lib/ide/dependencyGraph';
+
+export const dynamic = 'force-dynamic';
 
 const db = getFirestore(adminApp);
 

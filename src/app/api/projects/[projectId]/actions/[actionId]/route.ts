@@ -8,14 +8,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebaseAdmin';
 import {
-
-export const dynamic = 'force-dynamic';
   getAction,
   updateActionStatus,
   cancelAction,
   retryAction,
   type ActionStatus,
 } from '@/lib/server/actions';
+
+export const dynamic = 'force-dynamic';
 
 // Dev bypass helper
 function isDevEnv() {

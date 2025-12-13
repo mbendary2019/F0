@@ -8,8 +8,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebaseAdmin';
 import {
-
-export const dynamic = 'force-dynamic';
   getProjectPlan,
   saveProjectPlan,
   updateTaskStatus,
@@ -20,6 +18,8 @@ export const dynamic = 'force-dynamic';
   type AgentTask,
   type TaskStatus,
 } from '@/lib/server/projectPlan';
+
+export const dynamic = 'force-dynamic';
 
 // Dev bypass helper
 function isDevEnv() {

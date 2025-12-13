@@ -3,12 +3,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
-
-export const dynamic = 'force-dynamic';
   analyzeMedia,
   type MediaAnalysisRequest,
   type AnalysisIntent,
 } from '../../../../../orchestrator/core/media';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/media/vision

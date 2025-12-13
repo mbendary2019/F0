@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-
-export const dynamic = 'force-dynamic';
   runImplementationPipeline,
   OrchestratorMode,
   TaskSelectionStrategy,
 } from '@/lib/agent/orchestrator/implementationPipeline';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/agent/implement

@@ -9,8 +9,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb, adminAuth } from '@/lib/firebaseAdmin';
 import {
-
-export const dynamic = 'force-dynamic';
   getProjectMemory,
   updateMemorySection,
   appendToMemorySection,
@@ -18,6 +16,8 @@ export const dynamic = 'force-dynamic';
   type MemorySectionKey,
   type ProjectMemory,
 } from '@/lib/server/projectMemory';
+
+export const dynamic = 'force-dynamic';
 
 // Dev bypass helper
 function isDevEnv() {

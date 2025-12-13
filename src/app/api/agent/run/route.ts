@@ -7,13 +7,13 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import type { ProjectContext } from '@/types/project';
 // Phase 98.3: Template Kickoff Context
 import {
-
-export const dynamic = 'force-dynamic';
   getTemplateKickoffState,
   getTemplateData,
   buildTemplateKickoffInstructions,
   buildTemplateReferenceContext,
 } from '@/lib/server/templateKickoff';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * Detect language from text (Arabic vs English)
